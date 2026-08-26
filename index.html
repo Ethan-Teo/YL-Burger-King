@@ -1,0 +1,2027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YL Burger Kingdom</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --parchment:#FDF3E1;
+    --parchment-card:#FFFBF2;
+    --bun:#F7C59F;
+    --ketchup:#E4572E;
+    --ketchup-dark:#b8431f;
+    --cheese:#F6C445;
+    --cheese-dark:#c99a25;
+    --mint:#8FBF9F;
+    --mint-dark:#5f8f6f;
+    --royal:#7C6A9C;
+    --royal-dark:#5c4d78;
+    --ink:#4A3122;
+    --wood:#8a5a3b;
+    --wood-dark:#5f3c24;
+    --line: rgba(74,49,34,0.14);
+    --danger:#C0392B;
+    --sky:#4F8FD1;
+
+    --c-common:#9C9284;
+    --c-rare:#4F8FD1;
+    --c-epic:#9B6FC9;
+    --c-legend:#E8B93B;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 12% 8%, rgba(246,196,69,0.25), transparent 38%),
+      radial-gradient(circle at 90% 85%, rgba(143,191,159,0.22), transparent 42%),
+      var(--parchment);
+    color:var(--ink);
+    font-family:'Nunito',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{font-family:'Baloo 2',cursive;}
+  .wrap{max-width:1080px; margin:0 auto; padding:16px 14px 60px;}
+
+  /* ---------- HOME SCREEN ---------- */
+  #homeScreen{
+    min-height:100vh;
+    display:flex; align-items:center; justify-content:center;
+    flex-direction:column;
+    text-align:center;
+    padding:24px;
+  }
+  .home-card{
+    background:var(--parchment-card);
+    border:3px solid var(--ink);
+    border-radius:26px;
+    padding:40px 34px;
+    max-width:420px;
+    box-shadow:0 10px 0 var(--wood), 0 18px 24px rgba(0,0,0,0.2);
+  }
+  .home-crest{font-size:80px; animation:homeBob 2.6s ease-in-out infinite; display:inline-block;}
+  @keyframes homeBob{0%,100%{transform:translateY(0) rotate(-3deg);} 50%{transform:translateY(-10px) rotate(3deg);}}
+  .home-title{
+    font-family:'Baloo 2',cursive; font-size:clamp(26px,6vw,36px); color:var(--ketchup);
+    margin:10px 0 4px;
+  }
+  .home-tagline{font-size:13px; font-weight:700; color:var(--wood-dark); margin-bottom:26px;}
+  .start-btn{
+    font-family:'Baloo 2',cursive; font-size:20px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, var(--ketchup), var(--ketchup-dark));
+    border:none; border-radius:16px; padding:16px 40px; cursor:pointer;
+    box-shadow:0 6px 0 #7a2b13, 0 10px 14px rgba(0,0,0,0.18);
+    transition:transform 0.06s ease;
+  }
+  .start-btn:active{transform:translateY(5px); box-shadow:0 1px 0 #7a2b13;}
+  .home-sub-note{margin-top:14px; font-size:11px; color:var(--wood-dark); opacity:0.75; font-weight:700;}
+
+  /* ---------- HEADER ---------- */
+  header{
+    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:12px;
+    padding-bottom:12px; margin-bottom:14px; border-bottom:3px dashed var(--line);
+  }
+  .titleblock h1{
+    font-size:clamp(20px,4vw,30px); margin:0; color:var(--ketchup);
+    display:flex; align-items:center; gap:8px; font-weight:800;
+  }
+  .titleblock .subtitle{font-size:12px; font-weight:800; color:var(--wood-dark); margin-top:3px;}
+  .headerRight{display:flex; flex-direction:column; align-items:flex-end; gap:6px;}
+  .statgroup{display:flex; gap:14px; flex-wrap:wrap; justify-content:flex-end;}
+  .stat{
+    background:var(--parchment-card); border:2px solid var(--line); border-radius:12px;
+    padding:6px 12px; text-align:right; min-width:90px;
+  }
+  .stat .label{font-size:9px; text-transform:uppercase; letter-spacing:0.8px; font-weight:800; color:var(--wood-dark); opacity:0.8;}
+  .stat .value{font-size:16px; font-weight:900;}
+  .stat.coins .value{color:var(--ketchup);}
+  .stat.rate .value{color:var(--mint-dark); font-size:12px;}
+  .stat.crumbs .value{color:var(--cheese-dark);}
+  .stat.sesame .value{color:var(--royal);}
+  .save-row{display:flex; align-items:center; gap:8px;}
+  .save-btn{
+    font-family:'Baloo 2',cursive; border:none; border-radius:9px; padding:7px 14px; font-size:12px; font-weight:700;
+    cursor:pointer; background:linear-gradient(180deg, var(--mint), var(--mint-dark)); color:#fff;
+    box-shadow:0 3px 0 #3f5c48;
+  }
+  .save-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #3f5c48;}
+  .save-status{font-size:10px; color:var(--wood-dark); font-weight:700; opacity:0.8;}
+  .reset-link{
+    font-size:10px; color:var(--danger); font-weight:800; background:none; border:none; cursor:pointer;
+    text-decoration:underline; padding:0;
+  }
+
+  /* ---------- TABS ---------- */
+  .tabs{display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap;}
+  .tab-btn{
+    font-family:'Baloo 2',cursive; font-size:14px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, var(--wood), var(--wood-dark)); border:none;
+    border-radius:10px 10px 4px 4px; padding:9px 18px 8px; cursor:pointer;
+    box-shadow:0 3px 0 #3f2716; opacity:0.72;
+  }
+  .tab-btn.active{
+    opacity:1; background:linear-gradient(180deg, var(--ketchup), var(--ketchup-dark));
+    box-shadow:0 3px 0 #7a2b13; transform:translateY(-1px);
+  }
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .section-label{
+    font-family:'Baloo 2',cursive; font-size:13px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, var(--mint), var(--mint-dark)); display:inline-block;
+    padding:6px 20px; margin-bottom:12px;
+    clip-path: polygon(4% 0, 96% 0, 100% 50%, 96% 100%, 4% 100%, 0 50%);
+    box-shadow:1px 2px 0 rgba(0,0,0,0.15);
+  }
+
+  /* ---------- KINGDOM TAB ---------- */
+  main{display:grid; grid-template-columns:260px 1fr; gap:20px;}
+  @media (max-width:720px){ main{grid-template-columns:1fr;} }
+
+  .crest-panel{display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .crest{
+    width:180px; height:180px; border-radius:50%; border:5px solid var(--ink);
+    background:var(--parchment-card); display:flex; align-items:center; justify-content:center;
+    font-size:80px; box-shadow:0 8px 0 var(--wood), 0 14px 16px rgba(0,0,0,0.22);
+    position:relative; margin-top:16px;
+    animation:crestBob 3s ease-in-out infinite;
+  }
+  @keyframes crestBob{0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);}}
+  .crest-crown{position:absolute; top:-28px; font-size:30px; animation:bob 2.4s ease-in-out infinite;}
+  @keyframes bob{0%,100%{transform:translateY(0) rotate(-4deg);} 50%{transform:translateY(-7px) rotate(4deg);}}
+  .title-badge{
+    background:var(--ink); color:var(--parchment); padding:7px 14px; border-radius:20px;
+    font-size:11px; font-weight:800; text-align:center;
+  }
+  .crown-count{font-size:12px; font-weight:800; color:var(--wood-dark); text-align:center;}
+
+  .gen-list{display:flex; flex-direction:column; gap:9px;}
+  .gen-card{
+    background:var(--parchment-card); border:2px solid var(--line); border-radius:14px;
+    padding:11px 13px; display:grid; grid-template-columns:40px 1fr auto; gap:10px; align-items:center;
+  }
+  .gen-card.affordable{border-color:var(--mint-dark);}
+  .gen-icon{font-size:27px; text-align:center;}
+  .gen-name{font-weight:800; font-size:13px;}
+  .gen-meta{font-size:10.5px; color:var(--wood-dark); font-weight:700;}
+  .gen-owned{font-size:10px; background:var(--ink); color:var(--parchment); padding:1px 6px; border-radius:10px; margin-left:5px;}
+  .gen-buy{display:flex; flex-direction:column; align-items:flex-end; gap:4px;}
+  .gen-cost{font-size:11px; font-weight:900; color:var(--ketchup);}
+
+  .buy-btn{
+    border:none; border-radius:8px; padding:6px 10px; font-weight:900; font-size:11px; cursor:pointer;
+    background:var(--mint); color:#fff; box-shadow:0 3px 0 var(--mint-dark); white-space:nowrap;
+  }
+  .buy-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--mint-dark);}
+  .buy-btn:disabled{background:#cfc8b8; box-shadow:0 3px 0 #a9a291; cursor:not-allowed;}
+
+  .prestige-box{
+    margin-top:18px; background:linear-gradient(135deg, #5c3f2a, var(--ink)); color:var(--parchment);
+    border-radius:16px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:12px;
+  }
+  .prestige-box h3{font-family:'Baloo 2',cursive; margin:0 0 3px; font-size:15px; color:var(--cheese);}
+  .prestige-box p{margin:0; font-size:11.5px; opacity:0.85; max-width:320px;}
+  .prestige-btn{
+    background:var(--cheese); color:var(--ink); border:none; font-weight:900;
+    padding:11px 16px; border-radius:10px; cursor:pointer; font-size:12.5px; box-shadow:0 4px 0 var(--cheese-dark);
+  }
+  .prestige-btn:active{transform:translateY(3px); box-shadow:0 1px 0 var(--cheese-dark);}
+  .prestige-btn:disabled{background:#8a8272; color:#d8d2c4; box-shadow:none; cursor:not-allowed;}
+
+  /* ---------- HEROES TAB ---------- */
+  .power-summary{
+    background:var(--parchment-card); border:2px solid var(--line); border-radius:12px;
+    padding:10px 14px; margin-bottom:14px; font-size:12.5px; font-weight:700; color:var(--wood-dark);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:6px;
+  }
+  .power-summary b{color:var(--ketchup); font-size:14px;}
+  .hero-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px;}
+  .hero-card{
+    background:var(--parchment-card); border-radius:14px; padding:10px 10px 12px; text-align:center;
+    border:3px solid var(--c-common); position:relative; box-shadow:0 3px 0 rgba(0,0,0,0.08);
+  }
+  .hero-card.rare{border-color:var(--c-rare);}
+  .hero-card.epic{border-color:var(--c-epic);}
+  .hero-card.legend{border-color:var(--c-legend); box-shadow:0 0 10px rgba(232,185,59,0.55);}
+  .hero-card.admin{
+    border-color:#8a1620; background:linear-gradient(160deg, var(--parchment-card), #2a0a0a);
+    box-shadow:0 0 14px rgba(200,30,30,0.6); animation:adminGlitch 3s ease-in-out infinite;
+  }
+  @keyframes adminGlitch{0%,94%,100%{filter:none;} 95%{filter:hue-rotate(30deg) brightness(1.2);} 97%{filter:hue-rotate(-20deg);}}
+  .hero-card.locked{opacity:0.42; filter:grayscale(0.6);}
+  .hero-rarity-tag{
+    position:absolute; top:6px; right:6px; font-size:9px; font-weight:900; padding:2px 6px; border-radius:8px;
+    color:#fff; text-transform:uppercase; letter-spacing:0.3px;
+  }
+  .hero-card.common .hero-rarity-tag{background:var(--c-common);}
+  .hero-card.rare .hero-rarity-tag{background:var(--c-rare);}
+  .hero-card.epic .hero-rarity-tag{background:var(--c-epic);}
+  .hero-card.legend .hero-rarity-tag{background:var(--c-legend); color:var(--ink);}
+  .hero-card.admin .hero-rarity-tag{background:#8a1620; color:#fff;}
+  .hero-emoji{font-size:40px; margin:6px 0 2px;}
+  .hero-name{font-weight:800; font-size:12.5px; line-height:1.15; min-height:30px; display:flex; align-items:center; justify-content:center;}
+  .hero-role{font-size:10px; font-weight:700; color:var(--wood-dark); margin-bottom:2px;}
+  .hero-moves-note{font-size:9px; color:var(--wood-dark); opacity:0.8; margin-bottom:4px; min-height:22px;}
+  .hero-level{font-size:10.5px; font-weight:800; color:var(--mint-dark); margin-bottom:6px;}
+  .hero-power{font-size:10px; color:var(--ketchup); font-weight:800; margin-bottom:6px;}
+  .hero-locked-label{font-size:11px; font-weight:800; color:var(--wood-dark);}
+  .level-btn{
+    border:none; border-radius:8px; padding:6px 10px; font-weight:900; font-size:11px; cursor:pointer;
+    background:var(--cheese); color:var(--ink); box-shadow:0 3px 0 var(--cheese-dark); width:100%;
+  }
+  .level-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--cheese-dark);}
+  .level-btn:disabled{background:#cfc8b8; color:#8a8272; box-shadow:0 3px 0 #a9a291; cursor:not-allowed;}
+
+  /* ---------- QUESTS TAB ---------- */
+  .quest-list{display:flex; flex-direction:column; gap:10px;}
+  .quest-card{
+    background:var(--parchment-card); border:2px solid var(--line); border-radius:14px;
+    padding:12px 14px; display:grid; grid-template-columns:38px 1fr auto; gap:12px; align-items:center;
+  }
+  .quest-card.complete{border-color:var(--mint-dark);}
+  .quest-card.claimed{opacity:0.55;}
+  .quest-icon{font-size:26px; text-align:center;}
+  .quest-name{font-weight:800; font-size:13px;}
+  .quest-desc{font-size:10.5px; color:var(--wood-dark); font-weight:700; margin-bottom:5px;}
+  .quest-progress-outer{background:#e7dcc4; border:1.5px solid var(--ink); border-radius:8px; height:10px; overflow:hidden; max-width:260px;}
+  .quest-progress-inner{height:100%; background:linear-gradient(90deg, #7fbf6e, var(--mint-dark)); transition:width 0.3s ease;}
+  .quest-progress-text{font-size:9.5px; font-weight:800; color:var(--wood-dark); margin-top:2px;}
+  .quest-reward{font-size:10px; font-weight:800; color:var(--ketchup); margin-top:2px;}
+  .claim-btn{
+    border:none; border-radius:8px; padding:8px 12px; font-weight:900; font-size:11px; cursor:pointer;
+    background:var(--cheese); color:var(--ink); box-shadow:0 3px 0 var(--cheese-dark); white-space:nowrap;
+  }
+  .claim-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--cheese-dark);}
+  .claim-btn:disabled{background:#cfc8b8; color:#8a8272; box-shadow:0 3px 0 #a9a291; cursor:not-allowed;}
+  .claim-btn.done{background:var(--mint); box-shadow:0 3px 0 var(--mint-dark); color:#fff;}
+
+  /* ---------- BATTLE TAB (turn-based) ---------- */
+  .battle-area{
+    position:relative;
+    background:linear-gradient(180deg, #f3e2c2, var(--parchment-card));
+    border:2px solid var(--line); border-radius:18px; padding:18px 16px;
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+  }
+  .stage-tag{font-size:11.5px; font-weight:800; color:var(--wood-dark);}
+
+  .combat-row{
+    display:flex; justify-content:space-between; align-items:flex-start; width:100%; max-width:520px; gap:10px;
+  }
+  .combat-row.shake-strong{animation:strongShake 0.45s ease;}
+  @keyframes strongShake{
+    0%{transform:translateX(0);} 15%{transform:translateX(-10px) rotate(-1deg);} 30%{transform:translateX(9px) rotate(1deg);}
+    45%{transform:translateX(-7px);} 60%{transform:translateX(6px);} 75%{transform:translateX(-3px);} 100%{transform:translateX(0);}
+  }
+  .fighter-col{flex:1; display:flex; flex-direction:column; align-items:center; gap:6px;}
+  .fighter-visual{position:relative; font-size:64px; width:90px; height:90px; display:flex; align-items:center; justify-content:center;}
+  .fighter-visual > *{position:relative; z-index:1;}
+  .fighter-visual.hit{animation:bossHit 0.25s ease;}
+  @keyframes bossHit{0%{transform:translateX(0);} 30%{transform:translateX(-6px) scale(0.97);} 60%{transform:translateX(6px);} 100%{transform:translateX(0);}}
+  .fighter-visual.frozen{filter:saturate(0.5) brightness(1.15) hue-rotate(150deg);}
+  .fx-flash::before{
+    content:""; position:absolute; inset:-12px; border-radius:50%;
+    background:var(--flash-color, rgba(255,255,255,0.6)); opacity:0.9; z-index:0;
+    animation:flashPulse 0.4s ease-out forwards;
+  }
+  @keyframes flashPulse{0%{opacity:0.85; transform:scale(0.55);} 100%{opacity:0; transform:scale(1.5);}}
+  .vfx-particle{
+    position:absolute; left:50%; top:50%; font-size:16px; pointer-events:none; z-index:2;
+    transform:translate(-50%,-50%);
+    animation-name:particleFly; animation-timing-function:ease-out; animation-fill-mode:forwards;
+  }
+  @keyframes particleFly{
+    0%{ transform:translate(-50%,-50%) rotate(0deg) scale(0.7); opacity:1; }
+    100%{ transform:translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--rot)) scale(1); opacity:0; }
+  }
+  .float-dmg{
+    position:absolute; pointer-events:none; font-weight:900; font-size:15px; z-index:3;
+    animation:dmgUp 0.8s ease-out forwards; text-shadow:1px 1px 0 #fff; left:50%; top:10px;
+  }
+  .float-dmg.boss{color:var(--danger);}
+  .float-dmg.hero{color:var(--sky);}
+  .float-dmg.heal{color:var(--mint-dark);}
+  @keyframes dmgUp{0%{opacity:1; transform:translate(-50%,0);} 100%{opacity:0; transform:translate(-50%,-50px);}}
+  .fighter-name{font-family:'Baloo 2',cursive; font-size:13.5px; color:var(--ink); text-align:center;}
+  .fighter-hp-wrap{width:100%; max-width:150px;}
+  .hp-bar-outer{background:#e7dcc4; border:2px solid var(--ink); border-radius:8px; height:14px; overflow:hidden;}
+  .hp-bar-inner{height:100%; background:linear-gradient(90deg, #7fbf6e, var(--danger)); transition:width 0.3s ease;}
+  .hp-bar-inner.hero-hp{background:linear-gradient(90deg, #6fb1e0, var(--sky));}
+  .hp-text{font-size:9.5px; font-weight:800; color:var(--wood-dark); text-align:center; margin-top:2px;}
+  .vs-label{font-family:'Baloo 2',cursive; font-size:16px; color:var(--wood-dark); align-self:center; margin-top:30px;}
+  .buff-tag{font-size:9px; font-weight:800; color:var(--mint-dark); background:#eaf4ec; border-radius:8px; padding:1px 6px;}
+  .debuff-tag{font-size:9px; font-weight:800; color:var(--danger); background:#fbe7e3; border-radius:8px; padding:1px 6px;}
+  .shield-tag{font-size:9px; font-weight:800; color:var(--sky); background:#e8f2fa; border-radius:8px; padding:1px 6px;}
+  .burn-tag{font-size:9px; font-weight:800; color:#e4572e; background:#fbe8df; border-radius:8px; padding:1px 6px;}
+
+  .move-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px,1fr)); gap:8px; width:100%; max-width:460px;}
+  .move-btn{
+    font-family:'Nunito',sans-serif; text-align:left; border:2px solid var(--ink); border-radius:10px;
+    padding:8px 10px; cursor:pointer; background:var(--parchment-card); box-shadow:0 3px 0 var(--wood);
+  }
+  .move-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--wood);}
+  .move-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .move-name{font-weight:800; font-size:12.5px;}
+  .move-desc{font-size:9.5px; color:var(--wood-dark); margin-top:1px;}
+
+  .bench-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:2px;}
+  .bench-chip{
+    display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer;
+    padding:4px; border-radius:10px; border:2px solid transparent; background:none;
+  }
+  .bench-chip.active-chip{border-color:var(--ketchup);}
+  .bench-chip .chip-emoji{
+    width:38px; height:38px; border-radius:50%; background:var(--parchment-card); border:2px solid var(--c-common);
+    display:flex; align-items:center; justify-content:center; font-size:19px;
+  }
+  .bench-chip.rare .chip-emoji{border-color:var(--c-rare);}
+  .bench-chip.epic .chip-emoji{border-color:var(--c-epic);}
+  .bench-chip.legend .chip-emoji{border-color:var(--c-legend);}
+  .bench-chip.admin .chip-emoji{border-color:#8a1620; box-shadow:0 0 8px rgba(200,30,30,0.6);}
+  .bench-chip.fainted .chip-emoji{opacity:0.35; filter:grayscale(1);}
+  .bench-chip .chip-hp-outer{width:38px; height:5px; background:#e7dcc4; border-radius:4px; overflow:hidden;}
+  .bench-chip .chip-hp-inner{height:100%; background:var(--mint-dark);}
+  .bench-chip:disabled{cursor:default;}
+
+  .battle-msg{
+    font-size:12px; font-weight:800; color:var(--ink); min-height:18px; text-align:center;
+  }
+  .battle-log{
+    width:100%; max-width:420px; background:var(--parchment-card); border:2px solid var(--line);
+    border-radius:10px; padding:8px 12px; font-size:11px; color:var(--wood-dark); max-height:100px; overflow-y:auto;
+  }
+  .battle-log div{padding:2px 0; border-bottom:1px dashed var(--line);}
+  .battle-log div:last-child{border-bottom:none;}
+  .no-team-note{font-size:12px; color:var(--wood-dark); font-weight:700; text-align:center;}
+
+  .defeat-overlay{
+    position:absolute; inset:0; background:rgba(43,28,19,0.74); border-radius:18px;
+    display:none; align-items:center; justify-content:center; z-index:20;
+    animation:overlayFade 0.3s ease;
+  }
+  @keyframes overlayFade{from{opacity:0;} to{opacity:1;}}
+  .defeat-card{
+    background:var(--parchment-card); border:3px solid var(--danger); border-radius:16px;
+    padding:26px 24px; text-align:center; max-width:280px; box-shadow:0 8px 0 #7a2b13;
+  }
+  .defeat-emoji{font-size:42px;}
+  .defeat-title{font-family:'Baloo 2',cursive; font-size:17px; color:var(--danger); margin:8px 0 4px;}
+  .defeat-sub{font-size:11.5px; color:var(--wood-dark); font-weight:700; margin-bottom:16px;}
+  .try-again-btn{
+    font-family:'Baloo 2',cursive; border:none; border-radius:10px; padding:11px 22px; font-size:13.5px; font-weight:700;
+    cursor:pointer; background:linear-gradient(180deg, var(--ketchup), var(--ketchup-dark)); color:#fff;
+    box-shadow:0 4px 0 #7a2b13;
+  }
+  .try-again-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #7a2b13;}
+
+  /* ---------- ADMIN PANEL ---------- */
+  .admin-link{
+    font-size:10px; color:var(--wood-dark); opacity:0.45; background:none; border:none; cursor:pointer;
+    text-decoration:underline; margin:10px auto 0; display:block;
+  }
+  .admin-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.72); z-index:100;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .admin-overlay.open{display:flex;}
+  .admin-card{
+    background:var(--parchment-card); border:3px solid var(--ink); border-radius:18px;
+    padding:22px 20px; max-width:340px; width:100%; box-shadow:0 10px 0 var(--wood);
+    text-align:center;
+  }
+  .admin-panel-card{max-width:380px;}
+  .admin-title{font-family:'Baloo 2',cursive; font-size:17px; color:var(--ink); margin-bottom:12px;}
+  .admin-input{
+    width:100%; padding:10px 12px; border-radius:10px; border:2px solid var(--line); font-size:14px;
+    text-align:center; margin-bottom:8px; font-family:'Nunito',sans-serif; letter-spacing:3px;
+  }
+  .admin-error{font-size:11px; color:var(--danger); font-weight:800; margin-bottom:8px;}
+  .admin-btn-row{display:flex; gap:8px; justify-content:center; margin-top:6px;}
+  .admin-btn{
+    font-family:'Baloo 2',cursive; border:none; border-radius:10px; padding:9px 14px; font-size:12px; font-weight:700;
+    cursor:pointer; background:linear-gradient(180deg, var(--royal), var(--royal-dark)); color:#fff;
+    box-shadow:0 3px 0 #443a5c;
+  }
+  .admin-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #443a5c;}
+  .admin-btn.secondary{background:linear-gradient(180deg,#b9b0a0,#8a8272); box-shadow:0 3px 0 #6b6558;}
+  .admin-btn.danger{background:linear-gradient(180deg, var(--danger), #8e2a1e); box-shadow:0 3px 0 #6b1f16;}
+  .admin-resource-section{display:flex; flex-direction:column; gap:8px; margin-bottom:14px;}
+  .admin-resource-row{display:flex; align-items:center; gap:6px;}
+  .admin-resource-row label{font-size:12px; font-weight:800; color:var(--ink); width:66px; text-align:left; flex-shrink:0;}
+  .admin-input-inline{flex:1; margin-bottom:0; padding:8px 10px; font-size:13px; text-align:left; letter-spacing:0;}
+  .admin-resource-row .admin-btn{padding:8px 14px; flex-shrink:0;}
+  .admin-grid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;}
+  .admin-grid .admin-btn{width:100%;}
+  .admin-close-btn{
+    font-family:'Baloo 2',cursive; border:none; border-radius:10px; padding:9px 20px; font-size:12.5px; font-weight:700;
+    cursor:pointer; background:linear-gradient(180deg, var(--wood), var(--wood-dark)); color:#fff;
+    box-shadow:0 3px 0 #3f2716;
+  }
+  .admin-close-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #3f2716;}
+
+  /* ---------- RESET WARNING SCREEN ---------- */
+  .reset-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:200;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .reset-confirm-card{
+    background:var(--parchment-card); border:3px solid var(--danger); border-radius:18px;
+    padding:26px 24px; max-width:320px; width:100%; text-align:center; box-shadow:0 10px 0 #7a2b13;
+  }
+  .reset-confirm-emoji{font-size:40px;}
+  .reset-confirm-title{font-family:'Baloo 2',cursive; font-size:17px; color:var(--danger); margin:8px 0 6px;}
+  .reset-confirm-sub{font-size:12px; color:var(--wood-dark); font-weight:700; margin-bottom:18px; line-height:1.4;}
+  .reset-confirm-btns{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+  .reset-confirm-btn{
+    font-family:'Baloo 2',cursive; border:none; border-radius:10px; padding:10px 16px; font-size:12.5px; font-weight:700;
+    cursor:pointer;
+  }
+  .reset-confirm-btn.danger{ background:linear-gradient(180deg, var(--danger), #8e2a1e); color:#fff; box-shadow:0 4px 0 #6b1f16; }
+  .reset-confirm-btn.secondary{ background:linear-gradient(180deg,#b9b0a0,#8a8272); color:#fff; box-shadow:0 4px 0 #6b6558; }
+  .reset-confirm-btn:active{ transform:translateY(2px); box-shadow:none; }
+
+  /* ---------- RARITY SUMMON CUTSCENE (Epic & Legendary) ---------- */
+  .rarity-cutscene{
+    display:none; position:fixed; inset:0; z-index:150; overflow:hidden;
+    align-items:center; justify-content:center; flex-direction:column;
+    background:radial-gradient(circle at 50% 50%, rgba(70,45,10,0.94), rgba(8,5,2,0.98));
+  }
+  .rarity-cutscene.rc-epic{
+    background:radial-gradient(circle at 50% 50%, rgba(42,26,58,0.94), rgba(7,4,10,0.98));
+  }
+  .rarity-cutscene::before{
+    content:""; position:absolute; top:50%; left:50%; width:250vmax; height:250vmax;
+    margin:-125vmax 0 0 -125vmax;
+    background:repeating-conic-gradient(rgba(246,196,69,0.28) 0deg 8deg, transparent 8deg 24deg);
+    animation:raysSpin 10s linear infinite; z-index:0;
+  }
+  .rarity-cutscene.rc-epic::before{
+    background:repeating-conic-gradient(rgba(155,111,201,0.28) 0deg 8deg, transparent 8deg 24deg);
+  }
+  @keyframes raysSpin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  .rarity-cutscene-content{
+    position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:20px;
+  }
+  .rarity-cutscene-sub{
+    font-size:11px; color:var(--cheese); font-weight:800; letter-spacing:2px; opacity:0.9;
+  }
+  .rarity-cutscene.rc-epic .rarity-cutscene-sub{ color:#c9a8ec; }
+  .rarity-cutscene-title{
+    font-family:'Baloo 2',cursive; font-size:clamp(19px,5.5vw,30px); color:var(--cheese);
+    text-shadow:0 0 18px rgba(246,196,69,0.85), 2px 2px 0 var(--ink);
+    animation:titlePulse 1s ease-in-out infinite; margin-bottom:6px;
+  }
+  .rarity-cutscene.rc-epic .rarity-cutscene-title{
+    color:#c9a8ec; text-shadow:0 0 18px rgba(155,111,201,0.85), 2px 2px 0 var(--ink);
+  }
+  @keyframes titlePulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.06);}}
+  .rarity-cutscene-emoji{
+    position:relative; font-size:min(26vw,110px);
+    animation:lcEmojiEnter 0.6s cubic-bezier(.34,1.56,.64,1);
+    filter:drop-shadow(0 0 30px rgba(246,196,69,0.9));
+  }
+  .rarity-cutscene.rc-epic .rarity-cutscene-emoji{
+    filter:drop-shadow(0 0 26px rgba(155,111,201,0.85));
+  }
+  .rarity-cutscene-emoji > *{position:relative; z-index:1;}
+  @keyframes lcEmojiEnter{0%{transform:scale(0) rotate(-30deg); opacity:0;} 60%{transform:scale(1.2) rotate(8deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
+  .rarity-cutscene-name{
+    font-family:'Baloo 2',cursive; font-size:20px; color:#fff; text-shadow:2px 2px 0 var(--ink);
+    opacity:0; animation:nameFadeIn 0.5s ease forwards; animation-delay:0.4s;
+  }
+  @keyframes nameFadeIn{ to{opacity:1;} }
+
+  footer{text-align:center; font-size:10.5px; color:var(--wood-dark); margin-top:26px; opacity:0.75;}
+
+  /* ---------- SUMMON TAB ---------- */
+  .summon-hero-area{
+    display:flex; flex-direction:column; align-items:center; gap:14px;
+    background:var(--parchment-card); border:2px solid var(--line); border-radius:18px; padding:26px 16px;
+  }
+  .recipe-book{font-size:70px; animation:bookFloat 2.6s ease-in-out infinite;}
+  @keyframes bookFloat{0%,100%{transform:translateY(0) rotate(-2deg);} 50%{transform:translateY(-8px) rotate(2deg);}}
+  .summon-btns{display:flex; gap:12px; flex-wrap:wrap; justify-content:center;}
+  .summon-btn{
+    font-family:'Baloo 2',cursive; border:none; border-radius:12px; padding:12px 20px; font-size:14px; font-weight:700;
+    cursor:pointer; background:linear-gradient(180deg, var(--royal), var(--royal-dark)); color:#fff;
+    box-shadow:0 4px 0 #443a5c;
+  }
+  .summon-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #443a5c;}
+  .summon-btn:disabled{background:#a29b8f; box-shadow:0 4px 0 #7c766b; cursor:not-allowed;}
+  .odds-note{font-size:10.5px; color:var(--wood-dark); text-align:center; max-width:360px;}
+
+  /* ---------- COOKING SUMMON ANIMATION ---------- */
+  .cook-stage{
+    display:none; flex-direction:column; align-items:center; gap:10px; min-height:120px; justify-content:center;
+  }
+  .cook-pot{
+    position:relative; font-size:64px; width:100px; height:100px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .cook-pot > *{position:relative; z-index:1;}
+  .cook-pot.cook-common{animation:cookBounceCommon 0.5s ease-in-out infinite;}
+  .cook-pot.cook-rare{animation:cookBounceRare 0.45s ease-in-out infinite; filter:drop-shadow(0 0 10px rgba(79,143,209,0.6));}
+  .cook-pot.cook-epic{animation:cookBounceEpic 0.4s ease-in-out infinite; filter:drop-shadow(0 0 14px rgba(155,111,201,0.65));}
+  .cook-pot.cook-legend{animation:cookBounceLegend 0.35s ease-in-out infinite; filter:drop-shadow(0 0 20px rgba(232,185,59,0.75));}
+  @keyframes cookBounceCommon{0%,100%{transform:translateY(0) rotate(0);} 50%{transform:translateY(-6px) rotate(-3deg);}}
+  @keyframes cookBounceRare{0%,100%{transform:translateY(0) rotate(0);} 50%{transform:translateY(-10px) rotate(4deg);}}
+  @keyframes cookBounceEpic{0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-14px) scale(1.08) rotate(-5deg);}}
+  @keyframes cookBounceLegend{0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-18px) scale(1.16) rotate(6deg);}}
+  .cook-label{font-family:'Baloo 2',cursive; font-size:13px; color:var(--wood-dark);}
+  .cook-label.cook-legend-label{color:var(--cheese-dark);}
+
+  .reveal-wrap{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:6px;}
+  .reveal-card{
+    position:relative; width:110px; border-radius:12px; padding:10px 6px; text-align:center;
+    border:3px solid var(--c-common); background:var(--parchment-card); animation:revealPop 0.45s ease-out;
+  }
+  .reveal-card.rare{border-color:var(--c-rare);}
+  .reveal-card.epic{border-color:var(--c-epic);}
+  .reveal-card.legend{border-color:var(--c-legend); box-shadow:0 0 14px rgba(232,185,59,0.6);}
+  @keyframes revealPop{0%{transform:scale(0.3) rotate(-8deg); opacity:0;} 70%{transform:scale(1.08) rotate(2deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
+  .reveal-emoji{font-size:36px;}
+  .reveal-name{font-size:11px; font-weight:800; margin-top:4px;}
+  .reveal-dup{font-size:9.5px; color:var(--ketchup); font-weight:800; margin-top:2px;}
+</style>
+</head>
+<body>
+
+<!-- ===== HOME SCREEN ===== -->
+<div id="homeScreen">
+  <div class="home-card">
+    <div class="home-crest">👑🍔</div>
+    <div class="home-title display">YL Burger Kingdom</div>
+    <div class="home-tagline">Build a kingdom, recruit fast-food fighters, and battle bosses move by move.</div>
+    <button class="start-btn" id="startBtn">▶ Start</button>
+    <div class="home-sub-note" id="homeSubNote">Loading your kingdom...</div>
+  </div>
+</div>
+
+<!-- ===== MAIN GAME (hidden until Start) ===== -->
+<div class="wrap" id="gameRoot" style="display:none;">
+
+  <header>
+    <div class="titleblock">
+      <h1 class="display">👑 YL Burger Kingdom</h1>
+      <div class="subtitle" id="titleText">Fry Cook Trainee</div>
+    </div>
+    <div class="headerRight">
+      <div class="statgroup">
+        <div class="stat coins"><div class="label">Coins</div><div class="value" id="coinsVal">0</div></div>
+        <div class="stat rate"><div class="label">Per Second</div><div class="value" id="rateVal">+0</div></div>
+        <div class="stat crumbs"><div class="label">Crumbs</div><div class="value" id="crumbsVal">🍞 0</div></div>
+        <div class="stat sesame"><div class="label">Golden Sesame</div><div class="value" id="sesameVal">✨ 0</div></div>
+      </div>
+      <div class="save-row">
+        <span class="save-status" id="saveStatus">Not saved yet</span>
+        <button class="save-btn" id="saveBtn">💾 Save</button>
+        <button class="reset-link" id="resetBtn">Reset kingdom</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="kingdom">🏰 Kingdom</button>
+    <button class="tab-btn" data-tab="heroes">🍔 Burger Heroes</button>
+    <button class="tab-btn" data-tab="battle">⚔️ Boss Battle</button>
+    <button class="tab-btn" data-tab="quests">📜 Quests</button>
+    <button class="tab-btn" data-tab="summon">📖 Recipe Summon</button>
+  </div>
+
+  <!-- ===== KINGDOM PANEL ===== -->
+  <div class="panel active" id="panel-kingdom">
+    <main>
+      <div class="crest-panel">
+        <div class="crest">
+          <div class="crest-crown">👑</div>
+          🍔
+        </div>
+        <div class="title-badge" id="rankBadge">Rank: Fry Cook Trainee</div>
+        <div class="crown-count" id="crownCount">0 Crowns · +0% output</div>
+      </div>
+
+      <div>
+        <div class="section-label">KINGDOM BUILDINGS</div>
+        <div class="gen-list" id="genList"></div>
+
+        <div class="prestige-box">
+          <div>
+            <h3>👑 Royal Charter</h3>
+            <p>Retire the kitchen and re-open under a Royal Charter. Reset coins &amp; buildings, but keep permanent Crowns (+10% kingdom output &amp; battle stats each), your heroes, and Golden Sesame.</p>
+          </div>
+          <button class="prestige-btn" id="prestigeBtn">Claim 0 Crowns</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ===== HEROES PANEL ===== -->
+  <div class="panel" id="panel-heroes">
+    <div class="power-summary">
+      <span>Recruited: <b id="heroesOwnedCount">0</b> / <span id="heroesTotalCount">0</span></span>
+      <span>Total Hero Power: <b id="totalHeroPower">0</b></span>
+      <span>Kingdom Boost: <b id="heroBoostPct">+0%</b> output</span>
+    </div>
+    <div class="section-label">BURGER HERO ROSTER</div>
+    <div class="hero-grid" id="heroGrid"></div>
+  </div>
+
+  <!-- ===== BATTLE PANEL (turn-based) ===== -->
+  <div class="panel" id="panel-battle">
+    <div class="section-label">BOSS BATTLE</div>
+    <div class="battle-area">
+      <div class="stage-tag" id="stageTag">Cycle 1 · Stage 1 of 8</div>
+
+      <div class="combat-row" id="combatRow">
+        <div class="fighter-col">
+          <div class="fighter-visual" id="heroVisual"><span id="heroEmojiSpan">🍔</span></div>
+          <div class="fighter-name" id="heroFighterName">—</div>
+          <div class="fighter-hp-wrap">
+            <div class="hp-bar-outer"><div class="hp-bar-inner hero-hp" id="heroHpInner" style="width:100%;"></div></div>
+            <div class="hp-text" id="heroHpText">0 / 0 HP</div>
+          </div>
+          <span class="buff-tag" id="heroBuffTag" style="display:none;"></span>
+          <span class="shield-tag" id="heroShieldTag" style="display:none;"></span>
+        </div>
+        <div class="vs-label">VS</div>
+        <div class="fighter-col">
+          <div class="fighter-visual" id="bossVisual"><span id="bossEmojiSpan">🧌</span></div>
+          <div class="fighter-name" id="bossName">Greasy Goblin</div>
+          <div class="fighter-hp-wrap">
+            <div class="hp-bar-outer"><div class="hp-bar-inner" id="bossHpInner" style="width:100%;"></div></div>
+            <div class="hp-text" id="bossHpText">0 / 0 HP</div>
+          </div>
+          <span class="debuff-tag" id="bossDebuffTag" style="display:none;"></span>
+          <span class="burn-tag" id="bossBurnTag" style="display:none;"></span>
+        </div>
+      </div>
+
+      <div class="battle-msg" id="battleMsg">Choose an attack!</div>
+      <div class="move-grid" id="moveGrid"></div>
+
+      <div id="noTeamNote" class="no-team-note" style="display:none;">Recruit or summon Burger Heroes to send them into battle!</div>
+      <div class="bench-row" id="benchRow"></div>
+      <div class="battle-log" id="battleLog"></div>
+
+      <div class="defeat-overlay" id="defeatOverlay">
+        <div class="defeat-card">
+          <div class="defeat-emoji">💀🍔</div>
+          <div class="defeat-title">Your burgers were flattened!</div>
+          <div class="defeat-sub" id="defeatSub">Regroup in the kitchen and try again.</div>
+          <button class="try-again-btn" id="tryAgainBtn">🔄 Try Again</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== QUESTS PANEL ===== -->
+  <div class="panel" id="panel-quests">
+    <div class="section-label">ROYAL QUEST LOG</div>
+    <div class="quest-list" id="questList"></div>
+  </div>
+
+  <!-- ===== SUMMON PANEL ===== -->
+  <div class="panel" id="panel-summon">
+    <div class="summon-hero-area">
+      <div class="recipe-book">📖</div>
+      <div style="font-family:'Baloo 2',cursive; font-size:16px; color:var(--royal);">The Royal Recipe Book</div>
+      <div class="summon-btns">
+        <button class="summon-btn" id="summon1Btn">Summon x1 — 10 ✨</button>
+        <button class="summon-btn" id="summon10Btn">Summon x10 — 90 ✨</button>
+      </div>
+      <div class="odds-note">Odds: Common 60% · Rare 30% · Epic 8% · Legendary 2%. Duplicate heroes are refunded as bonus Crumbs.</div>
+      <div class="cook-stage" id="cookStage">
+        <div class="cook-pot" id="cookPot"><span id="cookPotEmoji">🍳</span></div>
+        <div class="cook-label" id="cookLabel">Grilling up something...</div>
+      </div>
+      <div class="reveal-wrap" id="revealWrap"></div>
+    </div>
+  </div>
+
+  <footer>Autosaves every few seconds — or use the Save button anytime.</footer>
+  <button class="admin-link" id="adminOpenBtn">⚙️ Admin</button>
+
+  <!-- ===== ADMIN CODE OVERLAY ===== -->
+  <div class="admin-overlay" id="adminCodeOverlay">
+    <div class="admin-card">
+      <div class="admin-title">🔒 Admin Access</div>
+      <input type="password" id="adminCodeInput" class="admin-input" placeholder="Enter code" inputmode="numeric" maxlength="8">
+      <div class="admin-error" id="adminCodeError" style="display:none;">Incorrect code.</div>
+      <div class="admin-btn-row">
+        <button class="admin-btn" id="adminCodeSubmit">Unlock</button>
+        <button class="admin-btn secondary" id="adminCodeCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN PANEL OVERLAY ===== -->
+  <div class="admin-overlay" id="adminPanelOverlay">
+    <div class="admin-card admin-panel-card">
+      <div class="admin-title">🛠️ Admin Panel</div>
+      <div class="admin-resource-section">
+        <div class="admin-resource-row">
+          <label for="adminCoinsInput">🍔 Coins</label>
+          <input type="number" id="adminCoinsInput" class="admin-input admin-input-inline" placeholder="Amount" min="0" inputmode="numeric">
+          <button class="admin-btn" id="adminCoinsAdd">Add</button>
+        </div>
+        <div class="admin-resource-row">
+          <label for="adminCrumbsInput">🍞 Crumbs</label>
+          <input type="number" id="adminCrumbsInput" class="admin-input admin-input-inline" placeholder="Amount" min="0" inputmode="numeric">
+          <button class="admin-btn" id="adminCrumbsAdd">Add</button>
+        </div>
+        <div class="admin-resource-row">
+          <label for="adminSesameInput">✨ Sesame</label>
+          <input type="number" id="adminSesameInput" class="admin-input admin-input-inline" placeholder="Amount" min="0" inputmode="numeric">
+          <button class="admin-btn" id="adminSesameAdd">Add</button>
+        </div>
+      </div>
+      <div class="admin-grid">
+        <button class="admin-btn" data-action="addCrown">+1 Crown</button>
+        <button class="admin-btn" data-action="unlockHeroes">Unlock All Heroes</button>
+        <button class="admin-btn danger" data-action="unlockMasterFry">🍟 Unlock Master Fry</button>
+        <button class="admin-btn" data-action="maxHeroes">Max Level Heroes</button>
+        <button class="admin-btn" data-action="healTeam">Full Heal Team</button>
+        <button class="admin-btn" data-action="killBoss">Instant-Kill Boss</button>
+        <button class="admin-btn" data-action="claimQuests">Claim All Quests</button>
+        <button class="admin-btn danger" data-action="resetGame">Reset Kingdom</button>
+      </div>
+      <button class="admin-close-btn" id="adminPanelClose">Close</button>
+    </div>
+  </div>
+
+  <!-- ===== EPIC / LEGENDARY SUMMON CUTSCENE ===== -->
+  <div class="rarity-cutscene" id="rarityCutscene">
+    <div class="rarity-cutscene-content">
+      <div class="rarity-cutscene-sub" id="rarityCutsceneSub">✨ THE ROYAL RECIPE BOOK GLOWS ✨</div>
+      <div class="rarity-cutscene-title" id="rarityCutsceneTitle">A LEGENDARY HERO APPEARS!</div>
+      <div class="rarity-cutscene-emoji" id="rarityCutsceneEmoji"><span id="rarityCutsceneEmojiSpan">👑</span></div>
+      <div class="rarity-cutscene-name" id="rarityCutsceneName">Kingsbun Regent</div>
+    </div>
+  </div>
+
+  <!-- ===== RESET WARNING SCREEN ===== -->
+  <div class="reset-overlay" id="resetConfirmOverlay">
+    <div class="reset-confirm-card">
+      <div class="reset-confirm-emoji">⚠️🍔</div>
+      <div class="reset-confirm-title">Reset your kingdom?</div>
+      <div class="reset-confirm-sub" id="resetConfirmSub">This clears your coins, buildings, heroes, quests, and battle progress. This can't be undone.</div>
+      <div class="reset-confirm-btns">
+        <button class="reset-confirm-btn danger" id="resetConfirmYes">Yes, reset everything</button>
+        <button class="reset-confirm-btn secondary" id="resetConfirmNo">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const SAVE_KEY = "yl-burger-kingdom-save-v4";
+
+  // ---------- KINGDOM BUILDINGS ----------
+  const GEN_DEFS = [
+    {id:"farm",   name:"Sesame Farm",    icon:"🌾", baseCost:15,        baseProd:0.1},
+    {id:"grill",  name:"Patty Grill",    icon:"🔥", baseCost:100,       baseProd:1},
+    {id:"cellar", name:"Cheese Cellar",  icon:"🧀", baseCost:1100,      baseProd:8},
+    {id:"kitchen",name:"Sauce Kitchen",  icon:"🍯", baseCost:12000,     baseProd:47},
+    {id:"bakery", name:"Bakery Hall",    icon:"🥖", baseCost:130000,    baseProd:260},
+    {id:"hall",   name:"Banquet Hall",   icon:"🍽️", baseCost:1400000,   baseProd:1400},
+    {id:"royal",  name:"Royal Kitchen",  icon:"🍳", baseCost:20000000, baseProd:7800},
+    {id:"castle", name:"Castle Oven",    icon:"🏰", baseCost:330000000,baseProd:44000},
+  ];
+  const GROWTH = 1.15;
+
+  const RANKS = [
+    {min:0,          title:"Fry Cook Trainee"},
+    {min:1000,       title:"Line Cook"},
+    {min:10000,      title:"Shift Manager"},
+    {min:100000,     title:"Restaurant Owner"},
+    {min:1000000,    title:"Regional Director"},
+    {min:10000000,   title:"Burger Baron"},
+    {min:100000000,  title:"Burger Duke"},
+    {min:1000000000, title:"Burger Monarch"},
+  ];
+
+  // ---------- BURGER HEROES & FAST-FOOD MOVES ----------
+  const RARITY_WEIGHT = {common:1, rare:3, epic:8, legend:20, admin:500};
+  const RARITY_LABEL  = {common:"Common", rare:"Rare", epic:"Epic", legend:"Legendary", admin:"???"};
+  const RARITY_ODDS   = {common:0.60, rare:0.30, epic:0.08, legend:0.02};
+  const RARITY_RANK   = {common:0, rare:1, epic:2, legend:3};
+
+  // Cooking summon animation profile per rarity
+  const COOK_PROFILES = {
+    common: { icon:"🍳", label:"Grilling up something...", duration:750,  particles:["💨"],              particleCount:3, spread:26, flashColor:"rgba(156,146,132,0.5)" },
+    rare:   { icon:"🥘", label:"Searing a rare recipe...",  duration:1050, particles:["✨","💨"],          particleCount:4, spread:32, flashColor:"rgba(79,143,209,0.55)" },
+    epic:   { icon:"🍲", label:"Brewing an epic dish...",   duration:1350, particles:["🔮","💜","✨"],     particleCount:5, spread:38, flashColor:"rgba(155,111,201,0.6)" },
+    legend: { icon:"👑", label:"The royal oven glows bright...", duration:1750, particles:["⭐","🎆","👑","✨"], particleCount:7, spread:46, flashColor:"rgba(232,185,59,0.7)" },
+  };
+  function highestRarity(rarities){
+    return rarities.reduce((best,r)=> RARITY_RANK[r]>RARITY_RANK[best] ? r : best, "common");
+  }
+
+  const HERO_DEFS = [
+    {id:"h1", name:"Sesame Scout",        emoji:"🥯", role:"Tank",    rarity:"common",
+      moves:[
+        {name:"Bagel Bash",      icon:"🥯", power:0.9,  kind:"dmg",    desc:"Bashes the foe with a rock-hard bagel."},
+        {name:"Seed Storm",      icon:"🌰", power:1.15, kind:"dmg",    desc:"Whips up a stinging storm of sesame seeds."},
+        {name:"Guard Formation", icon:"🛡️", power:0,    kind:"buff",   desc:"Forms a defensive line, boosting the team's ATK."},
+        {name:"Iron Crust Guard",icon:"🛡️", power:0,    kind:"shield", desc:"Hardens into an iron crust, shielding from damage."}
+      ]},
+    {id:"h2", name:"Patty Private",       emoji:"🍔", role:"Attack",  rarity:"common",
+      moves:[
+        {name:"Patty Charge",   icon:"🍔", power:1.4,  kind:"dmg",      desc:"Charges in like a runaway burger patty."},
+        {name:"Bun Barrage",    icon:"🥖", power:0.75, kind:"dmg2",     desc:"Two quick bun-first jabs."},
+        {name:"Knockout Combo", icon:"👊", power:0.8,  kind:"dmg_stun", desc:"A heavy combo that may knock the foe senseless."},
+        {name:"Overcooked Crit",icon:"🔥", power:0.9,  kind:"crit",     desc:"Overcooks for a wildly powerful (if risky) strike."}
+      ]},
+    {id:"h3", name:"Pickle Medic",        emoji:"🥒", role:"Heal",    rarity:"common",
+      moves:[
+        {name:"Brine Bandage", icon:"🩹", power:0,    kind:"heal",     desc:"Wraps the wound in soothing pickle brine."},
+        {name:"Sour Spritz",   icon:"🥒", power:0.85, kind:"dmg_stun", desc:"A sour spray that may pucker the foe still."},
+        {name:"Dill Dagger Jab", icon:"🗡️", power:1.0, kind:"dmg",     desc:"A quick jab with a sharpened dill spear."},
+        {name:"Brine Burn",    icon:"🥒", power:0.7,  kind:"burn",     desc:"A sharp acidic spray that keeps stinging over time."}
+      ]},
+    {id:"h4", name:"Onion Ring Ranger",   emoji:"🧅", role:"Support", rarity:"common",
+      moves:[
+        {name:"Ring Toss",   icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Lassos the foe with a crispy ring, -ATK."},
+        {name:"Battle Cry",  icon:"📯", power:0,   kind:"buff",       desc:"Rallies the team with an oniony battle cry."},
+        {name:"Crunch Shot", icon:"🧅", power:1.1, kind:"dmg",        desc:"Fires off a crunchy onion ring straight at the foe."},
+        {name:"Vital Drain Shot", icon:"🩸", power:0.85, kind:"drain", desc:"A ring shot that saps the foe's vitality."}
+      ]},
+    {id:"h5", name:"Cheddar Cavalier",    emoji:"🧀", role:"Tank",    rarity:"rare",
+      moves:[
+        {name:"Cheese Wedge Charge", icon:"🧀", power:0.9,  kind:"dmg",    desc:"Charges with a wedge of aged cheddar."},
+        {name:"Melt Slam",           icon:"🫕", power:1.15, kind:"dmg",    desc:"Slams down molten cheddar."},
+        {name:"Fortify",             icon:"🛡️", power:0,    kind:"buff",   desc:"Hardens cheddar armor, boosting the team's ATK."},
+        {name:"Cheese Fortress",     icon:"🧀", power:0,    kind:"shield", desc:"Melts into a protective cheese shell."}
+      ]},
+    {id:"h6", name:"Bacon Blaze",         emoji:"🥓", role:"Attack",  rarity:"rare",
+      moves:[
+        {name:"Crispy Cutter", icon:"🔪", power:1.4,  kind:"dmg",      desc:"Slices through with crispy bacon edges."},
+        {name:"Sizzle Combo",  icon:"🔥", power:0.75, kind:"dmg2",     desc:"Two sizzling bacon strikes."},
+        {name:"Smoke Ring KO", icon:"💨", power:0.8,  kind:"dmg_stun", desc:"A smoky finishing blow that may floor the foe."},
+        {name:"Triple Sizzle", icon:"🔥", power:0.55, kind:"multi3",   desc:"Three rapid sizzling strikes."}
+      ]},
+    {id:"h7", name:"Lettuce Lancer",      emoji:"🥬", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Leaf Lash",   icon:"🥬", power:0.9, kind:"dmg_debuff", desc:"Whips with a leaf, wilting the foe's guard."},
+        {name:"Crisp Boost", icon:"🌿", power:0,   kind:"buff",       desc:"Crisp fresh energy boosts the team's attack."},
+        {name:"Vine Spear",  icon:"🥗", power:1.1, kind:"dmg",        desc:"Thrusts a spear of tightly-rolled lettuce."},
+        {name:"Photosynthesis Drain", icon:"🌱", power:0.85, kind:"drain", desc:"Draws energy from the foe to restore vigor."}
+      ]},
+    {id:"h8", name:"Tomato Tonic",        emoji:"🍅", role:"Heal",    rarity:"rare",
+      moves:[
+        {name:"Ripe Remedy",     icon:"🍅", power:0,    kind:"heal",     desc:"A ripe tomato tonic restores vigor."},
+        {name:"Vine Whip Chill", icon:"🧊", power:0.85, kind:"dmg_stun", desc:"A chilled vine whip that may freeze the foe."},
+        {name:"Seed Spit",       icon:"🍅", power:1.0,  kind:"dmg",      desc:"Spits tomato seeds with surprising force."},
+        {name:"Acidic Burn",     icon:"🍅", power:0.7,  kind:"burn",     desc:"A tomato acid that lingers, burning over time."}
+      ]},
+    {id:"h9", name:"Truffle Duke",        emoji:"🍄", role:"Tank",    rarity:"epic",
+      moves:[
+        {name:"Fungal Fortress", icon:"🍄", power:0.9,  kind:"dmg",    desc:"Erects a stubby truffle fortress and bashes forward."},
+        {name:"Earthy Uppercut", icon:"⛰️", power:1.15, kind:"dmg",    desc:"An uppercut with the weight of the earth."},
+        {name:"Noble Rally",     icon:"🍄", power:0,    kind:"buff",   desc:"Rallies the team with truffle-scented nobility."},
+        {name:"Earthen Ward",    icon:"🪨", power:0,    kind:"shield", desc:"Raises an earthen ward to soften incoming blows."}
+      ]},
+    {id:"h10",name:"Ghost Pepper Gunner", emoji:"🌶️", role:"Attack",  rarity:"epic",
+      moves:[
+        {name:"Scoville Shot",     icon:"🌶️", power:1.4,  kind:"dmg",      desc:"Fires a blistering ghost pepper shot."},
+        {name:"Double Trigger",    icon:"🔫", power:0.75, kind:"dmg2",     desc:"Pulls the trigger twice in a fiery flurry."},
+        {name:"Blaze Shock Shot",  icon:"🥵", power:0.8,  kind:"dmg_stun", desc:"A pepper shot so hot it stuns from shock."},
+        {name:"Scoville Overload", icon:"🌶️", power:0.9,  kind:"crit",     desc:"Overloads with capsaicin for a wild critical hit."}
+      ]},
+    {id:"h11",name:"Mustard Maven",       emoji:"🌭", role:"Support", rarity:"epic",
+      moves:[
+        {name:"Tangy Squeeze", icon:"🍯", power:0.9, kind:"dmg_debuff", desc:"A tangy squeeze that stings the foe's resolve."},
+        {name:"Zesty Anthem",  icon:"🎺", power:0,   kind:"buff",       desc:"A zesty anthem fires up the whole team."},
+        {name:"Spicy Dart",    icon:"🌭", power:1.1, kind:"dmg",        desc:"Flicks a dart of stinging mustard."},
+        {name:"Mustard Gas Drain", icon:"🌭", power:0.85, kind:"drain", desc:"A stinging gas that saps the foe and restores health."}
+      ]},
+    {id:"h12",name:"Honey Glaze Healer",  emoji:"🍯", role:"Heal",    rarity:"epic",
+      moves:[
+        {name:"Golden Drizzle", icon:"🍯", power:0,    kind:"heal",     desc:"Golden honey glaze mends all wounds."},
+        {name:"Sticky Freeze",  icon:"❄️", power:0.85, kind:"dmg_stun", desc:"Sticky honey ice that may trap the foe."},
+        {name:"Comb Strike",    icon:"🐝", power:1.0,  kind:"dmg",      desc:"Strikes with a honeycomb-hard fist."},
+        {name:"Caramelized Burn", icon:"🍯", power:0.7, kind:"burn",    desc:"A caramelized glaze that keeps burning."}
+      ]},
+    {id:"h13",name:"Kingsbun Regent",     emoji:"👑", role:"Tank",    rarity:"legend",
+      moves:[
+        {name:"Royal Bun Bash", icon:"👑", power:0.9,  kind:"dmg",    desc:"Bashes with the sheer weight of the royal bun."},
+        {name:"Sovereign Slam", icon:"🏰", power:1.15, kind:"dmg",    desc:"A slam backed by royal decree."},
+        {name:"Royal Decree",   icon:"👑", power:0,    kind:"buff",   desc:"Issues a royal decree, boosting the team's resolve."},
+        {name:"Royal Aegis",    icon:"👑", power:0,    kind:"shield", desc:"Summons a royal aegis to blunt incoming blows."}
+      ]},
+    {id:"h14",name:"Wagyu Sovereign",     emoji:"🥩", role:"Attack",  rarity:"legend",
+      moves:[
+        {name:"Marbled Fury",  icon:"🥩", power:1.4,  kind:"dmg",      desc:"Strikes with prime marbled fury."},
+        {name:"Wagyu Rush",    icon:"💨", power:0.75, kind:"dmg2",     desc:"A rapid two-part wagyu rush."},
+        {name:"Prime Cut KO",  icon:"🥩", power:0.8,  kind:"dmg_stun", desc:"A prime cut so heavy it may floor the foe."},
+        {name:"Triple Sear",   icon:"🥩", power:0.55, kind:"multi3",   desc:"Three blazing sears in rapid succession."}
+      ]},
+    {id:"h15",name:"Master Fry",          emoji:"🍟", role:"Admin",   rarity:"admin",
+      moves:[
+        {name:"Death",             icon:"💀", power:50, kind:"dmg",      desc:"Ends the fight with overwhelming force."},
+        {name:"Fry Orbital Strike",icon:"🍟", power:30, kind:"dmg2",     desc:"Calls down a devastating fry barrage."},
+        {name:"Black Hole",        icon:"🎆", power:40, kind:"dmg_stun", desc:"Freezes the foe in a crushing void."}
+      ]},
+  ];
+  const STARTER_HERO_IDS = ["h1","h2","h3"];
+
+  function heroMoves(h){ return h.moves; }
+  function heroAtk(h, rec){ return Math.round(8 + RARITY_WEIGHT[h.rarity]*(3 + rec.level*1.5)); }
+  function heroMaxHp(h, rec){ return Math.round(40 + RARITY_WEIGHT[h.rarity]*(15 + rec.level*6)); }
+
+  // ---------- BOSSES (turn-based scale) ----------
+  const BOSS_DEFS = [
+    {name:"Greasy Goblin",       icon:"🧌", hp:60,   atk:6},
+    {name:"Onion Ogre",          icon:"🧅", hp:90,   atk:9},
+    {name:"Pickle Golem",        icon:"🥒", hp:130,  atk:12},
+    {name:"Sauce Serpent",       icon:"🐍", hp:180,  atk:16},
+    {name:"Cheese Dragon",       icon:"🐉", hp:240,  atk:20},
+    {name:"Frosty Yeti Bun",     icon:"❄️", hp:310,  atk:25},
+    {name:"The Shadow King",     icon:"🌑", hp:400,  atk:31},
+    {name:"Grand Feast Titan",   icon:"🏆", hp:520,  atk:38},
+    {name:"Milkshake Kraken",    icon:"🥤", hp:650,  atk:44},
+    {name:"Waffle Wyvern",       icon:"🧇", hp:820,  atk:50},
+    {name:"Taco Terror",         icon:"🌮", hp:1050, atk:58},
+    {name:"Pizza Overlord",      icon:"🍕", hp:1350, atk:67},
+    {name:"Donut Djinn",         icon:"🍩", hp:1750, atk:78},
+    {name:"Butter Lobster King", icon:"🦞", hp:2250, atk:90},
+    {name:"Calamari Colossus",   icon:"🐙", hp:2900, atk:104},
+    {name:"Grand Buffet Emperor",icon:"🎂", hp:3800, atk:120},
+  ];
+  function bossStatsFor(idx, cycle){
+    const b = BOSS_DEFS[idx];
+    const hpMult = Math.pow(1.4, cycle-1);
+    const atkMult = Math.pow(1.25, cycle-1);
+    return { hp: Math.round(b.hp*hpMult), atk: Math.round(b.atk*atkMult) };
+  }
+
+  // ---------- QUESTS ----------
+  const QUEST_DEFS = [
+    {id:"q1", icon:"🥯", name:"First Recruit",    desc:"Have at least 1 Burger Hero recruited.",   target:1,  reward:{crumbs:50},           get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
+    {id:"q2", icon:"🏗️", name:"Growing Kitchen",  desc:"Build 5 kingdom buildings in total.",       target:5,  reward:{coins:250},           get:(s)=>Object.values(s.gens).reduce((a,b)=>a+b,0)},
+    {id:"q3", icon:"⚔️", name:"First Blood",      desc:"Defeat your first boss.",                   target:1,  reward:{sesame:5},            get:(s)=>s.stats.bossesDefeated},
+    {id:"q4", icon:"🍔", name:"Hero Squad",       desc:"Recruit 7 different Burger Heroes.",        target:7,  reward:{sesame:15},           get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
+    {id:"q5", icon:"🏆", name:"Boss Slayer",      desc:"Defeat 10 bosses in total.",                target:10, reward:{sesame:20},           get:(s)=>s.stats.bossesDefeated},
+    {id:"q6", icon:"🌟", name:"Master Chef",      desc:"Reach Cycle 2 in the Boss Battle.",         target:2,  reward:{crumbs:800},          get:(s)=>s.battle.cycle},
+    {id:"q7", icon:"👑", name:"Legendary Team",   desc:"Recruit a Legendary rarity hero.",          target:1,  reward:{coins:5000},          get:(s)=>HERO_DEFS.some(h=>h.rarity==="legend" && s.heroes[h.id] && s.heroes[h.id].owned) ? 1 : 0},
+    {id:"q8", icon:"📖", name:"Recipe Master",    desc:"Use the Recipe Summon 10 times.",           target:10, reward:{sesame:25},           get:(s)=>s.stats.summonsDone},
+    {id:"q9", icon:"🏰", name:"Kingdom Tycoon",   desc:"Build 30 kingdom buildings in total.",      target:30, reward:{coins:50000},         get:(s)=>Object.values(s.gens).reduce((a,b)=>a+b,0)},
+    {id:"q10",icon:"👑", name:"Royal Ascension",  desc:"Claim your first Royal Charter (Crown).",   target:1,  reward:{sesame:30},           get:(s)=>s.crowns},
+    {id:"q11",icon:"💀", name:"Titan Slayer",     desc:"Defeat 25 bosses in total.",                target:25, reward:{sesame:40, crumbs:2000}, get:(s)=>s.stats.bossesDefeated},
+    {id:"q12",icon:"🎂", name:"Feast Champion",   desc:"Reach Cycle 3 in the Boss Battle.",         target:3,  reward:{coins:100000, sesame:20}, get:(s)=>s.battle.cycle},
+  ];
+  function questProgress(q){ return Math.min(q.target, q.get(state)); }
+  function questComplete(q){ return questProgress(q) >= q.target; }
+  function questClaimed(q){ return !!state.questsClaimed[q.id]; }
+
+  function defaultHeroes(){
+    const h = {};
+    HERO_DEFS.forEach(d=>{ h[d.id] = {owned: STARTER_HERO_IDS.includes(d.id), level:0}; });
+    return h;
+  }
+  function freshBattle(){
+    const stats = bossStatsFor(0,1);
+    return { bossIndex:0, cycle:1, bossHp:stats.hp, activeHeroId:null, heroHp:{}, log:["A challenger approaches the Grand Feast Arena!"] };
+  }
+  function freshState(){
+    const s = {
+      coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(),
+      lastSesameTick:Date.now(), battle:freshBattle(),
+      stats:{ bossesDefeated:0, summonsDone:0 }, questsClaimed:{}
+    };
+    GEN_DEFS.forEach(g=> s.gens[g.id]=0);
+    return s;
+  }
+
+  let state = freshState();
+
+  function fmt(n){
+    if(n < 1000) return (Math.floor(n*100)/100).toString();
+    const units=["","K","M","B","T","Qa","Qi","Sx","Sp","Oc","No","Dc"];
+    let u=0;
+    while(n>=1000 && u<units.length-1){ n/=1000; u++; }
+    return n.toFixed(n<10?2:(n<100?1:0)) + units[u];
+  }
+
+  function genCost(def, owned){ return Math.ceil(def.baseCost * Math.pow(GROWTH, owned)); }
+  function crownMultiplier(){ return 1 + state.crowns*0.1; }
+
+  function ownedHeroList(){ return HERO_DEFS.filter(h => state.heroes[h.id] && state.heroes[h.id].owned); }
+  function totalHeroPower(){
+    let p=0;
+    ownedHeroList().forEach(h=>{ const rec = state.heroes[h.id]; p += RARITY_WEIGHT[h.rarity] * (1 + rec.level*0.5); });
+    return p;
+  }
+  function heroBoostMult(){ return 1 + totalHeroPower()*0.01; }
+  function totalRate(){
+    let rate=0;
+    GEN_DEFS.forEach(g=>{ rate += g.baseProd * state.gens[g.id]; });
+    return rate * crownMultiplier() * heroBoostMult();
+  }
+  function crumbsRate(){ return Math.max(0.1, totalRate()*0.05); }
+  function currentRank(){ let r = RANKS[0].title; for(const rk of RANKS){ if(state.totalEarned>=rk.min) r=rk.title; } return r; }
+  function nextPrestigeCrowns(){ return Math.floor(Math.sqrt(state.totalEarned/1000000)); }
+
+  // ---------- ensure hero HP records exist ----------
+  function ensureHeroHp(){
+    ownedHeroList().forEach(h=>{
+      const rec = state.heroes[h.id];
+      const max = heroMaxHp(h, rec);
+      if(!(h.id in state.battle.heroHp)){
+        state.battle.heroHp[h.id] = max;
+      } else {
+        state.battle.heroHp[h.id] = Math.min(state.battle.heroHp[h.id], max);
+      }
+    });
+    if(!state.battle.activeHeroId || !state.heroes[state.battle.activeHeroId] || !state.heroes[state.battle.activeHeroId].owned || state.battle.heroHp[state.battle.activeHeroId] <= 0){
+      const alive = ownedHeroList().find(h => state.battle.heroHp[h.id] > 0);
+      state.battle.activeHeroId = alive ? alive.id : (ownedHeroList()[0] ? ownedHeroList()[0].id : null);
+    }
+  }
+  function healTeamFully(){
+    ownedHeroList().forEach(h=>{
+      state.battle.heroHp[h.id] = heroMaxHp(h, state.heroes[h.id]);
+    });
+  }
+
+  let lastSavedAt = null;
+  function save(){
+    try{
+      if(window.storage && window.storage.set){
+        window.storage.set(SAVE_KEY, JSON.stringify(state), false).then(()=>{
+          lastSavedAt = Date.now(); updateSaveStatus();
+        }).catch(()=>{});
+      }
+    }catch(e){}
+  }
+  async function loadSave(){
+    try{
+      if(window.storage && window.storage.get){
+        const res = await window.storage.get(SAVE_KEY, false);
+        if(res && res.value){
+          const loaded = JSON.parse(res.value);
+          state = Object.assign(freshState(), loaded);
+          GEN_DEFS.forEach(g=>{ if(!(g.id in state.gens)) state.gens[g.id]=0; });
+          HERO_DEFS.forEach(h=>{ if(!(h.id in state.heroes)) state.heroes[h.id]={owned:STARTER_HERO_IDS.includes(h.id), level:0}; });
+          if(!state.battle) state.battle = freshBattle();
+          if(!state.battle.heroHp) state.battle.heroHp = {};
+          if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0 };
+          if(!state.questsClaimed) state.questsClaimed = {};
+          lastSavedAt = Date.now();
+          return true;
+        }
+      }
+    }catch(e){}
+    return false;
+  }
+
+  // ---------- DOM refs ----------
+  const homeScreen = document.getElementById("homeScreen");
+  const gameRoot = document.getElementById("gameRoot");
+  const startBtn = document.getElementById("startBtn");
+  const homeSubNote = document.getElementById("homeSubNote");
+
+  const coinsVal = document.getElementById("coinsVal");
+  const rateVal = document.getElementById("rateVal");
+  const crumbsVal = document.getElementById("crumbsVal");
+  const sesameVal = document.getElementById("sesameVal");
+  const titleText = document.getElementById("titleText");
+  const rankBadge = document.getElementById("rankBadge");
+  const crownCount = document.getElementById("crownCount");
+  const genList = document.getElementById("genList");
+  const prestigeBtn = document.getElementById("prestigeBtn");
+  const heroGrid = document.getElementById("heroGrid");
+  const heroesOwnedCount = document.getElementById("heroesOwnedCount");
+  const heroesTotalCount = document.getElementById("heroesTotalCount");
+  const totalHeroPowerEl = document.getElementById("totalHeroPower");
+  const heroBoostPct = document.getElementById("heroBoostPct");
+  const questList = document.getElementById("questList");
+  const summon1Btn = document.getElementById("summon1Btn");
+  const summon10Btn = document.getElementById("summon10Btn");
+  const revealWrap = document.getElementById("revealWrap");
+  const cookStage = document.getElementById("cookStage");
+  const cookPot = document.getElementById("cookPot");
+  const cookPotEmoji = document.getElementById("cookPotEmoji");
+  const cookLabel = document.getElementById("cookLabel");
+  const rarityCutscene = document.getElementById("rarityCutscene");
+  const rarityCutsceneSub = document.getElementById("rarityCutsceneSub");
+  const rarityCutsceneTitle = document.getElementById("rarityCutsceneTitle");
+  const rarityCutsceneEmoji = document.getElementById("rarityCutsceneEmoji");
+  const rarityCutsceneEmojiSpan = document.getElementById("rarityCutsceneEmojiSpan");
+  const rarityCutsceneName = document.getElementById("rarityCutsceneName");
+  const saveBtn = document.getElementById("saveBtn");
+  const saveStatus = document.getElementById("saveStatus");
+  const resetBtn = document.getElementById("resetBtn");
+
+  const stageTag = document.getElementById("stageTag");
+  const combatRow = document.getElementById("combatRow");
+  const heroVisual = document.getElementById("heroVisual");
+  const heroEmojiSpan = document.getElementById("heroEmojiSpan");
+  const heroFighterName = document.getElementById("heroFighterName");
+  const heroHpInner = document.getElementById("heroHpInner");
+  const heroHpText = document.getElementById("heroHpText");
+  const heroBuffTag = document.getElementById("heroBuffTag");
+  const heroShieldTag = document.getElementById("heroShieldTag");
+  const bossVisual = document.getElementById("bossVisual");
+  const bossEmojiSpan = document.getElementById("bossEmojiSpan");
+  const bossName = document.getElementById("bossName");
+  const bossHpInner = document.getElementById("bossHpInner");
+  const bossHpText = document.getElementById("bossHpText");
+  const bossDebuffTag = document.getElementById("bossDebuffTag");
+  const bossBurnTag = document.getElementById("bossBurnTag");
+  const battleMsg = document.getElementById("battleMsg");
+  const moveGrid = document.getElementById("moveGrid");
+  const benchRow = document.getElementById("benchRow");
+  const noTeamNote = document.getElementById("noTeamNote");
+  const battleLog = document.getElementById("battleLog");
+  const defeatOverlay = document.getElementById("defeatOverlay");
+  const defeatSub = document.getElementById("defeatSub");
+  const tryAgainBtn = document.getElementById("tryAgainBtn");
+
+  heroesTotalCount.textContent = HERO_DEFS.filter(h=>h.rarity !== "admin").length;
+
+  function updateSaveStatus(){
+    if(!lastSavedAt){ saveStatus.textContent = "Not saved yet"; return; }
+    const secs = Math.floor((Date.now()-lastSavedAt)/1000);
+    if(secs < 3) saveStatus.textContent = "Saved!";
+    else if(secs < 60) saveStatus.textContent = "Saved " + secs + "s ago";
+    else saveStatus.textContent = "Saved " + Math.floor(secs/60) + "m ago";
+  }
+  setInterval(updateSaveStatus, 1000);
+
+  saveBtn.addEventListener("click", ()=> save());
+
+  // ---------- RESET WARNING SCREEN ----------
+  const resetConfirmOverlay = document.getElementById("resetConfirmOverlay");
+  const resetConfirmSub = document.getElementById("resetConfirmSub");
+  const resetConfirmYes = document.getElementById("resetConfirmYes");
+  const resetConfirmNo = document.getElementById("resetConfirmNo");
+  let resetFromAdmin = false;
+
+  function openResetConfirm(fromAdmin){
+    resetFromAdmin = !!fromAdmin;
+    resetConfirmSub.textContent = fromAdmin
+      ? "Admin: this clears coins, buildings, heroes, quests, and battle progress for the whole kingdom. This can't be undone."
+      : "This clears your coins, buildings, heroes, quests, and battle progress. This can't be undone.";
+    resetConfirmOverlay.style.display = "flex";
+  }
+  function closeResetConfirm(){ resetConfirmOverlay.style.display = "none"; }
+
+  resetConfirmYes.addEventListener("click", ()=>{
+    const wasFromAdmin = resetFromAdmin;
+    closeResetConfirm();
+    state = freshState();
+    save();
+    renderAll();
+    if(wasFromAdmin) adminPanelOverlay.style.display = "none";
+  });
+  resetConfirmNo.addEventListener("click", closeResetConfirm);
+
+  resetBtn.addEventListener("click", ()=> openResetConfirm(false));
+
+  // ---------- TABS ----------
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".panel").forEach(p=>p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("panel-"+btn.getAttribute("data-tab")).classList.add("active");
+    });
+  });
+
+  // ---------- RENDER: KINGDOM ----------
+  function renderGens(){
+    genList.innerHTML="";
+    GEN_DEFS.forEach(def=>{
+      const owned = state.gens[def.id];
+      const cost = genCost(def, owned);
+      const affordable = state.coins >= cost;
+      const prod = def.baseProd * owned * crownMultiplier() * heroBoostMult();
+      const card = document.createElement("div");
+      card.className = "gen-card" + (affordable? " affordable":"");
+      card.innerHTML = `
+        <div class="gen-icon">${def.icon}</div>
+        <div>
+          <div class="gen-name">${def.name}<span class="gen-owned">x${owned}</span></div>
+          <div class="gen-meta">${fmt(def.baseProd)} coin/s each &middot; producing ${fmt(prod)}/s</div>
+        </div>
+        <div class="gen-buy">
+          <div class="gen-cost">🍔 ${fmt(cost)}</div>
+          <button class="buy-btn" data-id="${def.id}" ${affordable? "":"disabled"}>Build</button>
+        </div>`;
+      genList.appendChild(card);
+    });
+    genList.querySelectorAll(".buy-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.getAttribute("data-id");
+        const def = GEN_DEFS.find(g=>g.id===id);
+        const cost = genCost(def, state.gens[id]);
+        if(state.coins >= cost){ state.coins -= cost; state.gens[id]++; renderAll(); }
+      });
+    });
+  }
+
+  // ---------- RENDER: HEROES ----------
+  function heroLevelCost(h, rec){ return Math.ceil(10 * RARITY_WEIGHT[h.rarity] * Math.pow(1.22, rec.level)); }
+  function renderHeroes(){
+    heroGrid.innerHTML="";
+    let ownedCount=0;
+    HERO_DEFS.forEach(h=>{
+      const rec = state.heroes[h.id];
+      if(rec.owned) ownedCount++;
+      const card = document.createElement("div");
+      card.className = "hero-card " + h.rarity + (rec.owned? "":" locked");
+      if(!rec.owned){
+        card.innerHTML = `
+          <div class="hero-rarity-tag">${RARITY_LABEL[h.rarity]}</div>
+          <div class="hero-emoji">❔</div>
+          <div class="hero-name">???</div>
+          <div class="hero-locked-label">Not recruited</div>`;
+      } else {
+        const power = Math.round(RARITY_WEIGHT[h.rarity] * (1+rec.level*0.5) * 10)/10;
+        const cost = heroLevelCost(h, rec);
+        const canLevel = state.crumbs >= cost;
+        const moves = heroMoves(h).map(m=>m.icon+" "+m.name).join(" · ");
+        card.innerHTML = `
+          <div class="hero-rarity-tag">${RARITY_LABEL[h.rarity]}</div>
+          <div class="hero-emoji">${h.emoji}</div>
+          <div class="hero-name">${h.name}</div>
+          <div class="hero-role">${h.role} · ATK ${heroAtk(h,rec)} · HP ${heroMaxHp(h,rec)}</div>
+          <div class="hero-moves-note">${moves}</div>
+          <div class="hero-level">Lv. ${rec.level}</div>
+          <div class="hero-power">Power ${power}</div>
+          <button class="level-btn" data-id="${h.id}" ${canLevel? "":"disabled"}>🍞 ${fmt(cost)}</button>`;
+      }
+      heroGrid.appendChild(card);
+    });
+    heroesOwnedCount.textContent = ownedCount;
+    totalHeroPowerEl.textContent = Math.round(totalHeroPower()*10)/10;
+    heroBoostPct.textContent = "+" + Math.round((heroBoostMult()-1)*100) + "%";
+
+    heroGrid.querySelectorAll(".level-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.getAttribute("data-id");
+        const h = HERO_DEFS.find(x=>x.id===id);
+        const rec = state.heroes[id];
+        const cost = heroLevelCost(h, rec);
+        if(state.crumbs >= cost){
+          state.crumbs -= cost; rec.level++;
+          if(state.battle.heroHp[id] !== undefined){
+            state.battle.heroHp[id] = Math.min(state.battle.heroHp[id]+0, heroMaxHp(h, rec));
+          }
+          renderAll();
+        }
+      });
+    });
+  }
+
+  // ---------- RENDER: QUESTS ----------
+  function renderQuests(){
+    questList.innerHTML = "";
+    QUEST_DEFS.forEach(q=>{
+      const progress = questProgress(q);
+      const complete = questComplete(q);
+      const claimed = questClaimed(q);
+      const pct = Math.max(0, Math.min(100, (progress/q.target)*100));
+      const rewardParts = [];
+      if(q.reward.coins) rewardParts.push("🍔 " + fmt(q.reward.coins));
+      if(q.reward.crumbs) rewardParts.push("🍞 " + fmt(q.reward.crumbs));
+      if(q.reward.sesame) rewardParts.push("✨ " + fmt(q.reward.sesame));
+
+      const card = document.createElement("div");
+      card.className = "quest-card" + (complete? " complete":"") + (claimed? " claimed":"");
+      card.innerHTML = `
+        <div class="quest-icon">${q.icon}</div>
+        <div>
+          <div class="quest-name">${q.name}</div>
+          <div class="quest-desc">${q.desc}</div>
+          <div class="quest-progress-outer"><div class="quest-progress-inner" style="width:${pct}%;"></div></div>
+          <div class="quest-progress-text">${fmt(progress)} / ${fmt(q.target)}</div>
+          <div class="quest-reward">Reward: ${rewardParts.join(" · ")}</div>
+        </div>
+        <button class="claim-btn ${claimed? 'done':''}" data-id="${q.id}" ${(!complete || claimed)? "disabled":""}>
+          ${claimed? "Claimed ✓" : (complete? "Claim" : "Locked")}
+        </button>`;
+      questList.appendChild(card);
+    });
+    questList.querySelectorAll(".claim-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const id = btn.getAttribute("data-id");
+        const q = QUEST_DEFS.find(x=>x.id===id);
+        if(!q || questClaimed(q) || !questComplete(q)) return;
+        if(q.reward.coins){ state.coins += q.reward.coins; state.totalEarned += q.reward.coins; }
+        if(q.reward.crumbs) state.crumbs += q.reward.crumbs;
+        if(q.reward.sesame) state.sesame += q.reward.sesame;
+        state.questsClaimed[q.id] = true;
+        renderAll();
+      });
+    });
+  }
+
+  // ---------- BATTLE (turn-based) ----------
+  let phase = "player"; // 'player' | 'busy'
+  let heroBuff = {mult:1, turns:0};
+  let bossDebuff = {mult:1, turns:0};
+  let bossStunTurns = 0;
+  let heroShield = {reduction:0, turns:0};
+  let bossBurn = {dmgPerTurn:0, turns:0};
+
+  function addLog(msg){ state.battle.log.unshift(msg); state.battle.log = state.battle.log.slice(0,6); }
+
+  function activeHero(){
+    if(!state.battle.activeHeroId) return null;
+    return HERO_DEFS.find(h=>h.id===state.battle.activeHeroId) || null;
+  }
+
+  function showFloat(container, text, cls){
+    const el = document.createElement("div");
+    el.className = "float-dmg " + cls;
+    el.textContent = text;
+    el.style.left = (45 + (Math.random()*20-10)) + "%";
+    container.appendChild(el);
+    setTimeout(()=>el.remove(), 800);
+  }
+  function shakeVisual(el){ el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); }
+
+  // ---------- CUSTOM VFX ----------
+  function spawnParticles(container, emojis, count, spreadPx, durationMs){
+    for(let i=0;i<count;i++){
+      const p = document.createElement("span");
+      p.className = "vfx-particle";
+      p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      const angle = Math.random()*Math.PI*2;
+      const dist = spreadPx * (0.55 + Math.random()*0.55);
+      const dx = Math.cos(angle)*dist;
+      const dy = Math.sin(angle)*dist - spreadPx*0.25;
+      p.style.setProperty("--dx", dx+"px");
+      p.style.setProperty("--dy", dy+"px");
+      p.style.setProperty("--rot", (Math.random()*360-180)+"deg");
+      const dur = durationMs + Math.random()*220;
+      p.style.animationDuration = dur+"ms";
+      container.appendChild(p);
+      setTimeout(()=>p.remove(), dur+250);
+    }
+  }
+  function flashFx(el, color){
+    el.style.setProperty("--flash-color", color);
+    el.classList.remove("fx-flash"); void el.offsetWidth; el.classList.add("fx-flash");
+    setTimeout(()=>el.classList.remove("fx-flash"), 420);
+  }
+  const FX = {
+    hitBoss(){ spawnParticles(bossVisual, ["💥","⚡"], 6, 34, 550); flashFx(bossVisual, "rgba(192,57,43,0.55)"); shakeVisual(bossVisual); },
+    hitBossBig(){
+      spawnParticles(bossVisual, ["💥","💢"], 9, 40, 620); flashFx(bossVisual, "rgba(192,57,43,0.6)");
+      shakeVisual(bossVisual); setTimeout(()=>shakeVisual(bossVisual), 160);
+    },
+    debuffBoss(){ spawnParticles(bossVisual, ["🍅","💦"], 6, 30, 600); flashFx(bossVisual, "rgba(228,87,46,0.5)"); shakeVisual(bossVisual); },
+    freezeBoss(){
+      spawnParticles(bossVisual, ["❄️","🥶"], 7, 32, 650); flashFx(bossVisual, "rgba(79,143,209,0.5)"); shakeVisual(bossVisual);
+    },
+    buffHero(){ spawnParticles(heroVisual, ["⭐","⬆️"], 6, 30, 600); flashFx(heroVisual, "rgba(246,196,69,0.55)"); },
+    healHero(){ spawnParticles(heroVisual, ["✨","💚"], 6, 30, 600); flashFx(heroVisual, "rgba(143,191,159,0.55)"); },
+    hitHero(){ spawnParticles(heroVisual, ["💢","💥"], 5, 28, 500); flashFx(heroVisual, "rgba(192,57,43,0.5)"); shakeVisual(heroVisual); },
+    burnBoss(){ spawnParticles(bossVisual, ["🔥","💥"], 7, 34, 650); flashFx(bossVisual, "rgba(228,87,46,0.55)"); shakeVisual(bossVisual); },
+    burnTick(){ spawnParticles(bossVisual, ["🔥"], 4, 26, 500); },
+    shieldHero(){ spawnParticles(heroVisual, ["🛡️","✨"], 6, 30, 600); flashFx(heroVisual, "rgba(79,143,209,0.5)"); },
+    drain(){
+      spawnParticles(bossVisual, ["🩸","💢"], 5, 28, 550); flashFx(bossVisual, "rgba(192,57,43,0.5)"); shakeVisual(bossVisual);
+      spawnParticles(heroVisual, ["💚","✨"], 5, 26, 550); flashFx(heroVisual, "rgba(143,191,159,0.5)");
+    },
+    victory(){ spawnParticles(bossVisual, ["🎉","✨","🏆","🌟"], 16, 58, 950); flashFx(bossVisual, "rgba(246,196,69,0.5)"); },
+    defeat(){
+      combatRow.classList.remove("shake-strong"); void combatRow.offsetWidth; combatRow.classList.add("shake-strong");
+      flashFx(heroVisual, "rgba(192,57,43,0.6)");
+    }
+  };
+
+  function renderBattleStatic(){
+    ensureHeroHp();
+    const boss = BOSS_DEFS[state.battle.bossIndex];
+    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    stageTag.textContent = "Cycle " + state.battle.cycle + " · Stage " + (state.battle.bossIndex+1) + " of " + BOSS_DEFS.length;
+    bossEmojiSpan.textContent = boss.icon;
+    bossName.textContent = boss.name;
+
+    const team = ownedHeroList();
+    if(team.length===0){
+      noTeamNote.style.display = "block";
+      heroFighterName.textContent = "—";
+      moveGrid.innerHTML = "";
+      benchRow.innerHTML = "";
+      battleLog.innerHTML = state.battle.log.map(l=>`<div>${l}</div>`).join("");
+      return;
+    }
+    noTeamNote.style.display = "none";
+
+    const h = activeHero();
+    if(h){
+      heroEmojiSpan.textContent = h.emoji;
+      heroFighterName.textContent = h.name;
+
+      // moves
+      moveGrid.innerHTML = "";
+      heroMoves(h).forEach((m, idx)=>{
+        const btn = document.createElement("button");
+        btn.className = "move-btn";
+        btn.disabled = (phase !== "player");
+        btn.innerHTML = `<div class="move-name">${m.icon} ${m.name}</div><div class="move-desc">${m.desc}</div>`;
+        btn.addEventListener("click", ()=> playerUseMove(m));
+        moveGrid.appendChild(btn);
+      });
+    }
+
+    // bench
+    benchRow.innerHTML = "";
+    team.forEach(hero=>{
+      const rec = state.heroes[hero.id];
+      const hp = state.battle.heroHp[hero.id] || 0;
+      const max = heroMaxHp(hero, rec);
+      const fainted = hp <= 0;
+      const chip = document.createElement("button");
+      chip.className = "bench-chip " + hero.rarity + (hero.id===state.battle.activeHeroId? " active-chip":"") + (fainted? " fainted":"");
+      chip.disabled = (phase !== "player") || fainted || hero.id===state.battle.activeHeroId;
+      chip.innerHTML = `
+        <div class="chip-emoji">${hero.emoji}</div>
+        <div class="chip-hp-outer"><div class="chip-hp-inner" style="width:${Math.max(0,(hp/max)*100)}%;"></div></div>`;
+      chip.title = hero.name + (fainted? " (fainted)":"");
+      chip.addEventListener("click", ()=>{
+        if(phase !== "player" || fainted) return;
+        state.battle.activeHeroId = hero.id;
+        addLog("🔄 " + hero.name + " swaps in!");
+        renderBattleStatic(); renderBattleDynamic();
+      });
+      benchRow.appendChild(chip);
+    });
+
+    battleLog.innerHTML = state.battle.log.map(l=>`<div>${l}</div>`).join("");
+  }
+
+  function renderBattleDynamic(){
+    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const bossPct = Math.max(0, Math.min(100, (state.battle.bossHp/bStats.hp)*100));
+    bossHpInner.style.width = bossPct + "%";
+    bossHpText.textContent = fmt(Math.max(0,state.battle.bossHp)) + " / " + fmt(bStats.hp) + " HP";
+
+    const h = activeHero();
+    if(h){
+      const rec = state.heroes[h.id];
+      const max = heroMaxHp(h, rec);
+      const hp = state.battle.heroHp[h.id] || 0;
+      const pct = Math.max(0, Math.min(100, (hp/max)*100));
+      heroHpInner.style.width = pct + "%";
+      heroHpText.textContent = fmt(Math.max(0,hp)) + " / " + fmt(max) + " HP";
+    }
+
+    heroBuffTag.style.display = heroBuff.turns>0 ? "inline-block" : "none";
+    heroBuffTag.textContent = "⚡ ATK Up (" + heroBuff.turns + ")";
+    heroShieldTag.style.display = heroShield.turns>0 ? "inline-block" : "none";
+    heroShieldTag.textContent = "🛡️ Shielded (" + heroShield.turns + ")";
+    bossDebuffTag.style.display = bossDebuff.turns>0 ? "inline-block" : "none";
+    bossDebuffTag.textContent = "↓ ATK Down (" + bossDebuff.turns + ")";
+    bossBurnTag.style.display = bossBurn.turns>0 ? "inline-block" : "none";
+    bossBurnTag.textContent = "🔥 Burning (" + bossBurn.turns + ")";
+  }
+
+  function playerUseMove(move){
+    if(phase !== "player") return;
+    const h = activeHero();
+    if(!h) return;
+    const rec = state.heroes[h.id];
+    const atkStat = heroAtk(h, rec) * (heroBuff.turns>0 ? heroBuff.mult : 1);
+    phase = "busy";
+    renderBattleStatic();
+
+    if(move.kind === "dmg" || move.kind === "dmg_debuff" || move.kind === "dmg_stun"){
+      const dmg = Math.max(1, Math.round(atkStat * move.power));
+      state.battle.bossHp -= dmg;
+      if(move.kind === "dmg_stun") FX.freezeBoss(); else if(move.kind === "dmg_debuff") FX.debuffBoss(); else FX.hitBoss();
+      showFloat(bossVisual, "-"+fmt(dmg), "boss");
+      addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP.");
+      if(move.kind === "dmg_debuff"){
+        bossDebuff = {mult:0.7, turns:3};
+        addLog(BOSS_DEFS[state.battle.bossIndex].name + "'s ATK dropped!");
+      }
+      if(move.kind === "dmg_stun" && Math.random() < 0.5){
+        bossStunTurns = 1;
+        bossVisual.classList.add("frozen");
+        addLog(BOSS_DEFS[state.battle.bossIndex].name + " is frozen solid!");
+      }
+    } else if(move.kind === "dmg2"){
+      let total = 0;
+      for(let i=0;i<2;i++){
+        const dmg = Math.max(1, Math.round(atkStat * move.power));
+        state.battle.bossHp -= dmg; total += dmg;
+      }
+      FX.hitBossBig();
+      showFloat(bossVisual, "-"+fmt(total), "boss");
+      addLog(h.name + " used " + move.name + "! Hits twice for -" + fmt(total) + " HP total.");
+    } else if(move.kind === "buff"){
+      heroBuff = {mult:1.5, turns:3};
+      FX.buffHero();
+      addLog(h.name + " used " + move.name + "! ATK is boosted!");
+    } else if(move.kind === "heal"){
+      const max = heroMaxHp(h, rec);
+      const healAmt = Math.round(max*0.3);
+      state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
+      FX.healHero();
+      showFloat(heroVisual, "+"+fmt(healAmt), "heal");
+      addLog(h.name + " used " + move.name + "! Recovered " + fmt(healAmt) + " HP.");
+    } else if(move.kind === "shield"){
+      heroShield = {reduction:0.5, turns:3};
+      FX.shieldHero();
+      addLog(h.name + " used " + move.name + "! A protective shield forms!");
+    } else if(move.kind === "drain"){
+      const dmg = Math.max(1, Math.round(atkStat * move.power));
+      state.battle.bossHp -= dmg;
+      const healAmt = Math.round(dmg*0.5);
+      const max = heroMaxHp(h, rec);
+      state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
+      FX.drain();
+      showFloat(bossVisual, "-"+fmt(dmg), "boss");
+      showFloat(heroVisual, "+"+fmt(healAmt), "heal");
+      addLog(h.name + " used " + move.name + "! Drains " + fmt(dmg) + " HP and heals " + fmt(healAmt) + "!");
+    } else if(move.kind === "burn"){
+      const dmg = Math.max(1, Math.round(atkStat * move.power));
+      state.battle.bossHp -= dmg;
+      bossBurn = {dmgPerTurn: Math.max(1, Math.round(atkStat*0.3)), turns:3};
+      FX.burnBoss();
+      showFloat(bossVisual, "-"+fmt(dmg), "boss");
+      addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP and set the foe ablaze!");
+    } else if(move.kind === "crit"){
+      const critMult = 1.8 + Math.random()*0.6;
+      const dmg = Math.max(1, Math.round(atkStat * move.power * critMult));
+      FX.hitBossBig();
+      showFloat(bossVisual, "-"+fmt(dmg)+"!", "boss");
+      state.battle.bossHp -= dmg;
+      addLog(h.name + " used " + move.name + "! CRITICAL HIT for -" + fmt(dmg) + " HP!");
+    } else if(move.kind === "multi3"){
+      let total = 0;
+      for(let i=0;i<3;i++){
+        const dmg = Math.max(1, Math.round(atkStat * move.power));
+        state.battle.bossHp -= dmg; total += dmg;
+      }
+      FX.hitBossBig(); setTimeout(()=>shakeVisual(bossVisual), 300);
+      showFloat(bossVisual, "-"+fmt(total), "boss");
+      addLog(h.name + " used " + move.name + "! Hits three times for -" + fmt(total) + " HP total!");
+    }
+
+    renderBattleStatic(); renderBattleDynamic();
+
+    if(state.battle.bossHp <= 0){
+      setTimeout(handleVictory, 500);
+      return;
+    }
+    setTimeout(bossTurn, 700);
+  }
+
+  function bossTurn(){
+    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const boss = BOSS_DEFS[state.battle.bossIndex];
+
+    // Burn damage ticks before the boss acts
+    if(bossBurn.turns > 0){
+      const burnDmg = bossBurn.dmgPerTurn;
+      state.battle.bossHp -= burnDmg;
+      FX.burnTick();
+      showFloat(bossVisual, "-"+fmt(burnDmg)+" 🔥", "boss");
+      addLog(boss.name + " takes " + fmt(burnDmg) + " burn damage!");
+      bossBurn.turns--;
+      if(bossBurn.turns<=0) bossBurn = {dmgPerTurn:0, turns:0};
+      renderBattleDynamic();
+      if(state.battle.bossHp <= 0){
+        setTimeout(handleVictory, 500);
+        return;
+      }
+    }
+
+    if(bossStunTurns > 0){
+      bossStunTurns--;
+      if(bossStunTurns<=0) bossVisual.classList.remove("frozen");
+      addLog(boss.name + " is still frozen and can't move!");
+    } else {
+      const h = activeHero();
+      if(h){
+        const rec = state.heroes[h.id];
+        const bossAtk = bStats.atk * (bossDebuff.turns>0 ? bossDebuff.mult : 1);
+        let dmg = Math.max(1, Math.round(bossAtk * (0.85 + Math.random()*0.3)));
+        if(heroShield.turns>0){ dmg = Math.max(1, Math.round(dmg * (1 - heroShield.reduction))); }
+        state.battle.heroHp[h.id] = Math.max(0, (state.battle.heroHp[h.id]||0) - dmg);
+        FX.hitHero();
+        showFloat(heroVisual, "-"+fmt(dmg), "hero");
+        addLog(boss.name + " attacks " + h.name + "! -" + fmt(dmg) + " HP.");
+      }
+    }
+
+    if(heroBuff.turns>0){ heroBuff.turns--; if(heroBuff.turns<=0) heroBuff={mult:1,turns:0}; }
+    if(bossDebuff.turns>0){ bossDebuff.turns--; if(bossDebuff.turns<=0) bossDebuff={mult:1,turns:0}; }
+    if(heroShield.turns>0){ heroShield.turns--; if(heroShield.turns<=0) heroShield={reduction:0,turns:0}; }
+
+    renderBattleDynamic();
+
+    const h2 = activeHero();
+    if(h2 && (state.battle.heroHp[h2.id]||0) <= 0){
+      addLog(h2.name + " was flattened!");
+      const nextAlive = ownedHeroList().find(hh => (state.battle.heroHp[hh.id]||0) > 0 && hh.id !== h2.id);
+      if(nextAlive){
+        state.battle.activeHeroId = nextAlive.id;
+        addLog(nextAlive.name + " jumps in to fight!");
+        phase = "player";
+        battleMsg.textContent = "Choose an attack!";
+        renderBattleStatic(); renderBattleDynamic();
+      } else {
+        addLog("💀 All your burgers have been flattened!");
+        phase = "defeated";
+        FX.defeat();
+        renderBattleStatic(); renderBattleDynamic();
+        setTimeout(showDefeatOverlay, 550);
+      }
+      return;
+    }
+
+    phase = "player";
+    battleMsg.textContent = "Choose an attack!";
+    renderBattleStatic();
+  }
+
+  function showDefeatOverlay(){
+    const boss = BOSS_DEFS[state.battle.bossIndex];
+    defeatSub.textContent = boss.name + " proved too strong — regroup and try again!";
+    defeatOverlay.style.display = "flex";
+  }
+  tryAgainBtn.addEventListener("click", ()=>{
+    defeatOverlay.style.display = "none";
+    healTeamFully();
+    ensureHeroHp();
+    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    state.battle.bossHp = bStats.hp;
+    heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
+    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    bossVisual.classList.remove("frozen");
+    addLog("🍔 Your burgers regroup and restart the fight against " + BOSS_DEFS[state.battle.bossIndex].name + "!");
+    phase = "player";
+    battleMsg.textContent = "Choose an attack!";
+    renderBattleStatic(); renderBattleDynamic();
+  });
+
+  function handleVictory(){
+    const boss = BOSS_DEFS[state.battle.bossIndex];
+    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const rewardCoins = Math.ceil(bStats.hp*15);
+    const rewardCrumbs = Math.ceil(bStats.hp*2);
+    const rewardSesame = Math.floor(state.battle.bossIndex/2) + state.battle.cycle;
+    state.coins += rewardCoins; state.totalEarned += rewardCoins;
+    state.crumbs += rewardCrumbs; state.sesame += rewardSesame;
+    state.stats.bossesDefeated++;
+    FX.victory();
+    bossVisual.classList.remove("frozen");
+    addLog("🏆 Defeated " + boss.name + "! +" + fmt(rewardCoins) + " 🍔 +" + fmt(rewardCrumbs) + " 🍞 +" + rewardSesame + " ✨");
+
+    state.battle.bossIndex++;
+    if(state.battle.bossIndex >= BOSS_DEFS.length){
+      state.battle.bossIndex = 0; state.battle.cycle++;
+      addLog("🌟 Cycle " + state.battle.cycle + " begins — bosses grow stronger!");
+    }
+    const nextStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    state.battle.bossHp = nextStats.hp;
+    healTeamFully();
+    heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
+    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    phase = "player";
+    battleMsg.textContent = "A new challenger appears! Choose an attack!";
+    ensureHeroHp();
+    renderBattleStatic(); renderBattleDynamic(); renderTopStats(); renderQuests();
+  }
+
+  // ---------- SUMMON ----------
+  let summonBusy = false;
+  function rollRarity(){
+    const r = Math.random(); const order = ["common","rare","epic","legend"]; let acc=0;
+    for(const key of order){ acc += RARITY_ODDS[key]; if(r <= acc) return key; }
+    return "common";
+  }
+  function pullOne(){
+    const rarity = rollRarity();
+    const pool = HERO_DEFS.filter(h=>h.rarity===rarity);
+    const hero = pool[Math.floor(Math.random()*pool.length)];
+    const rec = state.heroes[hero.id];
+    let dup = false, crumbsGained = 0;
+    if(rec.owned){ dup = true; crumbsGained = RARITY_WEIGHT[hero.rarity]*20; state.crumbs += crumbsGained; }
+    else { rec.owned = true; }
+    return {hero, dup, crumbsGained};
+  }
+
+  function playCookingAnimation(rarity){
+    return new Promise(resolve=>{
+      const profile = COOK_PROFILES[rarity];
+      revealWrap.innerHTML = "";
+      cookStage.style.display = "flex";
+      cookPotEmoji.textContent = profile.icon;
+      cookPot.className = "cook-pot cook-" + rarity;
+      cookLabel.className = "cook-label" + (rarity==="legend" ? " cook-legend-label":"");
+      cookLabel.textContent = profile.label;
+
+      const particleTimer = setInterval(()=>{
+        spawnParticles(cookPot, profile.particles, profile.particleCount, profile.spread, 500);
+      }, 220);
+
+      setTimeout(()=>{
+        clearInterval(particleTimer);
+        spawnParticles(cookPot, profile.particles, profile.particleCount*2, profile.spread*1.3, 600);
+        flashFx(cookPot, profile.flashColor);
+        setTimeout(()=>{
+          cookStage.style.display = "none";
+          resolve();
+        }, 380);
+      }, profile.duration);
+    });
+  }
+
+  // Cutscene profiles for the two showcase-worthy rarities
+  const CUTSCENE_PROFILES = {
+    legend: {
+      sub: "✨ THE ROYAL RECIPE BOOK GLOWS ✨",
+      title: "A LEGENDARY HERO APPEARS!",
+      particles: ["⭐","🎆","👑","✨","🌟"],
+      particleCount: 22, spread: 100,
+      flashColor: "rgba(246,196,69,0.85)",
+      duration: 2300
+    },
+    epic: {
+      sub: "🔮 THE RECIPE BOOK SHIMMERS 🔮",
+      title: "AN EPIC HERO APPEARS!",
+      particles: ["🔮","💜","✨","🌀"],
+      particleCount: 14, spread: 80,
+      flashColor: "rgba(155,111,201,0.8)",
+      duration: 1700
+    }
+  };
+
+  function playRarityCutscene(hero, rarity){
+    return new Promise(resolve=>{
+      const profile = CUTSCENE_PROFILES[rarity];
+      rarityCutscene.className = "rarity-cutscene" + (rarity === "epic" ? " rc-epic" : "");
+      rarityCutsceneSub.textContent = profile.sub;
+      rarityCutsceneTitle.textContent = profile.title;
+      rarityCutsceneEmojiSpan.textContent = hero.emoji;
+      rarityCutsceneName.textContent = hero.name;
+      rarityCutscene.style.display = "flex";
+
+      // restart entrance animations in case the cutscene fires more than once
+      const els = [rarityCutsceneEmoji, rarityCutsceneName, rarityCutsceneTitle];
+      els.forEach(el=>{ el.style.animation = "none"; });
+      void rarityCutscene.offsetWidth;
+      els.forEach(el=>{ el.style.animation = ""; });
+
+      setTimeout(()=>{
+        spawnParticles(rarityCutsceneEmoji, profile.particles, profile.particleCount, profile.spread, 1100);
+        flashFx(rarityCutsceneEmoji, profile.flashColor);
+      }, 320);
+
+      setTimeout(()=>{
+        rarityCutscene.style.display = "none";
+        resolve();
+      }, profile.duration);
+    });
+  }
+
+  async function doSummon(count, cost){
+    if(state.sesame < cost || summonBusy) return;
+    summonBusy = true;
+    renderTopStats();
+    state.sesame -= cost;
+    const results = [];
+    for(let i=0;i<count;i++){ results.push(pullOne()); }
+    state.stats.summonsDone += count;
+    ensureHeroHp();
+    renderGens(); renderHeroes(); renderQuests();
+
+    const bestRarity = highestRarity(results.map(r=>r.hero.rarity));
+    await playCookingAnimation(bestRarity);
+
+    const showcasePulls = results.filter(r => r.hero.rarity === "legend" || r.hero.rarity === "epic");
+    for(const res of showcasePulls){
+      await playRarityCutscene(res.hero, res.hero.rarity);
+    }
+
+    showReveal(results);
+    summonBusy = false;
+    renderTopStats();
+  }
+
+  function showReveal(results){
+    revealWrap.innerHTML="";
+    results.forEach((res,i)=>{
+      const h = res.hero;
+      const card = document.createElement("div");
+      card.className = "reveal-card " + h.rarity;
+      card.style.animationDelay = (i*0.08)+"s";
+      card.innerHTML = `
+        <div class="reveal-emoji">${h.emoji}</div>
+        <div class="reveal-name">${h.name}</div>
+        <div style="font-size:9px;font-weight:800;color:var(--wood-dark);">${RARITY_LABEL[h.rarity]}</div>
+        ${res.dup? `<div class="reveal-dup">+${fmt(res.crumbsGained)} 🍞</div>` : `<div class="reveal-dup" style="color:var(--mint-dark);">NEW!</div>`}
+      `;
+      revealWrap.appendChild(card);
+
+      setTimeout(()=>{
+        if(h.rarity === "rare") spawnParticles(card, ["✨"], 4, 24, 500);
+        else if(h.rarity === "epic") spawnParticles(card, ["🔮","💜"], 6, 30, 600);
+        else if(h.rarity === "legend") spawnParticles(card, ["⭐","🎆","👑"], 10, 36, 750);
+      }, i*80 + 200);
+    });
+  }
+  summon1Btn.addEventListener("click", ()=> doSummon(1, 10));
+  summon10Btn.addEventListener("click", ()=> doSummon(10, 90));
+
+  // ---------- MASTER RENDER ----------
+  function renderTopStats(){
+    coinsVal.textContent = fmt(state.coins);
+    rateVal.textContent = "+" + fmt(totalRate()) + "/s";
+    crumbsVal.textContent = "🍞 " + fmt(state.crumbs);
+    sesameVal.textContent = "✨ " + fmt(state.sesame);
+    const rank = currentRank();
+    titleText.textContent = rank;
+    rankBadge.textContent = "Rank: " + rank;
+    crownCount.textContent = state.crowns + " Crown" + (state.crowns===1?"":"s") + " · +" + Math.round((crownMultiplier()-1)*100) + "% output";
+    const crownsReady = nextPrestigeCrowns();
+    prestigeBtn.textContent = "Claim " + crownsReady + " Crown" + (crownsReady===1?"":"s");
+    prestigeBtn.disabled = crownsReady < 1;
+    summon1Btn.disabled = state.sesame < 10 || summonBusy;
+    summon10Btn.disabled = state.sesame < 90 || summonBusy;
+  }
+  function renderAll(){
+    ensureHeroHp();
+    renderTopStats();
+    renderGens();
+    renderHeroes();
+    renderBattleStatic();
+    renderBattleDynamic();
+    renderQuests();
+  }
+
+  // ---------- PRESTIGE ----------
+  prestigeBtn.addEventListener("click", ()=>{
+    const gain = nextPrestigeCrowns();
+    if(gain < 1) return;
+    state.crowns += gain; state.sesame += gain*5;
+    state.coins = 0; state.totalEarned = 0;
+    GEN_DEFS.forEach(g=> state.gens[g.id]=0);
+    addLog("👑 Royal Charter claimed! +" + gain + " Crowns.");
+    renderAll();
+  });
+
+  // ---------- ECONOMY LOOP ----------
+  let economyInterval = null, sesameCheckInterval = null, autosaveInterval = null;
+  function startIntervals(){
+    economyInterval = setInterval(()=>{
+      const rate = totalRate();
+      if(rate>0){
+        state.coins += rate/10; state.totalEarned += rate/10; state.crumbs += crumbsRate()/10;
+      }
+      const now = Date.now();
+      if(now - state.lastSesameTick >= 60000){ state.sesame += 1; state.lastSesameTick = now; }
+      renderTopStats();
+    }, 100);
+    autosaveInterval = setInterval(()=> save(), 4000);
+    window.addEventListener("beforeunload", ()=> save());
+  }
+
+  // ---------- START / HOME SCREEN ----------
+  async function initGame(){
+    const hadSave = await loadSave();
+    ensureHeroHp();
+    if(hadSave){
+      homeSubNote.textContent = "Continue your kingdom — last saved a moment ago.";
+    } else {
+      homeSubNote.textContent = "A brand new kingdom awaits!";
+    }
+  }
+  startBtn.addEventListener("click", ()=>{
+    homeScreen.style.display = "none";
+    gameRoot.style.display = "block";
+    renderAll();
+    startIntervals();
+  });
+
+  // ---------- ADMIN PANEL ----------
+  const ADMIN_CODE = "4334";
+  const adminOpenBtn = document.getElementById("adminOpenBtn");
+  const adminCodeOverlay = document.getElementById("adminCodeOverlay");
+  const adminCodeInput = document.getElementById("adminCodeInput");
+  const adminCodeError = document.getElementById("adminCodeError");
+  const adminCodeSubmit = document.getElementById("adminCodeSubmit");
+  const adminCodeCancel = document.getElementById("adminCodeCancel");
+  const adminPanelOverlay = document.getElementById("adminPanelOverlay");
+  const adminPanelClose = document.getElementById("adminPanelClose");
+
+  function openAdminCodePrompt(){
+    adminCodeInput.value = "";
+    adminCodeError.style.display = "none";
+    adminCodeOverlay.style.display = "flex";
+    setTimeout(()=> adminCodeInput.focus(), 50);
+  }
+  function closeAdminCodePrompt(){ adminCodeOverlay.style.display = "none"; }
+  function tryAdminCode(){
+    if(adminCodeInput.value.trim() === ADMIN_CODE){
+      closeAdminCodePrompt();
+      adminPanelOverlay.style.display = "flex";
+    } else {
+      adminCodeError.style.display = "block";
+      adminCodeInput.value = "";
+      adminCodeInput.focus();
+    }
+  }
+  adminOpenBtn.addEventListener("click", openAdminCodePrompt);
+  adminCodeCancel.addEventListener("click", closeAdminCodePrompt);
+  adminCodeSubmit.addEventListener("click", tryAdminCode);
+  adminCodeInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") tryAdminCode(); });
+  adminPanelClose.addEventListener("click", ()=>{ adminPanelOverlay.style.display = "none"; });
+
+  const ADMIN_ACTIONS = {
+    addCrown(){ state.crowns += 1; },
+    unlockHeroes(){ HERO_DEFS.filter(h=>h.rarity!=="admin").forEach(h=>{ state.heroes[h.id].owned = true; }); ensureHeroHp(); },
+    unlockMasterFry(){ state.heroes["h15"].owned = true; ensureHeroHp(); },
+    maxHeroes(){
+      HERO_DEFS.filter(h=>h.rarity!=="admin").forEach(h=>{ state.heroes[h.id].owned = true; state.heroes[h.id].level = 20; });
+      ensureHeroHp(); healTeamFully();
+    },
+    healTeam(){ healTeamFully(); ensureHeroHp(); },
+    killBoss(){
+      defeatOverlay.style.display = "none";
+      phase = "player";
+      heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
+    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+      bossVisual.classList.remove("frozen");
+      state.battle.bossHp = 0;
+      handleVictory();
+    },
+    claimQuests(){
+      QUEST_DEFS.forEach(q=>{
+        if(questComplete(q) && !questClaimed(q)){
+          if(q.reward.coins){ state.coins += q.reward.coins; state.totalEarned += q.reward.coins; }
+          if(q.reward.crumbs) state.crumbs += q.reward.crumbs;
+          if(q.reward.sesame) state.sesame += q.reward.sesame;
+          state.questsClaimed[q.id] = true;
+        }
+      });
+    },
+    resetGame(){
+      openResetConfirm(true);
+    }
+  };
+  document.querySelectorAll(".admin-grid .admin-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const action = btn.getAttribute("data-action");
+      if(ADMIN_ACTIONS[action]){
+        ADMIN_ACTIONS[action]();
+        renderAll();
+        save();
+      }
+    });
+  });
+
+  // ---------- ADMIN RESOURCE AMOUNT INPUTS ----------
+  const adminCoinsInput = document.getElementById("adminCoinsInput");
+  const adminCrumbsInput = document.getElementById("adminCrumbsInput");
+  const adminSesameInput = document.getElementById("adminSesameInput");
+  const adminCoinsAdd = document.getElementById("adminCoinsAdd");
+  const adminCrumbsAdd = document.getElementById("adminCrumbsAdd");
+  const adminSesameAdd = document.getElementById("adminSesameAdd");
+
+  function parseAdminAmount(input){
+    const val = Math.floor(Number(input.value));
+    return (Number.isFinite(val) && val > 0) ? val : 0;
+  }
+  function addAdminCoins(){
+    const val = parseAdminAmount(adminCoinsInput);
+    if(val > 0){ state.coins += val; state.totalEarned += val; renderAll(); save(); }
+    adminCoinsInput.value = "";
+  }
+  function addAdminCrumbs(){
+    const val = parseAdminAmount(adminCrumbsInput);
+    if(val > 0){ state.crumbs += val; renderAll(); save(); }
+    adminCrumbsInput.value = "";
+  }
+  function addAdminSesame(){
+    const val = parseAdminAmount(adminSesameInput);
+    if(val > 0){ state.sesame += val; renderAll(); save(); }
+    adminSesameInput.value = "";
+  }
+  adminCoinsAdd.addEventListener("click", addAdminCoins);
+  adminCrumbsAdd.addEventListener("click", addAdminCrumbs);
+  adminSesameAdd.addEventListener("click", addAdminSesame);
+  adminCoinsInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") addAdminCoins(); });
+  adminCrumbsInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") addAdminCrumbs(); });
+  adminSesameInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") addAdminSesame(); });
+
+  initGame();
+})();
+</script>
+</body>
+</html>
