@@ -443,6 +443,44 @@
   .reset-confirm-btn.secondary{ background:linear-gradient(180deg,#b9b0a0,#8a8272); color:#fff; box-shadow:0 4px 0 #6b6558; }
   .reset-confirm-btn:active{ transform:translateY(2px); box-shadow:none; }
 
+  /* ---------- TEAM SELECTION SCREEN ---------- */
+  .team-select-btn{
+    font-family:'Baloo 2',cursive; font-size:12px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, var(--royal), var(--royal-dark)); border:none;
+    border-radius:10px; padding:8px 14px; cursor:pointer; box-shadow:0 3px 0 #443a5c;
+  }
+  .team-select-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #443a5c;}
+  .team-select-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:180;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .team-select-card{
+    background:var(--parchment-card); border:3px solid var(--ink); border-radius:18px;
+    padding:20px; max-width:560px; width:100%; max-height:82vh; display:flex; flex-direction:column;
+    box-shadow:0 10px 0 var(--wood); text-align:center;
+  }
+  .team-select-sub{font-size:12px; font-weight:800; color:var(--wood-dark); margin:4px 0 12px;}
+  .team-select-grid{
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(84px,1fr)); gap:8px;
+    overflow-y:auto; padding:2px; margin-bottom:14px; flex:1;
+  }
+  .team-select-item{
+    position:relative; background:var(--parchment-card); border:3px solid var(--c-common); border-radius:10px;
+    padding:8px 4px 6px; text-align:center; cursor:pointer; transition:transform 0.08s ease;
+  }
+  .team-select-item:active{transform:scale(0.96);}
+  .team-select-item.rare{border-color:var(--c-rare);}
+  .team-select-item.epic{border-color:var(--c-epic);}
+  .team-select-item.legend{border-color:var(--c-legend);}
+  .team-select-item.admin{border-color:#8a1620;}
+  .team-select-item.selected{box-shadow:0 0 0 3px var(--mint-dark) inset; background:#eaf4ec;}
+  .team-select-item.disabled{opacity:0.35; cursor:not-allowed;}
+  .team-select-item .tsi-check{position:absolute; top:2px; right:4px; font-size:12px; display:none;}
+  .team-select-item.selected .tsi-check{display:block;}
+  .team-select-item .tsi-emoji{font-size:24px;}
+  .team-select-item .tsi-name{font-size:8.5px; font-weight:800; line-height:1.15; margin-top:3px; color:var(--ink);}
+  .team-select-actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
+
   /* ---------- RARITY SUMMON CUTSCENE (Epic & Legendary) ---------- */
   .rarity-cutscene{
     display:none; position:fixed; inset:0; z-index:150; overflow:hidden;
@@ -634,6 +672,7 @@
     <div class="section-label">BOSS BATTLE</div>
     <div class="battle-area">
       <div class="stage-tag" id="stageTag">Cycle 1 · Stage 1 of 8</div>
+      <button class="team-select-btn" id="openTeamSelectBtn">🛡️ Select Team (<span id="teamCountLabel">0/15</span>)</button>
 
       <div class="combat-row" id="combatRow">
         <div class="fighter-col">
@@ -774,6 +813,19 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== TEAM SELECTION SCREEN ===== -->
+  <div class="team-select-overlay" id="teamSelectOverlay">
+    <div class="team-select-card">
+      <div class="admin-title">🛡️ Select Your Battle Team</div>
+      <div class="team-select-sub" id="teamSelectSub">Selected: 0 / 15</div>
+      <div class="team-select-grid" id="teamSelectGrid"></div>
+      <div class="team-select-actions">
+        <button class="admin-btn" id="teamSelectConfirm">Confirm Team</button>
+        <button class="admin-btn secondary" id="teamSelectCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -852,6 +904,426 @@
         {name:"Crunch Shot", icon:"🧅", power:1.1, kind:"dmg",        desc:"Fires off a crunchy onion ring straight at the foe."},
         {name:"Vital Drain Shot", icon:"🩸", power:0.85, kind:"drain", desc:"A ring shot that saps the foe's vitality."}
       ]},
+    {id:"h17", name:"Juicy Outlaw", emoji:"🥪", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h19", name:"Crunchy Vanguard", emoji:"🥙", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h20", name:"Fiery Rover", emoji:"🍕", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h21", name:"Buttery Warden", emoji:"🥩", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h23", name:"Herbed Ranger", emoji:"🍖", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h25", name:"Buttery Outlaw", emoji:"🍜", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h28", name:"Charred Vanguard", emoji:"🍤", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h29", name:"Savory Paladin", emoji:"🍢", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h31", name:"Crispy Vanguard", emoji:"🥯", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h32", name:"Pickled Sentinel", emoji:"🥨", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h33", name:"Smoky Ranger", emoji:"🧇", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h34", name:"Zesty Trooper", emoji:"🥞", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h37", name:"Herbed Envoy", emoji:"🥓", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h38", name:"Toasted Sentinel", emoji:"🍟", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h39", name:"Savory Envoy", emoji:"🌽", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h40", name:"Toasted Knight", emoji:"🥕", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h45", name:"Zesty Slider", emoji:"🧅", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h47", name:"Sweet Marshal", emoji:"🌶️", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h48", name:"Zesty Duelist", emoji:"🧄", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h49", name:"Crunchy Herald", emoji:"🥔", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h50", name:"Glazed Chef", emoji:"🍠", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h52", name:"Charred Paladin", emoji:"🥖", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h53", name:"Spicy Wanderer", emoji:"🍞", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h54", name:"Pickled Wanderer", emoji:"🍩", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h57", name:"Crunchy Jouster", emoji:"🧁", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h60", name:"Salty Rebel", emoji:"🍬", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h62", name:"Sweet Scout", emoji:"🍮", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h63", name:"Herbed Wanderer", emoji:"🍯", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h64", name:"Frosted Ranger", emoji:"🥥", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h67", name:"Charred Herald", emoji:"🥪", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h68", name:"Glazed Vagabond", emoji:"🌮", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h69", name:"Crunchy Vagabond", emoji:"🥙", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h70", name:"Savory Warden", emoji:"🍕", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h71", name:"Sweet Sentinel", emoji:"🥩", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h72", name:"Toasted Warden", emoji:"🍗", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h73", name:"Fiery Knight", emoji:"🍖", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h75", name:"Toasted Trooper", emoji:"🍜", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h76", name:"Spicy Baron", emoji:"🍱", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h77", name:"Sizzling Sentinel", emoji:"🥡", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h78", name:"Smoky Outlaw", emoji:"🍤", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h80", name:"Fiery Rebel", emoji:"🧆", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h82", name:"Caramel Scout", emoji:"🥨", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h83", name:"Grilled Herald", emoji:"🧇", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h84", name:"Velvet Ranger", emoji:"🥞", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h86", name:"Buttery Baron", emoji:"🧀", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h88", name:"Molten Baron", emoji:"🍟", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h89", name:"Sizzling Herald", emoji:"🌽", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h92", name:"Charred Vagabond", emoji:"🥑", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h98", name:"Juicy Vagabond", emoji:"🧄", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h99", name:"Charred Marshal", emoji:"🥔", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h100", name:"Glazed Nomad", emoji:"🍠", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h102", name:"Roasted Sentinel", emoji:"🥖", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h104", name:"Toasted Paladin", emoji:"🍩", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h107", name:"Buttery Duelist", emoji:"🧁", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h109", name:"Zesty Vanguard", emoji:"🍫", role:"Attack", rarity:"common",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h110", name:"Smoky Rover", emoji:"🍬", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h111", name:"Smoky Chef", emoji:"🍭", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h112", name:"Crispy Envoy", emoji:"🍮", role:"Tank", rarity:"common",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h114", name:"Juicy Slider", emoji:"🥥", role:"Support", rarity:"common",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h115", name:"Frosted Envoy", emoji:"🍇", role:"Heal", rarity:"common",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
     {id:"h5", name:"Cheddar Cavalier",    emoji:"🧀", role:"Tank",    rarity:"rare",
       moves:[
         {name:"Cheese Wedge Charge", icon:"🧀", power:0.9,  kind:"dmg",    desc:"Charges with a wedge of aged cheddar."},
@@ -879,6 +1351,216 @@
         {name:"Vine Whip Chill", icon:"🧊", power:0.85, kind:"dmg_stun", desc:"A chilled vine whip that may freeze the foe."},
         {name:"Seed Spit",       icon:"🍅", power:1.0,  kind:"dmg",      desc:"Spits tomato seeds with surprising force."},
         {name:"Acidic Burn",     icon:"🍅", power:0.7,  kind:"burn",     desc:"A tomato acid that lingers, burning over time."}
+      ]},
+    {id:"h16", name:"Frosted Slider", emoji:"🌭", role:"Tank", rarity:"rare",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h18", name:"Crunchy Baron", emoji:"🌮", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h22", name:"Tangy Champion", emoji:"🍗", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h26", name:"Herbed Sentinel", emoji:"🍱", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h27", name:"Sizzling Rebel", emoji:"🥡", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h30", name:"Glazed Envoy", emoji:"🧆", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h35", name:"Crispy Rebel", emoji:"🍳", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h36", name:"Glazed Squire", emoji:"🧀", role:"Tank", rarity:"rare",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h42", name:"Glazed Rebel", emoji:"🥑", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h43", name:"Fiery Brawler", emoji:"🍅", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h44", name:"Savory Chef", emoji:"🥒", role:"Tank", rarity:"rare",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h46", name:"Tangy Rebel", emoji:"🥦", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h51", name:"Smoky Slider", emoji:"🥐", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h55", name:"Glazed Sentinel", emoji:"🍪", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h58", name:"Roasted Knight", emoji:"🥧", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h59", name:"Molten Vanguard", emoji:"🍫", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h65", name:"Zesty Warden", emoji:"🍇", role:"Attack", rarity:"rare",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h66", name:"Sizzling Nomad", emoji:"🌭", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h79", name:"Sweet Outlaw", emoji:"🍢", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h85", name:"Frosted Knight", emoji:"🍳", role:"Attack", rarity:"rare",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h87", name:"Sizzling Squire", emoji:"🥓", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h90", name:"Glazed Duelist", emoji:"🥕", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h91", name:"Molten Nomad", emoji:"🍄", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h93", name:"Frosted Squire", emoji:"🍅", role:"Attack", rarity:"rare",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h95", name:"Golden Brawler", emoji:"🧅", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h101", name:"Sizzling Outlaw", emoji:"🥐", role:"Attack", rarity:"rare",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h103", name:"Toasted Vagabond", emoji:"🍞", role:"Heal", rarity:"rare",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h105", name:"Crunchy Rebel", emoji:"🍪", role:"Attack", rarity:"rare",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h106", name:"Sweet Ranger", emoji:"🍰", role:"Support", rarity:"rare",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h113", name:"Salty Knight", emoji:"🍯", role:"Attack", rarity:"rare",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
       ]},
     {id:"h9", name:"Truffle Duke",        emoji:"🍄", role:"Tank",    rarity:"epic",
       moves:[
@@ -908,6 +1590,62 @@
         {name:"Comb Strike",    icon:"🐝", power:1.0,  kind:"dmg",      desc:"Strikes with a honeycomb-hard fist."},
         {name:"Caramelized Burn", icon:"🍯", power:0.7, kind:"burn",    desc:"A caramelized glaze that keeps burning."}
       ]},
+    {id:"h24", name:"Velvet Warden", emoji:"🥟", role:"Tank", rarity:"epic",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h41", name:"Crunchy Wanderer", emoji:"🍄", role:"Attack", rarity:"epic",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h56", name:"Sizzling Rover", emoji:"🍰", role:"Tank", rarity:"epic",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h81", name:"Herbed Champion", emoji:"🥯", role:"Attack", rarity:"epic",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h94", name:"Velvet Wanderer", emoji:"🥒", role:"Support", rarity:"epic",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h96", name:"Fiery Duelist", emoji:"🥦", role:"Tank", rarity:"epic",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h97", name:"Savory Duelist", emoji:"🌶️", role:"Attack", rarity:"epic",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h108", name:"Roasted Rover", emoji:"🥧", role:"Tank", rarity:"epic",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
     {id:"h13",name:"Kingsbun Regent",     emoji:"👑", role:"Tank",    rarity:"legend",
       moves:[
         {name:"Royal Bun Bash", icon:"👑", power:0.9,  kind:"dmg",    desc:"Bashes with the sheer weight of the royal bun."},
@@ -922,11 +1660,25 @@
         {name:"Prime Cut KO",  icon:"🥩", power:0.8,  kind:"dmg_stun", desc:"A prime cut so heavy it may floor the foe."},
         {name:"Triple Sear",   icon:"🥩", power:0.55, kind:"multi3",   desc:"Three blazing sears in rapid succession."}
       ]},
+    {id:"h61", name:"Spicy Trooper", emoji:"🍭", role:"Attack", rarity:"legend",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h74", name:"Juicy Scout", emoji:"🥟", role:"Support", rarity:"legend",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
     {id:"h15",name:"Master Fry",          emoji:"🍟", role:"Admin",   rarity:"admin",
       moves:[
-        {name:"Death",             icon:"💀", power:50, kind:"dmg",      desc:"Ends the fight with overwhelming force."},
-        {name:"Fry Orbital Strike",icon:"🍟", power:30, kind:"dmg2",     desc:"Calls down a devastating fry barrage."},
-        {name:"Black Hole",        icon:"🎆", power:40, kind:"dmg_stun", desc:"Freezes the foe in a crushing void."}
+        {name:"Death",             icon:"💀", power:Infinity, kind:"dmg",      desc:"Ends the fight instantly with infinite force."},
+        {name:"Fry Orbital Strike",icon:"🍟", power:Infinity, kind:"dmg2",     desc:"Calls down a truly infinite fry barrage."},
+        {name:"Black Hole",        icon:"🎆", power:Infinity, kind:"dmg_stun", desc:"Freezes the foe in an infinitely crushing void."}
       ]},
   ];
   const STARTER_HERO_IDS = ["h1","h2","h3"];
@@ -953,6 +1705,106 @@
     {name:"Butter Lobster King", icon:"🦞", hp:2250, atk:90},
     {name:"Calamari Colossus",   icon:"🐙", hp:2900, atk:104},
     {name:"Grand Buffet Emperor",icon:"🎂", hp:3800, atk:120},
+    {name:"Shadow Golem", icon:"👹", hp:5124, atk:151},
+    {name:"Putrid Ravager", icon:"👺", hp:6251, atk:175},
+    {name:"Toxic Ravager", icon:"🧟", hp:7627, atk:203},
+    {name:"Grim Reaper", icon:"👻", hp:9304, atk:235},
+    {name:"Radiant Overlord", icon:"🐲", hp:11351, atk:273},
+    {name:"Blazing Beast", icon:"🦖", hp:13849, atk:317},
+    {name:"Savage Marauder", icon:"🦑", hp:16895, atk:367},
+    {name:"Gilded Beast", icon:"🕷️", hp:20612, atk:426},
+    {name:"Grim Horror", icon:"🦂", hp:25147, atk:494},
+    {name:"Feral Fiend", icon:"🐺", hp:30679, atk:573},
+    {name:"Shadow Warlord", icon:"🦈", hp:37429, atk:665},
+    {name:"Molten Wraith", icon:"🐊", hp:45663, atk:772},
+    {name:"Radiant Sovereign", icon:"🦇", hp:55709, atk:895},
+    {name:"Savage Specter", icon:"🐗", hp:67965, atk:1038},
+    {name:"Savage Horror", icon:"🦁", hp:82918, atk:1205},
+    {name:"Blazing Horror", icon:"🐘", hp:101159, atk:1397},
+    {name:"Withered Overlord", icon:"🦏", hp:123415, atk:1621},
+    {name:"Sour Devourer", icon:"🦍", hp:150566, atk:1880},
+    {name:"Blazing Devourer", icon:"🐋", hp:183690, atk:2181},
+    {name:"Rotten Leviathan", icon:"🦕", hp:224102, atk:2530},
+    {name:"Sour Beast", icon:"🍲", hp:273405, atk:2935},
+    {name:"Infernal Wraith", icon:"🥘", hp:333554, atk:3404},
+    {name:"Withered Golem", icon:"🍛", hp:406935, atk:3949},
+    {name:"Infernal Hydra", icon:"🍝", hp:496461, atk:4581},
+    {name:"Grim Warlord", icon:"🥣", hp:605683, atk:5314},
+    {name:"Frozen Overlord", icon:"🫕", hp:738933, atk:6164},
+    {name:"Sour Abomination", icon:"🍥", hp:901498, atk:7150},
+    {name:"Sour Golem", icon:"🍡", hp:1099827, atk:8294},
+    {name:"Savage Abomination", icon:"🍧", hp:1341789, atk:9621},
+    {name:"Savage Overlord", icon:"🍨", hp:1636983, atk:11160},
+    {name:"Colossal Overlord", icon:"👹", hp:1997119, atk:12946},
+    {name:"Shadow Leviathan", icon:"👺", hp:2436486, atk:15018},
+    {name:"Blazing Abomination", icon:"🧟", hp:2972513, atk:17420},
+    {name:"Frozen Wraith", icon:"👻", hp:3626465, atk:20208},
+    {name:"Rotten Reaper", icon:"🐲", hp:4424288, atk:23441},
+    {name:"Rancid Tyrant", icon:"🦖", hp:5397631, atk:27191},
+    {name:"Grim Marauder", icon:"🦑", hp:6585110, atk:31542},
+    {name:"Gilded Abomination", icon:"🕷️", hp:8033834, atk:36589},
+    {name:"Rabid Warlord", icon:"🦂", hp:9801278, atk:42443},
+    {name:"Ancient Leviathan", icon:"🐺", hp:11957559, atk:49234},
+    {name:"Cursed Warlord", icon:"🦈", hp:14588221, atk:57111},
+    {name:"Colossal Wraith", icon:"🐊", hp:17797630, atk:66249},
+    {name:"Colossal Horror", icon:"🦇", hp:21713109, atk:76849},
+    {name:"Cursed Sovereign", icon:"🐗", hp:26489993, atk:89145},
+    {name:"Shadow Tyrant", icon:"🦁", hp:32317791, atk:103408},
+    {name:"Toxic Behemoth", icon:"🐘", hp:39427705, atk:119953},
+    {name:"Savage Harbinger", icon:"🦏", hp:48101800, atk:139145},
+    {name:"Radiant Behemoth", icon:"🦍", hp:58684197, atk:161409},
+    {name:"Molten Sovereign", icon:"🐋", hp:71594720, atk:187234},
+    {name:"Cursed Marauder", icon:"🦕", hp:87345558, atk:217191},
+    {name:"Colossal Juggernaut", icon:"🍲", hp:106561581, atk:251942},
+    {name:"Infernal Marauder", icon:"🥘", hp:130005129, atk:292253},
+    {name:"Withered Marauder", icon:"🍛", hp:158606257, atk:339013},
+    {name:"Putrid Beast", icon:"🍝", hp:193499634, atk:393255},
+    {name:"Molten Juggernaut", icon:"🥣", hp:236069553, atk:456176},
+    {name:"Cursed Horror", icon:"🫕", hp:288004855, atk:529165},
+    {name:"Molten Golem", icon:"🍥", hp:351365923, atk:613831},
+    {name:"Radiant Ravager", icon:"🍡", hp:428666425, atk:712044},
+    {name:"Colossal Abomination", icon:"🍧", hp:522973039, atk:825971},
+    {name:"Radiant Abomination", icon:"🍨", hp:638027108, atk:958126},
+    {name:"Withered Fiend", icon:"👹", hp:778393071, atk:1111426},
+    {name:"Blazing Leviathan", icon:"👺", hp:949639547, atk:1289255},
+    {name:"Colossal Devourer", icon:"🧟", hp:1158560247, atk:1495535},
+    {name:"Withered Specter", icon:"👻", hp:1413443502, atk:1734821},
+    {name:"Ancient Specter", icon:"🐲", hp:1724401072, atk:2012392},
+    {name:"Frozen Sovereign", icon:"🦖", hp:2103769308, atk:2334375},
+    {name:"Gilded Ravager", icon:"🦑", hp:2566598556, atk:2707875},
+    {name:"Withered Beast", icon:"🕷️", hp:3131250238, atk:3141135},
+    {name:"Blazing Behemoth", icon:"🦂", hp:3820125291, atk:3643717},
+    {name:"Grim Sovereign", icon:"🐺", hp:4660552855, atk:4226711},
+    {name:"Grim Behemoth", icon:"🦈", hp:5685874483, atk:4902985},
+    {name:"Frozen Tyrant", icon:"🐊", hp:6936766869, atk:5687463},
+    {name:"Rancid Overlord", icon:"🦇", hp:8462855580, atk:6597457},
+    {name:"Cursed Reaper", icon:"🐗", hp:10324683808, atk:7653050},
+    {name:"Putrid Leviathan", icon:"🦁", hp:12596114246, atk:8877538},
+    {name:"Molten Beast", icon:"🐘", hp:15367259380, atk:10297944},
+    {name:"Ancient Wraith", icon:"🦏", hp:18748056444, atk:11945615},
+    {name:"Frozen Harbinger", icon:"🦍", hp:22872628861, atk:13856914},
+    {name:"Ancient Marauder", icon:"🐋", hp:27904607211, atk:16074020},
+    {name:"Putrid Devourer", icon:"🦕", hp:34043620797, atk:18645863},
+    {name:"Rancid Harbinger", icon:"🍲", hp:41533217372, atk:21629201},
+    {name:"Feral Sovereign", icon:"🥘", hp:50670525194, atk:25089873},
+    {name:"Molten Behemoth", icon:"🍛", hp:61818040737, atk:29104253},
+    {name:"Toxic Tyrant", icon:"🍝", hp:75418009699, atk:33760934},
+    {name:"Rotten Wraith", icon:"🥣", hp:92009971833, atk:39162683},
+    {name:"Blazing Juggernaut", icon:"🫕", hp:112252165636, atk:45428712},
+    {name:"Sour Sovereign", icon:"🍥", hp:136947642076, atk:52697306},
+    {name:"Gilded Juggernaut", icon:"🍡", hp:167076123333, atk:61128875},
+    {name:"Colossal Sovereign", icon:"🍧", hp:203832870466, atk:70909495},
+    {name:"Frozen Marauder", icon:"🍨", hp:248676101969, atk:82255014},
+    {name:"Ancient Horror", icon:"👹", hp:303384844402, atk:95415817},
+    {name:"Rabid Reaper", icon:"👺", hp:370129510170, atk:110682347},
+    {name:"Shadow Abomination", icon:"🧟", hp:451558002408, atk:128391523},
+    {name:"Blazing Reaper", icon:"👻", hp:550900762937, atk:148934167},
+    {name:"Ancient Beast", icon:"🐲", hp:672098930784, atk:172763633},
+    {name:"Rotten Harbinger", icon:"🦖", hp:819960695556, atk:200405815},
+    {name:"Ancient Abomination", icon:"🦑", hp:1000352048578, atk:232470745},
+    {name:"Rotten Devourer", icon:"🕷️", hp:1220429499266, atk:269666064},
+    {name:"Frozen Fiend", icon:"🦂", hp:1488923989104, atk:312812634},
+    {name:"Gilded Tyrant", icon:"🐺", hp:1816487266707, atk:362862656},
   ];
   function bossStatsFor(idx, cycle){
     const b = BOSS_DEFS[idx];
@@ -963,18 +1815,42 @@
 
   // ---------- QUESTS ----------
   const QUEST_DEFS = [
-    {id:"q1", icon:"🥯", name:"First Recruit",    desc:"Have at least 1 Burger Hero recruited.",   target:1,  reward:{crumbs:50},           get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
-    {id:"q2", icon:"🏗️", name:"Growing Kitchen",  desc:"Build 5 kingdom buildings in total.",       target:5,  reward:{coins:250},           get:(s)=>Object.values(s.gens).reduce((a,b)=>a+b,0)},
-    {id:"q3", icon:"⚔️", name:"First Blood",      desc:"Defeat your first boss.",                   target:1,  reward:{sesame:5},            get:(s)=>s.stats.bossesDefeated},
-    {id:"q4", icon:"🍔", name:"Hero Squad",       desc:"Recruit 7 different Burger Heroes.",        target:7,  reward:{sesame:15},           get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
-    {id:"q5", icon:"🏆", name:"Boss Slayer",      desc:"Defeat 10 bosses in total.",                target:10, reward:{sesame:20},           get:(s)=>s.stats.bossesDefeated},
-    {id:"q6", icon:"🌟", name:"Master Chef",      desc:"Reach Cycle 2 in the Boss Battle.",         target:2,  reward:{crumbs:800},          get:(s)=>s.battle.cycle},
-    {id:"q7", icon:"👑", name:"Legendary Team",   desc:"Recruit a Legendary rarity hero.",          target:1,  reward:{coins:5000},          get:(s)=>HERO_DEFS.some(h=>h.rarity==="legend" && s.heroes[h.id] && s.heroes[h.id].owned) ? 1 : 0},
-    {id:"q8", icon:"📖", name:"Recipe Master",    desc:"Use the Recipe Summon 10 times.",           target:10, reward:{sesame:25},           get:(s)=>s.stats.summonsDone},
-    {id:"q9", icon:"🏰", name:"Kingdom Tycoon",   desc:"Build 30 kingdom buildings in total.",      target:30, reward:{coins:50000},         get:(s)=>Object.values(s.gens).reduce((a,b)=>a+b,0)},
-    {id:"q10",icon:"👑", name:"Royal Ascension",  desc:"Claim your first Royal Charter (Crown).",   target:1,  reward:{sesame:30},           get:(s)=>s.crowns},
-    {id:"q11",icon:"💀", name:"Titan Slayer",     desc:"Defeat 25 bosses in total.",                target:25, reward:{sesame:40, crumbs:2000}, get:(s)=>s.stats.bossesDefeated},
-    {id:"q12",icon:"🎂", name:"Feast Champion",   desc:"Reach Cycle 3 in the Boss Battle.",         target:3,  reward:{coins:100000, sesame:20}, get:(s)=>s.battle.cycle},
+    // --- Tier 1: Getting started ---
+    {id:"q1", icon:"🥯", name:"First Recruit",    desc:"Have at least 1 Burger Hero recruited.",     target:1,  reward:{crumbs:50},                get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
+    {id:"q2", icon:"🏗️", name:"Growing Kitchen",  desc:"Build 5 kingdom buildings in total.",         target:5,  reward:{coins:250},                get:(s)=>Object.values(s.gens).reduce((a,b)=>a+b,0)},
+    {id:"q3", icon:"⚔️", name:"First Blood",      desc:"Defeat your first boss.",                     target:1,  reward:{sesame:5},                 get:(s)=>s.stats.bossesDefeated},
+
+    // --- Tier 2: Early progress ---
+    {id:"q4", icon:"🍔", name:"Hero Squad",       desc:"Recruit 7 different Burger Heroes.",          target:7,  reward:{sesame:15},                get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
+    {id:"q5", icon:"🏆", name:"Boss Slayer",      desc:"Defeat 10 bosses in total.",                  target:10, reward:{sesame:20},                get:(s)=>s.stats.bossesDefeated},
+    {id:"q6", icon:"🌟", name:"Master Chef",      desc:"Reach Cycle 2 in the Boss Battle.",           target:2,  reward:{crumbs:800},               get:(s)=>s.battle.cycle},
+    {id:"q13",icon:"🛡️", name:"Full Squad",       desc:"Select a full 15-hero battle team.",          target:15, reward:{crumbs:1500},              get:(s)=>(s.battleTeam||[]).length},
+
+    // --- Tier 3: Mid game ---
+    {id:"q7", icon:"👑", name:"Legendary Team",   desc:"Recruit a Legendary rarity hero.",            target:1,  reward:{coins:5000},               get:(s)=>HERO_DEFS.some(h=>h.rarity==="legend" && s.heroes[h.id] && s.heroes[h.id].owned) ? 1 : 0},
+    {id:"q8", icon:"📖", name:"Recipe Master",    desc:"Use the Recipe Summon 10 times.",             target:10, reward:{sesame:25},                get:(s)=>s.stats.summonsDone},
+    {id:"q9", icon:"🏰", name:"Kingdom Tycoon",   desc:"Build 30 kingdom buildings in total.",        target:30, reward:{coins:50000},              get:(s)=>Object.values(s.gens).reduce((a,b)=>a+b,0)},
+    {id:"q14",icon:"🍄", name:"Hero Hoarder",     desc:"Recruit 25 different Burger Heroes.",         target:25, reward:{sesame:35},                get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
+    {id:"q15",icon:"📈", name:"Level Up Champion",desc:"Level any single hero up to level 20.",       target:20, reward:{crumbs:5000},              get:(s)=>Math.max(0, ...Object.values(s.heroes).map(h=>h.owned? h.level : 0))},
+
+    // --- Tier 4: Mid-late game ---
+    {id:"q10",icon:"👑", name:"Royal Ascension",  desc:"Claim your first Royal Charter (Crown).",     target:1,  reward:{sesame:30},                get:(s)=>s.crowns},
+    {id:"q11",icon:"💀", name:"Titan Slayer",     desc:"Defeat 25 bosses in total.",                  target:25, reward:{sesame:40, crumbs:2000},   get:(s)=>s.stats.bossesDefeated},
+    {id:"q12",icon:"🎂", name:"Feast Champion",   desc:"Reach Cycle 3 in the Boss Battle.",           target:3,  reward:{coins:100000, sesame:20},  get:(s)=>s.battle.cycle},
+    {id:"q16",icon:"🔮", name:"Epic Collector",   desc:"Recruit 3 Epic rarity heroes.",               target:3,  reward:{coins:250000},             get:(s)=>HERO_DEFS.filter(h=>h.rarity==="epic" && s.heroes[h.id] && s.heroes[h.id].owned).length},
+    {id:"q17",icon:"👑", name:"Legendary Legion", desc:"Recruit 3 Legendary rarity heroes.",          target:3,  reward:{sesame:60},                get:(s)=>HERO_DEFS.filter(h=>h.rarity==="legend" && s.heroes[h.id] && s.heroes[h.id].owned).length},
+
+    // --- Tier 5: Late game ---
+    {id:"q18",icon:"🥩", name:"Century Club",     desc:"Recruit 50 different Burger Heroes.",         target:50, reward:{coins:2000000},            get:(s)=>Object.values(s.heroes).filter(h=>h.owned).length},
+    {id:"q19",icon:"🗡️", name:"Boss Hunter",      desc:"Defeat 50 bosses in total.",                  target:50, reward:{sesame:75, crumbs:10000},  get:(s)=>s.stats.bossesDefeated},
+    {id:"q20",icon:"🌀", name:"Grand Cycle",      desc:"Reach Cycle 5 in the Boss Battle.",           target:5,  reward:{coins:5000000, sesame:50}, get:(s)=>s.battle.cycle},
+    {id:"q21",icon:"🏯", name:"Kingdom Empire",   desc:"Build 60 kingdom buildings in total.",        target:60, reward:{coins:20000000},           get:(s)=>Object.values(s.gens).reduce((a,b)=>a+b,0)},
+
+    // --- Tier 6: Endgame ---
+    {id:"q22",icon:"🏰", name:"Castle Complete",  desc:"Build at least 1 Castle Oven.",               target:1,  reward:{crumbs:25000},             get:(s)=>s.gens.castle || 0},
+    {id:"q23",icon:"👑", name:"Prestige Master",  desc:"Accumulate 5 Crowns from Royal Charters.",    target:5,  reward:{sesame:100},               get:(s)=>s.crowns},
+    {id:"q24",icon:"📖", name:"Summon Addict",    desc:"Use the Recipe Summon 50 times.",             target:50, reward:{sesame:80},                get:(s)=>s.stats.summonsDone},
+    {id:"q25",icon:"🎂", name:"Endgame Emperor",  desc:"Reach Cycle 20 in the Boss Battle.",          target:20, reward:{coins:1000000000, sesame:200}, get:(s)=>s.battle.cycle},
   ];
   function questProgress(q){ return Math.min(q.target, q.get(state)); }
   function questComplete(q){ return questProgress(q) >= q.target; }
@@ -992,7 +1868,7 @@
   function freshState(){
     const s = {
       coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(),
-      lastSesameTick:Date.now(), battle:freshBattle(),
+      lastSesameTick:Date.now(), battle:freshBattle(), battleTeam: STARTER_HERO_IDS.slice(),
       stats:{ bossesDefeated:0, summonsDone:0 }, questsClaimed:{}
     };
     GEN_DEFS.forEach(g=> s.gens[g.id]=0);
@@ -1002,6 +1878,7 @@
   let state = freshState();
 
   function fmt(n){
+    if(!Number.isFinite(n)) return n > 0 ? "∞" : "-∞";
     if(n < 1000) return (Math.floor(n*100)/100).toString();
     const units=["","K","M","B","T","Qa","Qi","Sx","Sp","Oc","No","Dc"];
     let u=0;
@@ -1029,8 +1906,24 @@
   function nextPrestigeCrowns(){ return Math.floor(Math.sqrt(state.totalEarned/1000000)); }
 
   // ---------- ensure hero HP records exist ----------
+  const MAX_TEAM_SIZE = 15;
+  function ensureBattleTeam(){
+    if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
+    // drop any ids that are no longer owned
+    state.battleTeam = state.battleTeam.filter(id => state.heroes[id] && state.heroes[id].owned);
+    // enforce the cap
+    if(state.battleTeam.length > MAX_TEAM_SIZE) state.battleTeam = state.battleTeam.slice(0, MAX_TEAM_SIZE);
+    // auto-fill a starting team if empty (first-time / legacy saves)
+    if(state.battleTeam.length === 0){
+      state.battleTeam = ownedHeroList().slice(0, MAX_TEAM_SIZE).map(h=>h.id);
+    }
+  }
+  function battleTeamHeroList(){
+    return HERO_DEFS.filter(h => state.battleTeam.includes(h.id) && state.heroes[h.id] && state.heroes[h.id].owned);
+  }
   function ensureHeroHp(){
-    ownedHeroList().forEach(h=>{
+    ensureBattleTeam();
+    battleTeamHeroList().forEach(h=>{
       const rec = state.heroes[h.id];
       const max = heroMaxHp(h, rec);
       if(!(h.id in state.battle.heroHp)){
@@ -1039,13 +1932,14 @@
         state.battle.heroHp[h.id] = Math.min(state.battle.heroHp[h.id], max);
       }
     });
-    if(!state.battle.activeHeroId || !state.heroes[state.battle.activeHeroId] || !state.heroes[state.battle.activeHeroId].owned || state.battle.heroHp[state.battle.activeHeroId] <= 0){
-      const alive = ownedHeroList().find(h => state.battle.heroHp[h.id] > 0);
-      state.battle.activeHeroId = alive ? alive.id : (ownedHeroList()[0] ? ownedHeroList()[0].id : null);
+    if(!state.battle.activeHeroId || !state.battleTeam.includes(state.battle.activeHeroId) || !state.heroes[state.battle.activeHeroId] || !state.heroes[state.battle.activeHeroId].owned || state.battle.heroHp[state.battle.activeHeroId] <= 0){
+      const team = battleTeamHeroList();
+      const alive = team.find(h => state.battle.heroHp[h.id] > 0);
+      state.battle.activeHeroId = alive ? alive.id : (team[0] ? team[0].id : null);
     }
   }
   function healTeamFully(){
-    ownedHeroList().forEach(h=>{
+    battleTeamHeroList().forEach(h=>{
       state.battle.heroHp[h.id] = heroMaxHp(h, state.heroes[h.id]);
     });
   }
@@ -1073,6 +1967,7 @@
           if(!state.battle.heroHp) state.battle.heroHp = {};
           if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0 };
           if(!state.questsClaimed) state.questsClaimed = {};
+          if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
           lastSavedAt = Date.now();
           return true;
         }
@@ -1121,6 +2016,8 @@
 
   const stageTag = document.getElementById("stageTag");
   const combatRow = document.getElementById("combatRow");
+  const openTeamSelectBtn = document.getElementById("openTeamSelectBtn");
+  const teamCountLabel = document.getElementById("teamCountLabel");
   const heroVisual = document.getElementById("heroVisual");
   const heroEmojiSpan = document.getElementById("heroEmojiSpan");
   const heroFighterName = document.getElementById("heroFighterName");
@@ -1407,8 +2304,9 @@
     stageTag.textContent = "Cycle " + state.battle.cycle + " · Stage " + (state.battle.bossIndex+1) + " of " + BOSS_DEFS.length;
     bossEmojiSpan.textContent = boss.icon;
     bossName.textContent = boss.name;
+    teamCountLabel.textContent = state.battleTeam.length + "/" + MAX_TEAM_SIZE;
 
-    const team = ownedHeroList();
+    const team = battleTeamHeroList();
     if(team.length===0){
       noTeamNote.style.display = "block";
       heroFighterName.textContent = "—";
@@ -1627,7 +2525,7 @@
     const h2 = activeHero();
     if(h2 && (state.battle.heroHp[h2.id]||0) <= 0){
       addLog(h2.name + " was flattened!");
-      const nextAlive = ownedHeroList().find(hh => (state.battle.heroHp[hh.id]||0) > 0 && hh.id !== h2.id);
+      const nextAlive = battleTeamHeroList().find(hh => (state.battle.heroHp[hh.id]||0) > 0 && hh.id !== h2.id);
       if(nextAlive){
         state.battle.activeHeroId = nextAlive.id;
         addLog(nextAlive.name + " jumps in to fight!");
@@ -2019,6 +2917,55 @@
   adminCoinsInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") addAdminCoins(); });
   adminCrumbsInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") addAdminCrumbs(); });
   adminSesameInput.addEventListener("keydown", (e)=>{ if(e.key === "Enter") addAdminSesame(); });
+
+  // ---------- TEAM SELECTION SCREEN ----------
+  const teamSelectOverlay = document.getElementById("teamSelectOverlay");
+  const teamSelectGrid = document.getElementById("teamSelectGrid");
+  const teamSelectSub = document.getElementById("teamSelectSub");
+  const teamSelectConfirm = document.getElementById("teamSelectConfirm");
+  const teamSelectCancel = document.getElementById("teamSelectCancel");
+  let pendingTeam = [];
+
+  function renderTeamSelectGrid(){
+    teamSelectGrid.innerHTML = "";
+    ownedHeroList().forEach(h=>{
+      const selected = pendingTeam.includes(h.id);
+      const atCap = pendingTeam.length >= MAX_TEAM_SIZE && !selected;
+      const item = document.createElement("div");
+      item.className = "team-select-item " + h.rarity + (selected? " selected":"") + (atCap? " disabled":"");
+      item.innerHTML = `
+        <div class="tsi-check">✅</div>
+        <div class="tsi-emoji">${h.emoji}</div>
+        <div class="tsi-name">${h.name}</div>`;
+      item.addEventListener("click", ()=>{
+        if(selected){
+          pendingTeam = pendingTeam.filter(id=>id!==h.id);
+        } else {
+          if(pendingTeam.length >= MAX_TEAM_SIZE) return;
+          pendingTeam.push(h.id);
+        }
+        renderTeamSelectGrid();
+      });
+      teamSelectGrid.appendChild(item);
+    });
+    teamSelectSub.textContent = "Selected: " + pendingTeam.length + " / " + MAX_TEAM_SIZE;
+  }
+  function openTeamSelect(){
+    pendingTeam = state.battleTeam.slice();
+    renderTeamSelectGrid();
+    teamSelectOverlay.style.display = "flex";
+  }
+  function closeTeamSelect(){ teamSelectOverlay.style.display = "none"; }
+
+  openTeamSelectBtn.addEventListener("click", openTeamSelect);
+  teamSelectCancel.addEventListener("click", closeTeamSelect);
+  teamSelectConfirm.addEventListener("click", ()=>{
+    state.battleTeam = pendingTeam.slice();
+    closeTeamSelect();
+    ensureHeroHp();
+    renderAll();
+    save();
+  });
 
   initGame();
 })();
