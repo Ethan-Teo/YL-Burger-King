@@ -30,6 +30,7 @@
     --c-rare:#4F8FD1;
     --c-epic:#9B6FC9;
     --c-legend:#E8B93B;
+    --c-ultra:#E63946;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -207,6 +208,11 @@
   .hero-card.rare{border-color:var(--c-rare);}
   .hero-card.epic{border-color:var(--c-epic);}
   .hero-card.legend{border-color:var(--c-legend); box-shadow:0 0 10px rgba(232,185,59,0.55);}
+  .hero-card.ultra{
+    border-color:var(--c-ultra); background:linear-gradient(160deg, var(--parchment-card), #3a1015);
+    box-shadow:0 0 16px rgba(230,57,70,0.7); animation:ultraGlow 2.4s ease-in-out infinite;
+  }
+  @keyframes ultraGlow{0%,100%{box-shadow:0 0 16px rgba(230,57,70,0.7);} 50%{box-shadow:0 0 24px rgba(232,185,59,0.85);}}
   .hero-card.admin{
     border-color:#8a1620; background:linear-gradient(160deg, var(--parchment-card), #2a0a0a);
     box-shadow:0 0 14px rgba(200,30,30,0.6); animation:adminGlitch 3s ease-in-out infinite;
@@ -221,6 +227,7 @@
   .hero-card.rare .hero-rarity-tag{background:var(--c-rare);}
   .hero-card.epic .hero-rarity-tag{background:var(--c-epic);}
   .hero-card.legend .hero-rarity-tag{background:var(--c-legend); color:var(--ink);}
+  .hero-card.ultra .hero-rarity-tag{background:var(--c-ultra); color:#fff;}
   .hero-card.admin .hero-rarity-tag{background:#8a1620; color:#fff;}
   .hero-emoji{font-size:40px; margin:6px 0 2px;}
   .hero-name{font-weight:800; font-size:12.5px; line-height:1.15; min-height:30px; display:flex; align-items:center; justify-content:center;}
@@ -340,6 +347,7 @@
   .bench-chip.rare .chip-emoji{border-color:var(--c-rare);}
   .bench-chip.epic .chip-emoji{border-color:var(--c-epic);}
   .bench-chip.legend .chip-emoji{border-color:var(--c-legend);}
+  .bench-chip.ultra .chip-emoji{border-color:var(--c-ultra); box-shadow:0 0 8px rgba(230,57,70,0.7);}
   .bench-chip.admin .chip-emoji{border-color:#8a1620; box-shadow:0 0 8px rgba(200,30,30,0.6);}
   .bench-chip.fainted .chip-emoji{opacity:0.35; filter:grayscale(1);}
   .bench-chip .chip-hp-outer{width:38px; height:5px; background:#e7dcc4; border-radius:4px; overflow:hidden;}
@@ -472,6 +480,7 @@
   .team-select-item.rare{border-color:var(--c-rare);}
   .team-select-item.epic{border-color:var(--c-epic);}
   .team-select-item.legend{border-color:var(--c-legend);}
+  .team-select-item.ultra{border-color:var(--c-ultra); box-shadow:0 0 8px rgba(230,57,70,0.5);}
   .team-select-item.admin{border-color:#8a1620;}
   .team-select-item.selected{box-shadow:0 0 0 3px var(--mint-dark) inset; background:#eaf4ec;}
   .team-select-item.disabled{opacity:0.35; cursor:not-allowed;}
@@ -481,7 +490,7 @@
   .team-select-item .tsi-name{font-size:8.5px; font-weight:800; line-height:1.15; margin-top:3px; color:var(--ink);}
   .team-select-actions{display:flex; gap:10px; justify-content:center; flex-wrap:wrap;}
 
-  /* ---------- RARITY SUMMON CUTSCENE (Epic & Legendary) ---------- */
+  /* ---------- RARITY SUMMON CUTSCENE (Epic, Legendary & Ultra) ---------- */
   .rarity-cutscene{
     display:none; position:fixed; inset:0; z-index:150; overflow:hidden;
     align-items:center; justify-content:center; flex-direction:column;
@@ -489,6 +498,9 @@
   }
   .rarity-cutscene.rc-epic{
     background:radial-gradient(circle at 50% 50%, rgba(42,26,58,0.94), rgba(7,4,10,0.98));
+  }
+  .rarity-cutscene.rc-ultra{
+    background:radial-gradient(circle at 50% 50%, rgba(90,15,20,0.95), rgba(10,2,3,0.98));
   }
   .rarity-cutscene::before{
     content:""; position:absolute; top:50%; left:50%; width:250vmax; height:250vmax;
@@ -499,6 +511,10 @@
   .rarity-cutscene.rc-epic::before{
     background:repeating-conic-gradient(rgba(155,111,201,0.28) 0deg 8deg, transparent 8deg 24deg);
   }
+  .rarity-cutscene.rc-ultra::before{
+    background:repeating-conic-gradient(rgba(230,57,70,0.32) 0deg 8deg, transparent 8deg 24deg);
+    animation:raysSpin 6s linear infinite;
+  }
   @keyframes raysSpin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
   .rarity-cutscene-content{
     position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:20px;
@@ -507,6 +523,7 @@
     font-size:11px; color:var(--cheese); font-weight:800; letter-spacing:2px; opacity:0.9;
   }
   .rarity-cutscene.rc-epic .rarity-cutscene-sub{ color:#c9a8ec; }
+  .rarity-cutscene.rc-ultra .rarity-cutscene-sub{ color:#ff8a8a; }
   .rarity-cutscene-title{
     font-family:'Baloo 2',cursive; font-size:clamp(19px,5.5vw,30px); color:var(--cheese);
     text-shadow:0 0 18px rgba(246,196,69,0.85), 2px 2px 0 var(--ink);
@@ -514,6 +531,9 @@
   }
   .rarity-cutscene.rc-epic .rarity-cutscene-title{
     color:#c9a8ec; text-shadow:0 0 18px rgba(155,111,201,0.85), 2px 2px 0 var(--ink);
+  }
+  .rarity-cutscene.rc-ultra .rarity-cutscene-title{
+    color:#ff8a8a; text-shadow:0 0 22px rgba(230,57,70,0.9), 2px 2px 0 var(--ink);
   }
   @keyframes titlePulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.06);}}
   .rarity-cutscene-emoji{
@@ -523,6 +543,9 @@
   }
   .rarity-cutscene.rc-epic .rarity-cutscene-emoji{
     filter:drop-shadow(0 0 26px rgba(155,111,201,0.85));
+  }
+  .rarity-cutscene.rc-ultra .rarity-cutscene-emoji{
+    filter:drop-shadow(0 0 34px rgba(230,57,70,0.95));
   }
   .rarity-cutscene-emoji > *{position:relative; z-index:1;}
   @keyframes lcEmojiEnter{0%{transform:scale(0) rotate(-30deg); opacity:0;} 60%{transform:scale(1.2) rotate(8deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
@@ -550,6 +573,7 @@
   .summon-btn:active{transform:translateY(3px); box-shadow:0 1px 0 #443a5c;}
   .summon-btn:disabled{background:#a29b8f; box-shadow:0 4px 0 #7c766b; cursor:not-allowed;}
   .odds-note{font-size:10.5px; color:var(--wood-dark); text-align:center; max-width:360px;}
+  .pity-note{font-size:9.5px; color:var(--royal); font-weight:800; text-align:center; max-width:360px; margin-top:2px;}
 
   /* ---------- COOKING SUMMON ANIMATION ---------- */
   .cook-stage{
@@ -564,12 +588,15 @@
   .cook-pot.cook-rare{animation:cookBounceRare 0.45s ease-in-out infinite; filter:drop-shadow(0 0 10px rgba(79,143,209,0.6));}
   .cook-pot.cook-epic{animation:cookBounceEpic 0.4s ease-in-out infinite; filter:drop-shadow(0 0 14px rgba(155,111,201,0.65));}
   .cook-pot.cook-legend{animation:cookBounceLegend 0.35s ease-in-out infinite; filter:drop-shadow(0 0 20px rgba(232,185,59,0.75));}
+  .cook-pot.cook-ultra{animation:cookBounceUltra 0.3s ease-in-out infinite; filter:drop-shadow(0 0 26px rgba(230,57,70,0.85));}
   @keyframes cookBounceCommon{0%,100%{transform:translateY(0) rotate(0);} 50%{transform:translateY(-6px) rotate(-3deg);}}
   @keyframes cookBounceRare{0%,100%{transform:translateY(0) rotate(0);} 50%{transform:translateY(-10px) rotate(4deg);}}
   @keyframes cookBounceEpic{0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-14px) scale(1.08) rotate(-5deg);}}
   @keyframes cookBounceLegend{0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-18px) scale(1.16) rotate(6deg);}}
+  @keyframes cookBounceUltra{0%,100%{transform:translateY(0) scale(1) rotate(0);} 50%{transform:translateY(-22px) scale(1.22) rotate(-8deg);}}
   .cook-label{font-family:'Baloo 2',cursive; font-size:13px; color:var(--wood-dark);}
   .cook-label.cook-legend-label{color:var(--cheese-dark);}
+  .cook-stage-name{font-family:'Baloo 2',cursive; font-size:12.5px; font-weight:700; color:var(--wood-dark); margin-bottom:2px;}
 
   .reveal-wrap{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:6px;}
   .reveal-card{
@@ -579,6 +606,7 @@
   .reveal-card.rare{border-color:var(--c-rare);}
   .reveal-card.epic{border-color:var(--c-epic);}
   .reveal-card.legend{border-color:var(--c-legend); box-shadow:0 0 14px rgba(232,185,59,0.6);}
+  .reveal-card.ultra{border-color:var(--c-ultra); box-shadow:0 0 18px rgba(230,57,70,0.7);}
   @keyframes revealPop{0%{transform:scale(0.3) rotate(-8deg); opacity:0;} 70%{transform:scale(1.08) rotate(2deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
   .reveal-emoji{font-size:36px;}
   .reveal-name{font-size:11px; font-weight:800; margin-top:4px;}
@@ -731,8 +759,10 @@
         <button class="summon-btn" id="summon1Btn">Summon x1 — 10 ✨</button>
         <button class="summon-btn" id="summon10Btn">Summon x10 — 90 ✨</button>
       </div>
-      <div class="odds-note">Odds: Common 60% · Rare 30% · Epic 8% · Legendary 2%. Duplicate heroes are refunded as bonus Crumbs.</div>
+      <div class="odds-note">Odds: Common 58.5% · Rare 30% · Epic 8% · Legendary 3% · Ultra Legendary 0.5%. Duplicate heroes are refunded as bonus Crumbs.</div>
+      <div class="pity-note" id="pityNote">Pity: Epic guaranteed in 15 pulls · Legendary guaranteed in 50 pulls</div>
       <div class="cook-stage" id="cookStage">
+        <div class="cook-stage-name" id="cookStageName">🍳 Pan-Frying</div>
         <div class="cook-pot" id="cookPot"><span id="cookPotEmoji">🍳</span></div>
         <div class="cook-label" id="cookLabel">Grilling up something...</div>
       </div>
@@ -859,17 +889,20 @@
   ];
 
   // ---------- BURGER HEROES & FAST-FOOD MOVES ----------
-  const RARITY_WEIGHT = {common:1, rare:3, epic:8, legend:20, admin:500};
-  const RARITY_LABEL  = {common:"Common", rare:"Rare", epic:"Epic", legend:"Legendary", admin:"???"};
-  const RARITY_ODDS   = {common:0.60, rare:0.30, epic:0.08, legend:0.02};
-  const RARITY_RANK   = {common:0, rare:1, epic:2, legend:3};
+  const RARITY_WEIGHT = {common:1, rare:3, epic:8, legend:20, ultra:60, admin:500};
+  const RARITY_LABEL  = {common:"Common", rare:"Rare", epic:"Epic", legend:"Legendary", ultra:"Ultra Legendary", admin:"???"};
+  const RARITY_ODDS   = {common:0.585, rare:0.30, epic:0.08, legend:0.03, ultra:0.005};
+  const RARITY_RANK   = {common:0, rare:1, epic:2, legend:3, ultra:4};
+  const PITY_EPIC_AT   = 15; // pulls without Epic+ before the next pull is guaranteed Epic or better
+  const PITY_LEGEND_AT = 50; // pulls without Legendary+ before the next pull is guaranteed Legendary or better
 
   // Cooking summon animation profile per rarity
   const COOK_PROFILES = {
-    common: { icon:"🍳", label:"Grilling up something...", duration:750,  particles:["💨"],              particleCount:3, spread:26, flashColor:"rgba(156,146,132,0.5)" },
-    rare:   { icon:"🥘", label:"Searing a rare recipe...",  duration:1050, particles:["✨","💨"],          particleCount:4, spread:32, flashColor:"rgba(79,143,209,0.55)" },
-    epic:   { icon:"🍲", label:"Brewing an epic dish...",   duration:1350, particles:["🔮","💜","✨"],     particleCount:5, spread:38, flashColor:"rgba(155,111,201,0.6)" },
-    legend: { icon:"👑", label:"The royal oven glows bright...", duration:1750, particles:["⭐","🎆","👑","✨"], particleCount:7, spread:46, flashColor:"rgba(232,185,59,0.7)" },
+    common: { icon:"🍳", label:"Frying up a quick bite...",        stage:"🍳 Pan-Frying",   duration:750,  particles:["💨","🧈"],           particleCount:3, spread:26, flashColor:"rgba(156,146,132,0.5)" },
+    rare:   { icon:"🥘", label:"Grilling a rare recipe...",        stage:"🔥 Grilling",     duration:1050, particles:["🔥","💨"],           particleCount:4, spread:32, flashColor:"rgba(79,143,209,0.55)" },
+    epic:   { icon:"🍞", label:"Baking an epic dish in the oven...", stage:"🍞 Baking",      duration:1350, particles:["🔥","✨","💜"],       particleCount:5, spread:38, flashColor:"rgba(155,111,201,0.6)" },
+    legend: { icon:"👑", label:"Roasting in the royal oven...",     stage:"👑 Royal Roasting", duration:1750, particles:["⭐","🎆","👑","✨"], particleCount:7, spread:46, flashColor:"rgba(232,185,59,0.7)" },
+    ultra:  { icon:"👨‍🍳", label:"A master chef flambés something extraordinary...", stage:"🔥 Flambéing", duration:2100, particles:["🔥","💎","✨","🥂"], particleCount:9, spread:52, flashColor:"rgba(228,87,46,0.75)" },
   };
   function highestRarity(rarities){
     return rarities.reduce((best,r)=> RARITY_RANK[r]>RARITY_RANK[best] ? r : best, "common");
@@ -1674,10 +1707,76 @@
         {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
         {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
       ]},
-    {id:"h15",name:"Master Ice Cream",          emoji:"🍦", role:"Admin",   rarity:"admin",
+    {id:"h116", name:"Golden Emperor", emoji:"🥇", role:"Tank", rarity:"legend",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h117", name:"Champagne Marshal", emoji:"🍾", role:"Support", rarity:"legend",
+      moves:[
+        {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
+        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
+        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+      ]},
+    {id:"h118", name:"Medallion Duke", emoji:"🏅", role:"Attack", rarity:"legend",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+    {id:"h119", name:"Trophy Sovereign", emoji:"🏆", role:"Heal", rarity:"legend",
+      moves:[
+        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
+        {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
+        {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
+      ]},
+    {id:"h120", name:"Diamond Regent", emoji:"💎", role:"Tank", rarity:"legend",
+      moves:[
+        {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
+        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
+        {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
+      ]},
+    {id:"h121", name:"Starlight Baroness", emoji:"🌠", role:"Attack", rarity:"legend",
+      moves:[
+        {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
+        {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
+        {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
+        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+      ]},
+
+    // --- Ultra Legendary: premium fine-dining heroes ---
+    {id:"h122", name:"Beef Wellington", emoji:"🥩", role:"Attack", rarity:"ultra",
+      moves:[
+        {name:"Pastry-Wrapped Fury", icon:"🥐", power:1.6,  kind:"dmg",   desc:"A perfectly wrapped strike, seared to perfection."},
+        {name:"Duxelles Barrage",    icon:"🍄", power:0.85, kind:"dmg2",  desc:"Two rapid strikes laced with mushroom duxelles."},
+        {name:"Michelin Star Cut",   icon:"⭐", power:1.0,  kind:"crit",  desc:"A flawless cut worthy of the highest honors."},
+        {name:"Reduction Sear",      icon:"🔥", power:0.9,  kind:"burn",  desc:"A rich pan reduction that keeps searing the foe."}
+      ]},
+    {id:"h123", name:"Lobster Thermidor", emoji:"🦞", role:"Support", rarity:"ultra",
+      moves:[
+        {name:"Brandy Flambé",   icon:"🔥", power:1.0, kind:"dmg_debuff", desc:"A flaming brandy sear that weakens the foe's guard."},
+        {name:"Gratin Rally",    icon:"🧀", power:0,   kind:"buff",       desc:"A bubbling cheese gratin fires up the whole team."},
+        {name:"Claw Strike",     icon:"🦞", power:1.2, kind:"dmg",        desc:"A precise strike from a razor-sharp claw."},
+        {name:"Butter Poach Siphon", icon:"🧈", power:0.95, kind:"drain", desc:"A rich butter poach that saps and restores vitality."}
+      ]},
+    {id:"h124", name:"Truffle Foie Gras", emoji:"🦆", role:"Heal", rarity:"ultra",
+      moves:[
+        {name:"Golden Torchon",  icon:"🍯", power:0,   kind:"heal",     desc:"A silky torchon that mends every wound."},
+        {name:"Shaved Truffle Frost", icon:"❄️", power:0.95, kind:"dmg_stun", desc:"Icy shaved truffle that may freeze the foe solid."},
+        {name:"Reduction Strike", icon:"🍷", power:1.15, kind:"dmg",     desc:"A rich wine reduction thrown with surprising force."},
+        {name:"Caramelized Sear", icon:"🔥", power:0.85, kind:"burn",    desc:"A caramelized crust that keeps burning long after impact."}
+      ]},
+
+    {id:"h15",name:"Master Fry",          emoji:"🍟", role:"Admin",   rarity:"admin",
       moves:[
         {name:"Death",             icon:"💀", power:Infinity, kind:"dmg",      desc:"Ends the fight instantly with infinite force."},
-        {name:"Ice Cream Orbital Strike",icon:"🍦", power:Infinity, kind:"dmg2",     desc:"Calls down a truly infinite Ice Cream barrage."},
+        {name:"Fry Orbital Strike",icon:"🍟", power:Infinity, kind:"dmg2",     desc:"Calls down a truly infinite fry barrage."},
         {name:"Black Hole",        icon:"🎆", power:Infinity, kind:"dmg_stun", desc:"Freezes the foe in an infinitely crushing void."}
       ]},
   ];
@@ -1869,7 +1968,7 @@
     const s = {
       coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(),
       lastSesameTick:Date.now(), battle:freshBattle(), battleTeam: STARTER_HERO_IDS.slice(),
-      stats:{ bossesDefeated:0, summonsDone:0 }, questsClaimed:{}
+      stats:{ bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 }, questsClaimed:{}
     };
     GEN_DEFS.forEach(g=> s.gens[g.id]=0);
     return s;
@@ -1965,7 +2064,9 @@
           HERO_DEFS.forEach(h=>{ if(!(h.id in state.heroes)) state.heroes[h.id]={owned:STARTER_HERO_IDS.includes(h.id), level:0}; });
           if(!state.battle) state.battle = freshBattle();
           if(!state.battle.heroHp) state.battle.heroHp = {};
-          if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0 };
+          if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 };
+          if(state.stats.pityEpic === undefined) state.stats.pityEpic = 0;
+          if(state.stats.pityLegend === undefined) state.stats.pityLegend = 0;
           if(!state.questsClaimed) state.questsClaimed = {};
           if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
           lastSavedAt = Date.now();
@@ -2004,6 +2105,8 @@
   const cookPot = document.getElementById("cookPot");
   const cookPotEmoji = document.getElementById("cookPotEmoji");
   const cookLabel = document.getElementById("cookLabel");
+  const cookStageName = document.getElementById("cookStageName");
+  const pityNote = document.getElementById("pityNote");
   const rarityCutscene = document.getElementById("rarityCutscene");
   const rarityCutsceneSub = document.getElementById("rarityCutsceneSub");
   const rarityCutsceneTitle = document.getElementById("rarityCutsceneTitle");
@@ -2599,7 +2702,17 @@
   // ---------- SUMMON ----------
   let summonBusy = false;
   function rollRarity(){
-    const r = Math.random(); const order = ["common","rare","epic","legend"]; let acc=0;
+    // Pity: force a guaranteed rarity floor once thresholds are hit
+    if(state.stats.pityLegend + 1 >= PITY_LEGEND_AT){
+      return Math.random() < 0.85 ? "legend" : "ultra";
+    }
+    if(state.stats.pityEpic + 1 >= PITY_EPIC_AT){
+      const r = Math.random();
+      if(r < 0.75) return "epic";
+      if(r < 0.98) return "legend";
+      return "ultra";
+    }
+    const r = Math.random(); const order = ["common","rare","epic","legend","ultra"]; let acc=0;
     for(const key of order){ acc += RARITY_ODDS[key]; if(r <= acc) return key; }
     return "common";
   }
@@ -2611,7 +2724,19 @@
     let dup = false, crumbsGained = 0;
     if(rec.owned){ dup = true; crumbsGained = RARITY_WEIGHT[hero.rarity]*20; state.crumbs += crumbsGained; }
     else { rec.owned = true; }
+
+    // update pity counters
+    if(rarity === "legend" || rarity === "ultra"){ state.stats.pityEpic = 0; state.stats.pityLegend = 0; }
+    else if(rarity === "epic"){ state.stats.pityEpic = 0; state.stats.pityLegend++; }
+    else { state.stats.pityEpic++; state.stats.pityLegend++; }
+
     return {hero, dup, crumbsGained};
+  }
+  function updatePityNote(){
+    const epicLeft = Math.max(0, PITY_EPIC_AT - state.stats.pityEpic);
+    const legendLeft = Math.max(0, PITY_LEGEND_AT - state.stats.pityLegend);
+    pityNote.textContent = "Pity: Epic guaranteed in " + epicLeft + " pull" + (epicLeft===1?"":"s") +
+      " · Legendary guaranteed in " + legendLeft + " pull" + (legendLeft===1?"":"s");
   }
 
   function playCookingAnimation(rarity){
@@ -2619,9 +2744,10 @@
       const profile = COOK_PROFILES[rarity];
       revealWrap.innerHTML = "";
       cookStage.style.display = "flex";
+      cookStageName.textContent = profile.stage;
       cookPotEmoji.textContent = profile.icon;
       cookPot.className = "cook-pot cook-" + rarity;
-      cookLabel.className = "cook-label" + (rarity==="legend" ? " cook-legend-label":"");
+      cookLabel.className = "cook-label" + (rarity==="legend" || rarity==="ultra" ? " cook-legend-label":"");
       cookLabel.textContent = profile.label;
 
       const particleTimer = setInterval(()=>{
@@ -2657,13 +2783,21 @@
       particleCount: 14, spread: 80,
       flashColor: "rgba(155,111,201,0.8)",
       duration: 1700
+    },
+    ultra: {
+      sub: "🥂 A PREMIUM COURSE IS PLATED 🥂",
+      title: "AN ULTRA LEGENDARY HERO APPEARS!",
+      particles: ["🔥","💎","✨","🎆","🥂","⭐"],
+      particleCount: 30, spread: 120,
+      flashColor: "rgba(230,57,70,0.9)",
+      duration: 2800
     }
   };
 
   function playRarityCutscene(hero, rarity){
     return new Promise(resolve=>{
       const profile = CUTSCENE_PROFILES[rarity];
-      rarityCutscene.className = "rarity-cutscene" + (rarity === "epic" ? " rc-epic" : "");
+      rarityCutscene.className = "rarity-cutscene" + (rarity === "epic" ? " rc-epic" : (rarity === "ultra" ? " rc-ultra" : ""));
       rarityCutsceneSub.textContent = profile.sub;
       rarityCutsceneTitle.textContent = profile.title;
       rarityCutsceneEmojiSpan.textContent = hero.emoji;
@@ -2697,12 +2831,12 @@
     for(let i=0;i<count;i++){ results.push(pullOne()); }
     state.stats.summonsDone += count;
     ensureHeroHp();
-    renderGens(); renderHeroes(); renderQuests();
+    renderGens(); renderHeroes(); renderQuests(); updatePityNote();
 
     const bestRarity = highestRarity(results.map(r=>r.hero.rarity));
     await playCookingAnimation(bestRarity);
 
-    const showcasePulls = results.filter(r => r.hero.rarity === "legend" || r.hero.rarity === "epic");
+    const showcasePulls = results.filter(r => r.hero.rarity === "legend" || r.hero.rarity === "epic" || r.hero.rarity === "ultra");
     for(const res of showcasePulls){
       await playRarityCutscene(res.hero, res.hero.rarity);
     }
@@ -2731,6 +2865,7 @@
         if(h.rarity === "rare") spawnParticles(card, ["✨"], 4, 24, 500);
         else if(h.rarity === "epic") spawnParticles(card, ["🔮","💜"], 6, 30, 600);
         else if(h.rarity === "legend") spawnParticles(card, ["⭐","🎆","👑"], 10, 36, 750);
+        else if(h.rarity === "ultra") spawnParticles(card, ["🔥","💎","🥂","⭐"], 16, 44, 900);
       }, i*80 + 200);
     });
   }
@@ -2761,6 +2896,7 @@
     renderBattleStatic();
     renderBattleDynamic();
     renderQuests();
+    updatePityNote();
   }
 
   // ---------- PRESTIGE ----------
