@@ -79,6 +79,33 @@
   }
   .start-btn:active{transform:translateY(5px); box-shadow:0 1px 0 #7a2b13;}
   .home-sub-note{margin-top:14px; font-size:11px; color:var(--wood-dark); opacity:0.75; font-weight:700;}
+  .home-tutorial-link{
+    margin-top:12px; font-family:'Baloo 2',cursive; font-size:12px; font-weight:700; color:var(--royal);
+    background:none; border:none; cursor:pointer; text-decoration:underline;
+  }
+
+  /* ---------- TOP-RIGHT CORNER BUTTONS & INFO MODALS ---------- */
+  .topcorner-btns{ position:fixed; top:12px; right:12px; z-index:190; display:flex; gap:8px; }
+  .corner-btn{
+    width:40px; height:40px; border-radius:50%; border:2px solid var(--ink); background:var(--parchment-card);
+    font-size:18px; cursor:pointer; box-shadow:0 3px 0 var(--wood); display:flex; align-items:center; justify-content:center;
+  }
+  .corner-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--wood);}
+  .info-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:195;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .info-card{
+    background:var(--parchment-card); border:3px solid var(--ink); border-radius:18px;
+    padding:22px 20px; max-width:480px; width:100%; max-height:82vh; display:flex; flex-direction:column;
+    box-shadow:0 10px 0 var(--wood); text-align:left;
+  }
+  .info-card .admin-title{text-align:center;}
+  .info-scroll{overflow-y:auto; margin-bottom:14px; padding-right:4px; flex:1;}
+  .update-log-list, .tutorial-list{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:10px;}
+  .update-log-list li, .tutorial-list li{font-size:12.5px; color:var(--wood-dark); line-height:1.45;}
+  .update-log-list b, .tutorial-list b{color:var(--ink);}
+  .info-card .admin-close-btn{align-self:center;}
 
   /* ---------- HEADER ---------- */
   header{
@@ -206,7 +233,7 @@
     border:3px solid var(--c-common); position:relative; box-shadow:0 3px 0 rgba(0,0,0,0.08);
   }
   .hero-card.rare{border-color:var(--c-rare);}
-  .hero-card.epic{border-color:var(--c-epic);}
+  .hero-card.epic{border-color:var(--c-epic); box-shadow:0 0 8px rgba(155,111,201,0.5);}
   .hero-card.legend{border-color:var(--c-legend); box-shadow:0 0 10px rgba(232,185,59,0.55);}
   .hero-card.ultra{
     border-color:var(--c-ultra); background:linear-gradient(160deg, var(--parchment-card), #3a1015);
@@ -276,7 +303,243 @@
   .stage-tag{font-size:11.5px; font-weight:800; color:var(--wood-dark);}
 
   .combat-row{
+    position:relative;
     display:flex; justify-content:space-between; align-items:flex-start; width:100%; max-width:520px; gap:10px;
+  }
+  .move-projectile{
+    position:absolute; font-size:26px; pointer-events:none; z-index:6; top:0; left:0;
+    filter:drop-shadow(0 2px 4px rgba(0,0,0,0.35));
+    will-change:transform, opacity;
+  }
+  .trail-dot{
+    position:absolute; top:0; left:0; width:9px; height:9px; border-radius:50%; pointer-events:none; z-index:5;
+    animation:trailFade 0.45s ease-out forwards;
+  }
+  @keyframes trailFade{
+    0%{opacity:0.85; transform:translate(-50%,-50%) scale(1);}
+    100%{opacity:0; transform:translate(-50%,-50%) scale(0.25);}
+  }
+  .move-beam-group{
+    position:absolute; top:0; left:0; pointer-events:none; z-index:5; transform-origin:left center;
+  }
+  .move-beam-layer{
+    position:absolute; top:50%; left:0; width:100%; border-radius:8px;
+    transform:translateY(-50%) scaleX(0); opacity:0;
+  }
+  .move-beam-layer.glow{
+    height:calc(36px * var(--beam-scale,1)); filter:blur(calc(13px * var(--beam-scale,1)));
+    background:linear-gradient(90deg, transparent, var(--beam-color,#fff) 20%, var(--beam-color,#fff) 80%, transparent);
+  }
+  .move-beam-layer.mid{
+    height:calc(15px * var(--beam-scale,1));
+    background:linear-gradient(90deg, transparent, var(--beam-color,#fff) 12%, var(--beam-color,#fff) 88%, transparent);
+    box-shadow:0 0 calc(30px * var(--beam-scale,1)) var(--beam-color,#fff);
+  }
+  .move-beam-layer.core{
+    height:calc(5px * var(--beam-scale,1));
+    background:linear-gradient(90deg, transparent, #fff 8%, #fff 92%, transparent);
+    box-shadow:0 0 calc(16px * var(--beam-scale,1)) #fff, 0 0 calc(38px * var(--beam-scale,1)) var(--beam-color,#fff);
+  }
+  .move-beam-group.firing .move-beam-layer.glow{ animation:beamGlowFlash 0.55s ease-out forwards; }
+  .move-beam-group.firing .move-beam-layer.mid{ animation:beamMidFlash 0.5s ease-out forwards; }
+  .move-beam-group.firing .move-beam-layer.core{ animation:beamCoreFlash 0.42s ease-out forwards; }
+  @keyframes beamGlowFlash{
+    0%{opacity:0; transform:translateY(-50%) scaleX(0);}
+    22%{opacity:0.8; transform:translateY(-50%) scaleX(1);}
+    100%{opacity:0; transform:translateY(-50%) scaleX(1);}
+  }
+  @keyframes beamMidFlash{
+    0%{opacity:0; transform:translateY(-50%) scaleX(0);}
+    18%{opacity:1; transform:translateY(-50%) scaleX(1);}
+    50%{opacity:0.6;}
+    70%{opacity:1;}
+    100%{opacity:0; transform:translateY(-50%) scaleX(1);}
+  }
+  @keyframes beamCoreFlash{
+    0%{opacity:0; transform:translateY(-50%) scaleX(0);}
+    15%{opacity:1; transform:translateY(-50%) scaleX(1);}
+    100%{opacity:0; transform:translateY(-50%) scaleX(1);}
+  }
+  .beam-point-flash{
+    position:absolute; width:22px; height:22px; border-radius:50%; pointer-events:none; z-index:6;
+    transform:translate(-50%,-50%) scale(0.2);
+    background:radial-gradient(circle, #fff 0%, var(--flash-color,#fff) 45%, transparent 75%);
+    opacity:1;
+    animation:pointFlashPop 0.45s ease-out forwards;
+  }
+  @keyframes pointFlashPop{
+    0%{transform:translate(-50%,-50%) scale(0.2); opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(2.6); opacity:0;}
+  }
+  .beam-spark{
+    position:absolute; width:13px; height:13px; border-radius:50%; pointer-events:none; z-index:6;
+    box-shadow:0 0 18px currentColor, 0 0 7px #fff;
+    transform:translate(-50%,-50%);
+  }
+  .impact-ring{
+    position:absolute; left:50%; top:50%; border-radius:50%; pointer-events:none; z-index:3;
+    width:24px; height:24px; border:3px solid var(--ring-color,#fff);
+    transform:translate(-50%,-50%) scale(0.3); opacity:0.9;
+    animation:ringExpand 0.5s ease-out forwards;
+  }
+  @keyframes ringExpand{
+    0%{transform:translate(-50%,-50%) scale(0.3); opacity:0.9;}
+    100%{transform:translate(-50%,-50%) scale(2.4); opacity:0;}
+  }
+
+  /* ---------- SPECIAL NAMED-MOVE EFFECTS ---------- */
+  .black-hole-vfx{
+    position:absolute; left:50%; top:50%; width:16px; height:16px; pointer-events:none; z-index:4;
+    transform:translate(-50%,-50%) scale(0.15); opacity:0;
+    animation:blackHoleGrow 1s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  .bh-ring{
+    position:absolute; inset:-45%; border-radius:50%;
+    background:radial-gradient(circle,
+      transparent 0%, transparent 42%,
+      rgba(255,80,0,0.12) 46%,
+      rgba(255,120,10,0.4) 50%,
+      rgba(255,190,110,0.75) 55%,
+      rgba(255,244,214,0.9) 59%,
+      rgba(255,190,110,0.75) 63%,
+      rgba(255,120,10,0.4) 68%,
+      rgba(255,80,0,0.18) 74%,
+      transparent 82%);
+    filter:blur(0.6px);
+  }
+  .bh-disk{
+    position:absolute; left:50%; top:50%; width:360%; height:24%; border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:linear-gradient(90deg,
+      transparent 0%,
+      rgba(255,90,0,0.15) 8%,
+      rgba(255,150,30,0.55) 20%,
+      rgba(255,210,130,0.85) 36%,
+      #fff8e4 50%,
+      rgba(255,210,130,0.85) 64%,
+      rgba(255,150,30,0.55) 80%,
+      rgba(255,90,0,0.15) 92%,
+      transparent 100%);
+    box-shadow:0 0 10px 2px rgba(255,180,70,0.5);
+    filter:blur(0.4px);
+  }
+  .bh-core{
+    position:absolute; left:50%; top:50%; width:72%; height:72%; border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, #000 0%, #000 76%, rgba(5,2,0,0.95) 88%, transparent 100%);
+    box-shadow:0 0 8px 2px rgba(0,0,0,0.85);
+  }
+  @keyframes blackHoleGrow{
+    0%{transform:translate(-50%,-50%) scale(0.1) rotate(0deg); opacity:0;}
+    25%{opacity:1;}
+    60%{transform:translate(-50%,-50%) scale(1.7) rotate(200deg); opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(0.3) rotate(380deg); opacity:0;}
+  }
+  .vortex-particle{
+    position:absolute; left:50%; top:50%; font-size:16px; pointer-events:none; z-index:5;
+    animation-name:vortexPull; animation-timing-function:ease-in; animation-fill-mode:forwards;
+  }
+  @keyframes vortexPull{
+    0%{transform:translate(calc(-50% + var(--vx)), calc(-50% + var(--vy))) scale(1) rotate(0deg); opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(0.1) rotate(720deg); opacity:0;}
+  }
+  .boss-swirl{
+    display:inline-block;
+    animation:bossSwirlSuck 1.05s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes bossSwirlSuck{
+    0%{transform:translate(0,0) scale(1) rotate(0deg); opacity:1;}
+    12%{transform:translate(40px,0px) scale(0.92) rotate(90deg); opacity:1;}
+    24%{transform:translate(11px,30px) scale(0.8) rotate(220deg); opacity:1;}
+    36%{transform:translate(-18px,15px) scale(0.65) rotate(380deg); opacity:0.9;}
+    48%{transform:translate(-15px,-9px) scale(0.5) rotate(560deg); opacity:0.8;}
+    60%{transform:translate(2px,-11px) scale(0.35) rotate(760deg); opacity:0.6;}
+    72%{transform:translate(6px,-1px) scale(0.2) rotate(980deg); opacity:0.35;}
+    84%{transform:translate(1px,2px) scale(0.08) rotate(1200deg); opacity:0.05;}
+    90%{transform:translate(0,0) scale(0.05) rotate(1260deg); opacity:0.02;}
+    100%{transform:translate(0,0) scale(1) rotate(1440deg); opacity:1;}
+  }
+  .crown-descend{
+    position:absolute; left:50%; top:-40px; font-size:30px; pointer-events:none; z-index:6;
+    animation:crownDrop 0.75s cubic-bezier(.3,.7,.4,1) forwards;
+    filter:drop-shadow(0 0 10px rgba(246,196,69,0.8));
+  }
+  @keyframes crownDrop{
+    0%{transform:translate(-50%,0) scale(0.6) rotate(-15deg); opacity:0;}
+    20%{opacity:1;}
+    80%{transform:translate(-50%,55px) scale(1.15) rotate(8deg); opacity:1;}
+    100%{transform:translate(-50%,55px) scale(1) rotate(0deg); opacity:0;}
+  }
+  .skull-vfx{
+    position:absolute; left:50%; top:50%; font-size:70px; pointer-events:none; z-index:7;
+    transform:translate(-50%,-50%) scale(0.2); opacity:0;
+    animation:skullPulse 0.65s ease-out forwards;
+    filter:drop-shadow(0 0 14px rgba(0,0,0,0.9));
+  }
+  @keyframes skullPulse{
+    0%{transform:translate(-50%,-50%) scale(0.2); opacity:0;}
+    40%{transform:translate(-50%,-50%) scale(1.3); opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1.6); opacity:0;}
+  }
+  .ice-crystal-vfx{
+    position:absolute; inset:-8px; border-radius:12px; pointer-events:none; z-index:3;
+    background:linear-gradient(160deg, rgba(180,220,255,0.5), rgba(120,180,240,0.25));
+    border:2px solid rgba(220,240,255,0.85);
+    opacity:0;
+    animation:iceForm 0.75s ease-out forwards;
+  }
+  @keyframes iceForm{
+    0%{opacity:0; transform:scale(0.6);}
+    35%{opacity:1; transform:scale(1.05);}
+    70%{opacity:0.9; transform:scale(1);}
+    100%{opacity:0; transform:scale(1.15);}
+  }
+  .rising-wall-vfx{
+    position:absolute; left:50%; bottom:-8px; width:66px; height:38px; border-radius:6px; pointer-events:none; z-index:6;
+    background:
+      repeating-linear-gradient(0deg, #8a5a3b 0 9px, #5f3c24 9px 10px),
+      repeating-linear-gradient(90deg, transparent 0 17px, rgba(0,0,0,0.22) 17px 18px);
+    border:2px solid var(--ink);
+    transform-origin:bottom center;
+    transform:translate(-50%,26px) scaleY(0.1); opacity:0;
+    box-shadow:0 0 16px rgba(79,143,209,0.65);
+    animation:wallRise 0.5s cubic-bezier(.2,.8,.3,1) forwards;
+  }
+  @keyframes wallRise{
+    0%{transform:translate(-50%,26px) scaleY(0.1); opacity:0;}
+    55%{transform:translate(-50%,-6px) scaleY(1.2); opacity:1;}
+    75%{transform:translate(-50%,3px) scaleY(0.92); opacity:1;}
+    100%{transform:translate(-50%,0px) scaleY(1); opacity:0.95;}
+  }
+  .cheese-drip{
+    position:absolute; top:0; width:6px; height:0; pointer-events:none; z-index:4;
+    background:linear-gradient(180deg, #F6C445, #c99a25); border-radius:0 0 4px 4px;
+    animation:cheeseDripFall 0.7s ease-in forwards;
+  }
+  @keyframes cheeseDripFall{
+    0%{height:0; opacity:0.9;}
+    60%{height:70%; opacity:0.9;}
+    100%{height:70%; opacity:0;}
+  }
+  .slash-mark{
+    position:absolute; left:50%; top:50%; width:72%; height:4px; pointer-events:none; z-index:6;
+    background:linear-gradient(90deg, transparent, #fff 45%, #fff 55%, transparent);
+    border-radius:2px; opacity:0; box-shadow:0 0 8px rgba(255,255,255,0.8);
+  }
+  .slash-mark.firing{ animation:slashSweep 0.3s ease-out forwards; }
+  @keyframes slashSweep{
+    0%{opacity:0; transform:translate(-50%,-50%) rotate(var(--slash-angle,-35deg)) scaleX(0);}
+    25%{opacity:1; transform:translate(-50%,-50%) rotate(var(--slash-angle,-35deg)) scaleX(1);}
+    100%{opacity:0; transform:translate(-50%,-50%) rotate(var(--slash-angle,-35deg)) scaleX(1);}
+  }
+  .bee-swarm-particle{
+    position:absolute; left:50%; top:50%; font-size:14px; pointer-events:none; z-index:5;
+    animation:beeCircle 0.6s ease-in-out forwards;
+  }
+  @keyframes beeCircle{
+    0%{transform:translate(-50%,-50%) translate(0,0) scale(0.5); opacity:0;}
+    30%{opacity:1;}
+    100%{transform:translate(-50%,-50%) translate(var(--bx),var(--by)) scale(1); opacity:0;}
   }
   .combat-row.shake-strong{animation:strongShake 0.45s ease;}
   @keyframes strongShake{
@@ -289,6 +552,16 @@
   .fighter-visual.hit{animation:bossHit 0.25s ease;}
   @keyframes bossHit{0%{transform:translateX(0);} 30%{transform:translateX(-6px) scale(0.97);} 60%{transform:translateX(6px);} 100%{transform:translateX(0);}}
   .fighter-visual.frozen{filter:saturate(0.5) brightness(1.15) hue-rotate(150deg);}
+  .fighter-visual.walled::after{
+    content:""; position:absolute; inset:-6px; border-radius:50%; pointer-events:none; z-index:0;
+    border:3px solid rgba(79,143,209,0.55);
+    box-shadow:0 0 14px rgba(79,143,209,0.5), inset 0 0 10px rgba(79,143,209,0.35);
+    animation:wallGlowPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes wallGlowPulse{
+    0%,100%{opacity:0.7; transform:scale(1);}
+    50%{opacity:1; transform:scale(1.04);}
+  }
   .fx-flash::before{
     content:""; position:absolute; inset:-12px; border-radius:50%;
     background:var(--flash-color, rgba(255,255,255,0.6)); opacity:0.9; z-index:0;
@@ -615,6 +888,52 @@
 </head>
 <body>
 
+<!-- ===== TOP-RIGHT CORNER BUTTONS ===== -->
+<div class="topcorner-btns">
+  <button class="corner-btn" id="tutorialOpenBtn" title="How to Play">❓</button>
+  <button class="corner-btn" id="updateLogOpenBtn" title="Update Log">📖</button>
+</div>
+
+<!-- ===== UPDATE LOG MODAL ===== -->
+<div class="info-overlay" id="updateLogOverlay">
+  <div class="info-card">
+    <div class="admin-title">📖 Update Log</div>
+    <div class="info-scroll">
+      <ul class="update-log-list">
+        <li><b>Ultra Legendary tier</b> — a new rarity above Legendary, with premium fine-dining heroes (Beef Wellington, Lobster Thermidor, Truffle Foie Gras) and its own fiery summon cutscene.</li>
+        <li><b>Summon pity system</b> — Epic or better is now guaranteed within 15 pulls, and Legendary or better within 50, with a live counter on the Summon tab.</li>
+        <li><b>Turn-based boss battles</b> — pick moves, manage HP, and swap heroes mid-fight, with Shield, Drain, Burn, Crit, and Triple-Hit move types.</li>
+        <li><b>Battle Team Selection</b> — choose up to 15 heroes from your full roster to bring into battle.</li>
+        <li><b>115+ collectible heroes</b> and <b>116+ bosses</b>, each with unique moves and scaling stats across endless cycles.</li>
+        <li><b>Quests</b> — 25+ objectives from early tutorial goals to endgame milestones, with matching rewards.</li>
+        <li><b>Custom summon &amp; battle VFX</b> — cooking method cutscenes (frying, grilling, baking, roasting, flambéing) and move-specific particle effects.</li>
+        <li><b>Admin Panel</b> — a code-gated debug menu for testing, including the secret Master Ice Cream hero.</li>
+        <li><b>Reset &amp; save safeguards</b> — an in-page warning screen before resetting, and saves that now work outside Claude.ai too.</li>
+      </ul>
+    </div>
+    <button class="admin-close-btn" id="updateLogClose">Close</button>
+  </div>
+</div>
+
+<!-- ===== TUTORIAL MODAL ===== -->
+<div class="info-overlay" id="tutorialOverlay">
+  <div class="info-card">
+    <div class="admin-title">❓ How to Play</div>
+    <div class="info-scroll">
+      <ol class="tutorial-list">
+        <li><b>🏰 Kingdom</b> — Build kitchen buildings to earn Coins automatically over time. Each building gets pricier the more you own, so spread out your spending.</li>
+        <li><b>🍔 Burger Heroes</b> — Recruit heroes from summons, then spend Crumbs to level them up. Higher rarity and level means more ATK and HP.</li>
+        <li><b>⚔️ Boss Battle</b> — Tap <b>Select Team</b> to pick up to 15 heroes. In battle, choose a move each turn — some deal damage, others heal, shield, or debuff the boss. Defeated heroes get swapped out automatically if you have a healthy one left.</li>
+        <li><b>📜 Quests</b> — Complete objectives for one-time rewards. Check back as your kingdom grows — new quests unlock naturally.</li>
+        <li><b>📖 Recipe Summon</b> — Spend Golden Sesame to summon new heroes. Rarer heroes are stronger; the pity counter guarantees you won't go too long without an Epic or Legendary.</li>
+        <li><b>👑 Royal Charter</b> — Once you've earned enough, prestige to reset your coins and buildings for permanent Crowns, which boost everything forever.</li>
+        <li><b>💾 Saving</b> — Your progress autosaves every few seconds, or tap the Save button anytime.</li>
+      </ol>
+    </div>
+    <button class="admin-close-btn" id="tutorialClose">Close</button>
+  </div>
+</div>
+
 <!-- ===== HOME SCREEN ===== -->
 <div id="homeScreen">
   <div class="home-card">
@@ -622,6 +941,7 @@
     <div class="home-title display">YL Burger Kingdom</div>
     <div class="home-tagline">Build a kingdom, recruit fast-food fighters, and battle bosses move by move.</div>
     <button class="start-btn" id="startBtn">▶ Start</button>
+    <button class="home-tutorial-link" id="homeTutorialBtn">❓ How to Play</button>
     <div class="home-sub-note" id="homeSubNote">Loading your kingdom...</div>
   </div>
 </div>
@@ -810,7 +1130,7 @@
       <div class="admin-grid">
         <button class="admin-btn" data-action="addCrown">+1 Crown</button>
         <button class="admin-btn" data-action="unlockHeroes">Unlock All Heroes</button>
-        <button class="admin-btn danger" data-action="unlockMasterFry">🍟 Unlock Master Fry</button>
+        <button class="admin-btn danger" data-action="unlockMasterFry">🍦 Unlock Master Ice Cream</button>
         <button class="admin-btn" data-action="maxHeroes">Max Level Heroes</button>
         <button class="admin-btn" data-action="healTeam">Full Heal Team</button>
         <button class="admin-btn" data-action="killBoss">Instant-Kill Boss</button>
@@ -1753,30 +2073,30 @@
     // --- Ultra Legendary: premium fine-dining heroes ---
     {id:"h122", name:"Beef Wellington", emoji:"🥩", role:"Attack", rarity:"ultra",
       moves:[
-        {name:"Pastry-Wrapped Fury", icon:"🥐", power:1.6,  kind:"dmg",   desc:"A perfectly wrapped strike, seared to perfection."},
-        {name:"Duxelles Barrage",    icon:"🍄", power:0.85, kind:"dmg2",  desc:"Two rapid strikes laced with mushroom duxelles."},
-        {name:"Michelin Star Cut",   icon:"⭐", power:1.0,  kind:"crit",  desc:"A flawless cut worthy of the highest honors."},
-        {name:"Reduction Sear",      icon:"🔥", power:0.9,  kind:"burn",  desc:"A rich pan reduction that keeps searing the foe."}
+        {name:"Pastry-Wrapped Fury", icon:"🥐", power:1.4,  kind:"dmg",   desc:"A perfectly wrapped strike, seared to perfection."},
+        {name:"Duxelles Barrage",    icon:"🍄", power:0.75, kind:"dmg2",  desc:"Two rapid strikes laced with mushroom duxelles."},
+        {name:"Michelin Star Cut",   icon:"⭐", power:0.9,  kind:"crit",  desc:"A flawless cut worthy of the highest honors."},
+        {name:"Reduction Sear",      icon:"🔥", power:0.7,  kind:"burn",  desc:"A rich pan reduction that keeps searing the foe."}
       ]},
     {id:"h123", name:"Lobster Thermidor", emoji:"🦞", role:"Support", rarity:"ultra",
       moves:[
-        {name:"Brandy Flambé",   icon:"🔥", power:1.0, kind:"dmg_debuff", desc:"A flaming brandy sear that weakens the foe's guard."},
+        {name:"Brandy Flambé",   icon:"🔥", power:0.9, kind:"dmg_debuff", desc:"A flaming brandy sear that weakens the foe's guard."},
         {name:"Gratin Rally",    icon:"🧀", power:0,   kind:"buff",       desc:"A bubbling cheese gratin fires up the whole team."},
-        {name:"Claw Strike",     icon:"🦞", power:1.2, kind:"dmg",        desc:"A precise strike from a razor-sharp claw."},
-        {name:"Butter Poach Siphon", icon:"🧈", power:0.95, kind:"drain", desc:"A rich butter poach that saps and restores vitality."}
+        {name:"Claw Strike",     icon:"🦞", power:1.1, kind:"dmg",        desc:"A precise strike from a razor-sharp claw."},
+        {name:"Butter Poach Siphon", icon:"🧈", power:0.85, kind:"drain", desc:"A rich butter poach that saps and restores vitality."}
       ]},
     {id:"h124", name:"Truffle Foie Gras", emoji:"🦆", role:"Heal", rarity:"ultra",
       moves:[
         {name:"Golden Torchon",  icon:"🍯", power:0,   kind:"heal",     desc:"A silky torchon that mends every wound."},
-        {name:"Shaved Truffle Frost", icon:"❄️", power:0.95, kind:"dmg_stun", desc:"Icy shaved truffle that may freeze the foe solid."},
-        {name:"Reduction Strike", icon:"🍷", power:1.15, kind:"dmg",     desc:"A rich wine reduction thrown with surprising force."},
-        {name:"Caramelized Sear", icon:"🔥", power:0.85, kind:"burn",    desc:"A caramelized crust that keeps burning long after impact."}
+        {name:"Shaved Truffle Frost", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"Icy shaved truffle that may freeze the foe solid."},
+        {name:"Reduction Strike", icon:"🍷", power:1.0,  kind:"dmg",     desc:"A rich wine reduction thrown with surprising force."},
+        {name:"Caramelized Sear", icon:"🔥", power:0.7,  kind:"burn",    desc:"A caramelized crust that keeps burning long after impact."}
       ]},
 
-    {id:"h15",name:"Master Fry",          emoji:"🍟", role:"Admin",   rarity:"admin",
+    {id:"h15",name:"Master Ice Cream",    emoji:"🍦", role:"Admin",   rarity:"admin",
       moves:[
         {name:"Death",             icon:"💀", power:Infinity, kind:"dmg",      desc:"Ends the fight instantly with infinite force."},
-        {name:"Fry Orbital Strike",icon:"🍟", power:Infinity, kind:"dmg2",     desc:"Calls down a truly infinite fry barrage."},
+        {name:"Ice Cream Orbital Strike",icon:"🍦", power:Infinity, kind:"dmg2",     desc:"Calls down a truly infinite scoop barrage."},
         {name:"Black Hole",        icon:"🎆", power:Infinity, kind:"dmg_stun", desc:"Freezes the foe in an infinitely crushing void."}
       ]},
   ];
@@ -1950,6 +2270,9 @@
     {id:"q23",icon:"👑", name:"Prestige Master",  desc:"Accumulate 5 Crowns from Royal Charters.",    target:5,  reward:{sesame:100},               get:(s)=>s.crowns},
     {id:"q24",icon:"📖", name:"Summon Addict",    desc:"Use the Recipe Summon 50 times.",             target:50, reward:{sesame:80},                get:(s)=>s.stats.summonsDone},
     {id:"q25",icon:"🎂", name:"Endgame Emperor",  desc:"Reach Cycle 20 in the Boss Battle.",          target:20, reward:{coins:1000000000, sesame:200}, get:(s)=>s.battle.cycle},
+    {id:"q26",icon:"🥩", name:"Ultra Collector",  desc:"Recruit an Ultra Legendary hero.",            target:1,  reward:{coins:10000000, sesame:150}, get:(s)=>HERO_DEFS.some(h=>h.rarity==="ultra" && s.heroes[h.id] && s.heroes[h.id].owned) ? 1 : 0},
+    {id:"q27",icon:"🏆", name:"Legendary Dozen",  desc:"Recruit 10 Legendary or Ultra Legendary heroes.", target:10, reward:{sesame:120, crumbs:20000}, get:(s)=>HERO_DEFS.filter(h=>(h.rarity==="legend"||h.rarity==="ultra") && s.heroes[h.id] && s.heroes[h.id].owned).length},
+    {id:"q28",icon:"📖", name:"Century Summoner", desc:"Use the Recipe Summon 100 times.",             target:100,reward:{sesame:150, crumbs:50000}, get:(s)=>s.stats.summonsDone},
   ];
   function questProgress(q){ return Math.min(q.target, q.get(state)); }
   function questComplete(q){ return questProgress(q) >= q.target; }
@@ -2049,7 +2372,19 @@
       if(window.storage && window.storage.set){
         window.storage.set(SAVE_KEY, JSON.stringify(state), false).then(()=>{
           lastSavedAt = Date.now(); updateSaveStatus();
-        }).catch(()=>{});
+        }).catch(()=> saveLocalFallback());
+      } else {
+        saveLocalFallback();
+      }
+    }catch(e){ saveLocalFallback(); }
+  }
+  function saveLocalFallback(){
+    // Used automatically when running outside Claude's artifact sandbox (e.g. hosted on GitHub Pages),
+    // where window.storage isn't available.
+    try{
+      if(typeof localStorage !== "undefined"){
+        localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+        lastSavedAt = Date.now(); updateSaveStatus();
       }
     }catch(e){}
   }
@@ -2058,23 +2393,31 @@
       if(window.storage && window.storage.get){
         const res = await window.storage.get(SAVE_KEY, false);
         if(res && res.value){
-          const loaded = JSON.parse(res.value);
-          state = Object.assign(freshState(), loaded);
-          GEN_DEFS.forEach(g=>{ if(!(g.id in state.gens)) state.gens[g.id]=0; });
-          HERO_DEFS.forEach(h=>{ if(!(h.id in state.heroes)) state.heroes[h.id]={owned:STARTER_HERO_IDS.includes(h.id), level:0}; });
-          if(!state.battle) state.battle = freshBattle();
-          if(!state.battle.heroHp) state.battle.heroHp = {};
-          if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 };
-          if(state.stats.pityEpic === undefined) state.stats.pityEpic = 0;
-          if(state.stats.pityLegend === undefined) state.stats.pityLegend = 0;
-          if(!state.questsClaimed) state.questsClaimed = {};
-          if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
-          lastSavedAt = Date.now();
+          applyLoadedState(JSON.parse(res.value));
+          return true;
+        }
+      } else if(typeof localStorage !== "undefined"){
+        const raw = localStorage.getItem(SAVE_KEY);
+        if(raw){
+          applyLoadedState(JSON.parse(raw));
           return true;
         }
       }
     }catch(e){}
     return false;
+  }
+  function applyLoadedState(loaded){
+    state = Object.assign(freshState(), loaded);
+    GEN_DEFS.forEach(g=>{ if(!(g.id in state.gens)) state.gens[g.id]=0; });
+    HERO_DEFS.forEach(h=>{ if(!(h.id in state.heroes)) state.heroes[h.id]={owned:STARTER_HERO_IDS.includes(h.id), level:0}; });
+    if(!state.battle) state.battle = freshBattle();
+    if(!state.battle.heroHp) state.battle.heroHp = {};
+    if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 };
+    if(state.stats.pityEpic === undefined) state.stats.pityEpic = 0;
+    if(state.stats.pityLegend === undefined) state.stats.pityLegend = 0;
+    if(!state.questsClaimed) state.questsClaimed = {};
+    if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
+    lastSavedAt = Date.now();
   }
 
   // ---------- DOM refs ----------
@@ -2330,6 +2673,7 @@
   let bossDebuff = {mult:1, turns:0};
   let bossStunTurns = 0;
   let heroShield = {reduction:0, turns:0};
+  let heroShieldWasActive = false;
   let bossBurn = {dmgPerTurn:0, turns:0};
 
   function addLog(msg){ state.battle.log.unshift(msg); state.battle.log = state.battle.log.slice(0,6); }
@@ -2337,6 +2681,388 @@
   function activeHero(){
     if(!state.battle.activeHeroId) return null;
     return HERO_DEFS.find(h=>h.id===state.battle.activeHeroId) || null;
+  }
+
+  // Derives a beam size multiplier purely from how big/dramatic a move's own name
+  // and description sound — bigger, more elaborate language gets a bigger beam.
+  function moveBeamScale(move){
+    if(!move) return 1;
+    const text = ((move.name || "") + " " + (move.desc || "")).toLowerCase();
+    let scale = 0.85;
+
+    // Longer, more elaborate names/descriptions read as more dramatic moves
+    scale += Math.min(0.45, text.length / 220);
+
+    const bigWords = ["infinite","massive","truly","overwhelming","devastating","crushing",
+      "orbital","meteor","comet","ultimate","royal","sovereign","grand","mega","colossal",
+      "titan","emperor","void","black hole","fury","overload","rush","barrage","strike",
+      "michelin","reduction","brandy","torchon"];
+    bigWords.forEach(w=>{ if(text.includes(w)) scale += 0.14; });
+
+    const smallWords = ["quick","light","small","tiny","poke","jab","dart","spritz","pinch","touch","balm"];
+    smallWords.forEach(w=>{ if(text.includes(w)) scale -= 0.12; });
+
+    return Math.max(0.55, Math.min(2.4, scale));
+  }
+
+  // Draws a rich, layered energy beam between two points in combatRow's coordinate
+  // space: a soft outer glow, a colored mid-layer, and a hot white core, plus
+  // flashes at both ends and a few sparks racing along its length. Overall size
+  // scales with how big the move's own name/description sounds.
+  function fireBeam(x1, y1, x2, y2, color, scale){
+    scale = scale || 1;
+    const dx = x2-x1, dy = y2-y1;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+    const group = document.createElement("div");
+    group.className = "move-beam-group firing";
+    group.style.left = x1 + "px";
+    group.style.top = y1 + "px";
+    group.style.width = dist + "px";
+    group.style.setProperty("--beam-color", color);
+    group.style.setProperty("--beam-scale", scale);
+    group.style.transform = `rotate(${angle}deg)`;
+    ["glow","mid","core"].forEach(cls=>{
+      const layer = document.createElement("div");
+      layer.className = "move-beam-layer " + cls;
+      group.appendChild(layer);
+    });
+    combatRow.appendChild(group);
+    setTimeout(()=>group.remove(), 560);
+
+    spawnPointFlash(x1, y1, color, 28*scale);
+    setTimeout(()=> spawnPointFlash(x2, y2, color, 46*scale), 90);
+
+    for(let i=0;i<4;i++){
+      setTimeout(()=>{
+        const spark = document.createElement("div");
+        spark.className = "beam-spark";
+        spark.style.color = color;
+        spark.style.background = "#fff";
+        spark.style.width = (13*scale) + "px";
+        spark.style.height = (13*scale) + "px";
+        spark.style.left = x1 + "px";
+        spark.style.top = y1 + "px";
+        combatRow.appendChild(spark);
+        void spark.offsetWidth;
+        spark.style.transition = "left 200ms linear, top 200ms linear, opacity 200ms ease-in";
+        spark.style.left = x2 + "px";
+        spark.style.top = y2 + "px";
+        setTimeout(()=>{ spark.style.opacity = "0"; }, 160);
+        setTimeout(()=>spark.remove(), 230);
+      }, i*55);
+    }
+  }
+  function spawnPointFlash(x, y, color, size){
+    const el = document.createElement("div");
+    el.className = "beam-point-flash";
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+    el.style.setProperty("--flash-color", color);
+    if(size){ el.style.width = size+"px"; el.style.height = size+"px"; }
+    combatRow.appendChild(el);
+    setTimeout(()=>el.remove(), 420);
+  }
+  function spawnImpactRing(container, color){
+    const ring = document.createElement("div");
+    ring.className = "impact-ring";
+    ring.style.setProperty("--ring-color", color);
+    container.appendChild(ring);
+    setTimeout(()=>ring.remove(), 550);
+  }
+  function spawnTrailDot(x, y, color){
+    const dot = document.createElement("div");
+    dot.className = "trail-dot";
+    dot.style.left = x + "px";
+    dot.style.top = y + "px";
+    dot.style.background = color;
+    dot.style.boxShadow = "0 0 6px " + color;
+    combatRow.appendChild(dot);
+    setTimeout(()=>dot.remove(), 450);
+  }
+  // A literal black hole: a swirling void appears and pulls particles inward,
+  // instead of the normal outward burst — and the target itself spins and shrinks
+  // as if being sucked into the void before snapping back.
+  function spawnBlackHole(container){
+    const hole = document.createElement("div");
+    hole.className = "black-hole-vfx";
+    const ring = document.createElement("div");
+    ring.className = "bh-ring";
+    const disk = document.createElement("div");
+    disk.className = "bh-disk";
+    const core = document.createElement("div");
+    core.className = "bh-core";
+    hole.appendChild(ring);
+    hole.appendChild(disk);
+    hole.appendChild(core);
+    container.appendChild(hole);
+    setTimeout(()=>hole.remove(), 1000);
+    const emojis = ["🔥","✨","💫","⭐"];
+    for(let i=0;i<10;i++){
+      const p = document.createElement("span");
+      p.className = "vortex-particle";
+      p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      const angle = Math.random()*Math.PI*2;
+      const dist = 50 + Math.random()*30;
+      p.style.setProperty("--vx", Math.cos(angle)*dist + "px");
+      p.style.setProperty("--vy", Math.sin(angle)*dist + "px");
+      const dur = 600 + Math.random()*300;
+      p.style.animationDuration = dur + "ms";
+      p.style.animationDelay = (Math.random()*200) + "ms";
+      container.appendChild(p);
+      setTimeout(()=>p.remove(), dur+300);
+    }
+    flashFx(container, "rgba(255,150,30,0.6)");
+    shakeVisual(container);
+
+    const emojiEl = container.querySelector("span");
+    if(emojiEl){
+      emojiEl.classList.remove("boss-swirl");
+      void emojiEl.offsetWidth;
+      emojiEl.classList.add("boss-swirl");
+      setTimeout(()=> emojiEl.classList.remove("boss-swirl"), 1060);
+    }
+  }
+  // A crown physically drops onto the hero for royal-themed rally moves.
+  function spawnCrownDescend(container){
+    const crown = document.createElement("div");
+    crown.className = "crown-descend";
+    crown.textContent = "👑";
+    container.appendChild(crown);
+    setTimeout(()=>crown.remove(), 800);
+  }
+  // A dusty crater burst for meteor/orbital-style impacts landing from the sky.
+  function spawnCraterImpact(container){
+    spawnParticles(container, ["💥","🪨","💨"], 10, 44, 650);
+    spawnImpactRing(container, "rgba(139,94,60,0.8)");
+    spawnImpactRing(container, "rgba(255,255,255,0.6)");
+  }
+  // A looming skull for "Death"-style finishers.
+  function spawnSkullOverlay(container){
+    const skull = document.createElement("div");
+    skull.className = "skull-vfx";
+    skull.textContent = "💀";
+    container.appendChild(skull);
+    setTimeout(()=>skull.remove(), 700);
+    flashFx(container, "rgba(20,20,20,0.75)");
+  }
+  // A literal sheet of ice forms over the target for freeze-themed stuns.
+  function spawnIceCrystal(container){
+    const ice = document.createElement("div");
+    ice.className = "ice-crystal-vfx";
+    container.appendChild(ice);
+    setTimeout(()=>ice.remove(), 750);
+    spawnParticles(container, ["❄️","💎"], 8, 40, 600);
+  }
+  // A physical shield rises up from below for defensive "wall"/"fortress" moves.
+  function spawnRisingWall(container){
+    const wall = document.createElement("div");
+    wall.className = "rising-wall-vfx";
+    wall.textContent = "🛡️";
+    container.appendChild(wall);
+    setTimeout(()=>wall.remove(), 650);
+  }
+  // The persistent shield ring visibly cracks and breaks apart once it expires.
+  function spawnShieldShatter(container){
+    spawnImpactRing(container, "rgba(79,143,209,0.9)");
+    setTimeout(()=> spawnImpactRing(container, "rgba(220,240,255,0.7)"), 80);
+    spawnParticles(container, ["💠","🔷","✨"], 10, 46, 550);
+    flashFx(container, "rgba(79,143,209,0.5)");
+    shakeVisual(container);
+  }
+  // A small swarm of bees circles the target for "Comb Strike"-style hits.
+  function spawnBeeSwarm(container){
+    for(let i=0;i<6;i++){
+      const bee = document.createElement("span");
+      bee.className = "bee-swarm-particle";
+      bee.textContent = "🐝";
+      const angle = (i/6) * Math.PI * 2;
+      bee.style.setProperty("--bx", Math.cos(angle)*36 + "px");
+      bee.style.setProperty("--by", Math.sin(angle)*36 + "px");
+      bee.style.animationDelay = (i*40) + "ms";
+      container.appendChild(bee);
+      setTimeout(()=>bee.remove(), 700);
+    }
+  }
+  // A shower of golden droplets for honey/drizzle-themed heals.
+  function spawnGoldenRain(container){
+    spawnParticles(container, ["🍯","✨","💛"], 8, 34, 650);
+    flashFx(container, "rgba(246,196,69,0.5)");
+  }
+
+  // Extra flair layered on top of every move, scaled by the caster's rarity —
+  // so an Epic/Legendary/Ultra hero's attacks visibly feel like a bigger deal
+  // than a Common or Rare hero's, no matter which specific move they use.
+  const RARITY_FLAIR = {
+    epic:   {rings:["rgba(155,111,201,0.8)","rgba(255,255,255,0.5)"],                     particles:["🔮","💜","✨"],        count:8,  spread:38, sparkleRing:6},
+    legend: {rings:["rgba(232,185,59,0.85)","rgba(255,255,255,0.6)"],                     particles:["⭐","👑","✨","🌟"],    count:11, spread:44, sparkleRing:8},
+    ultra:  {rings:["rgba(230,57,70,0.9)","rgba(246,196,69,0.75)","rgba(255,255,255,0.6)"],particles:["🔥","💎","🥂","✨","🌟"],count:16, spread:52, sparkleRing:12},
+  };
+  // A ring of sparkles that bursts outward evenly around the target, on top of the
+  // normal scattered particle burst — gives higher rarities a more "radiant" look.
+  function spawnSparkleRing(container, emojis, count, radius, durationMs){
+    for(let i=0;i<count;i++){
+      const p = document.createElement("span");
+      p.className = "vfx-particle";
+      p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      const angle = (i/count) * Math.PI * 2;
+      p.style.setProperty("--dx", (Math.cos(angle)*radius) + "px");
+      p.style.setProperty("--dy", (Math.sin(angle)*radius) + "px");
+      p.style.setProperty("--rot", (Math.random()*360-180) + "deg");
+      p.style.animationDuration = durationMs + "ms";
+      container.appendChild(p);
+      setTimeout(()=>p.remove(), durationMs+250);
+    }
+  }
+  function applyRarityFlair(rarity, container){
+    const flair = RARITY_FLAIR[rarity];
+    if(!flair) return;
+    flair.rings.forEach((color, i)=>{
+      setTimeout(()=> spawnImpactRing(container, color), i*90);
+    });
+    spawnParticles(container, flair.particles, flair.count, flair.spread, 750);
+    spawnSparkleRing(container, flair.particles, flair.sparkleRing, flair.spread*0.7, 650);
+    if(rarity === "ultra"){
+      setTimeout(()=> spawnSparkleRing(container, flair.particles, flair.sparkleRing, flair.spread*1.1, 700), 120);
+    }
+  }
+
+  // Vines visibly curl in and constrict around the target.
+  function spawnVineWrap(container){
+    spawnImpactRing(container, "rgba(110,143,61,0.85)");
+    const emojis = ["🌿","🍃","🌱"];
+    for(let i=0;i<8;i++){
+      const p = document.createElement("span");
+      p.className = "vortex-particle";
+      p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      const angle = Math.random()*Math.PI*2;
+      const dist = 40 + Math.random()*24;
+      p.style.setProperty("--vx", Math.cos(angle)*dist + "px");
+      p.style.setProperty("--vy", Math.sin(angle)*dist + "px");
+      const dur = 500 + Math.random()*250;
+      p.style.animationDuration = dur + "ms";
+      container.appendChild(p);
+      setTimeout(()=>p.remove(), dur+250);
+    }
+  }
+  // Molten cheese drips down the target after a melt-themed hit.
+  function spawnCheeseDrip(container){
+    for(let i=0;i<4;i++){
+      const drip = document.createElement("div");
+      drip.className = "cheese-drip";
+      drip.style.left = (30 + Math.random()*40) + "%";
+      drip.style.animationDelay = (i*70) + "ms";
+      container.appendChild(drip);
+      setTimeout(()=>drip.remove(), 900);
+    }
+    spawnParticles(container, ["🧀"], 5, 30, 550);
+  }
+  // A pulse of concentric rings for rallying-cry/anthem-style team buffs.
+  function spawnShockwave(container, color){
+    for(let i=0;i<3;i++){
+      setTimeout(()=> spawnImpactRing(container, color), i*120);
+    }
+  }
+  // A quick slash mark sweeps across the target at the given angle.
+  function spawnSlash(container, angleDeg, delay){
+    setTimeout(()=>{
+      const slash = document.createElement("div");
+      slash.className = "slash-mark firing";
+      slash.style.setProperty("--slash-angle", angleDeg + "deg");
+      container.appendChild(slash);
+      setTimeout(()=>slash.remove(), 350);
+    }, delay || 0);
+  }
+  function spawnDoubleSlash(container){
+    spawnSlash(container, -35, 0);
+    spawnSlash(container, 35, 90);
+  }
+  function spawnTripleSlash(container){
+    spawnSlash(container, -30, 0);
+    spawnSlash(container, 10, 90);
+    spawnSlash(container, 40, 180);
+  }
+
+  // Detects moves whose name implies an aerial/orbital attack (falls from the sky)
+  // vs a normal ground-level strike (travels hero -> boss).
+  function moveTrajectory(move){
+    const n = (move.name || "").toLowerCase();
+    if(/orbital|meteor|comet|sky|falling|drop|rain|barrage/.test(n)) return "sky";
+    return "ground";
+  }
+
+  // Detects moves whose name implies a literal, distinct visual (a black hole spawns
+  // an actual vortex, a royal rally drops an actual crown), overriding the generic
+  // kind-based FX for just that move.
+  function specialMoveEffect(move){
+    const n = (move.name || "").toLowerCase();
+    if(n.includes("black hole")) return "blackhole";
+    if(n.includes("royal decree") || n.includes("noble rally")) return "crown";
+    if(n === "death") return "skull";
+    if(move.kind === "dmg_stun" && /frost|freeze|chill|frozen/.test(n)) return "icecrystal";
+    if(move.kind === "shield") return "risingwall";
+    if(n.includes("comb strike")) return "beeswarm";
+    if(move.kind === "heal" && /golden|honey/.test(n)) return "goldenrain";
+    if(/vine|leaf lash|photosynthesis/.test(n)) return "vinewrap";
+    if(n.includes("melt slam")) return "cheesemelt";
+    if(move.kind === "buff") return "shockwave";
+    return null;
+  }
+
+  // Animates a move's icon physically crossing the battlefield to land the hit,
+  // trailing a comet-like glow behind it and finishing with a beam flash on impact.
+  // "ground" trajectory: flies from the attacker straight to the target.
+  // "sky" trajectory: drops from high above the target, like an orbital strike.
+  function launchProjectile(fromEl, toEl, icon, durationMs, trajectory, move){
+    return new Promise(resolve=>{
+      const containerRect = combatRow.getBoundingClientRect();
+      const toRect = toEl.getBoundingClientRect();
+      const endX = toRect.left + toRect.width/2 - containerRect.left;
+      const endY = toRect.top + toRect.height/2 - containerRect.top;
+      const trailColor = trajectory === "sky" ? "#9fd3ff" : "#ffcf6b";
+
+      const proj = document.createElement("div");
+      proj.className = "move-projectile";
+      proj.textContent = icon;
+
+      let startX, startY, startScale, endScale, endRotate, easing;
+      if(trajectory === "sky"){
+        startX = endX;
+        startY = endY - 320; // begins well above the battlefield
+        startScale = 0.35; endScale = 1.25; endRotate = 0;
+        easing = "cubic-bezier(.55,0,.85,.35)"; // accelerates like it's falling under gravity
+        proj.style.fontSize = "34px";
+      } else {
+        const fromRect = fromEl.getBoundingClientRect();
+        startX = fromRect.left + fromRect.width/2 - containerRect.left;
+        startY = fromRect.top + fromRect.height/2 - containerRect.top;
+        startScale = 0.7; endScale = 1.15; endRotate = 340;
+        easing = "cubic-bezier(.25,.6,.3,1)";
+      }
+
+      proj.style.transform = `translate(${startX}px, ${startY}px) scale(${startScale}) rotate(0deg)`;
+      proj.style.opacity = "1";
+      combatRow.appendChild(proj);
+
+      void proj.offsetWidth; // force reflow so the transition below actually animates
+      proj.style.transition = "transform " + durationMs + "ms " + easing;
+      proj.style.transform = `translate(${endX}px, ${endY}px) scale(${endScale}) rotate(${endRotate}deg)`;
+
+      // Leave a fading comet trail behind the projectile as it travels
+      const trailTimer = setInterval(()=>{
+        const r = proj.getBoundingClientRect();
+        spawnTrailDot(r.left + r.width/2 - containerRect.left, r.top + r.height/2 - containerRect.top, trailColor);
+      }, 45);
+
+      setTimeout(()=>{
+        clearInterval(trailTimer);
+        fireBeam(startX, startY, endX, endY, trailColor, moveBeamScale(move));
+        if(trajectory === "sky") spawnCraterImpact(toEl);
+        proj.remove();
+        resolve();
+      }, durationMs);
+    });
   }
 
   function showFloat(container, text, cls){
@@ -2373,26 +3099,60 @@
     el.classList.remove("fx-flash"); void el.offsetWidth; el.classList.add("fx-flash");
     setTimeout(()=>el.classList.remove("fx-flash"), 420);
   }
+  // Maps each move's icon to particles that actually match what the move depicts,
+  // so "Bagel Bash" throws bagels, "Scoville Shot" throws pepper heat, etc.
+  const ICON_FX = {
+    "⚡":["⚡","💫"], "⛰️":["🪨","💥"], "❄️":["❄️","🥶"], "⭐":["⭐","✨"],
+    "🌭":["🌭","💥"], "🌰":["🌰","💥"], "🌱":["🌱","💚"], "🌶️":["🌶️","🔥"],
+    "🌿":["🌿","🍃"], "🍄":["🍄","💨"], "🍅":["🍅","💦"], "🍔":["🍔","💥"],
+    "🍢":["🍢","💥"], "🍦":["🍦","❄️"], "🍯":["🍯","✨"], "🍷":["🍷","💦"],
+    "🎆":["🎆","✨"], "🎯":["🎯","💥"], "🎺":["🎺","⬆️"], "🏰":["🏰","💥"],
+    "🐝":["🐝","💥"], "👊":["👊","💥"], "👑":["👑","✨"], "💀":["💀","☠️"],
+    "💥":["💥","💢"], "💨":["💨","💥"], "💫":["💫","✨"], "📯":["📯","⬆️"],
+    "🔥":["🔥","💢"], "🔪":["🔪","💢"], "🔫":["🔫","💥"], "🗡️":["🗡️","💢"],
+    "🛡️":["🛡️","✨"], "🥐":["🥐","✨"], "🥒":["🥒","💦"], "🥖":["🥖","💨"],
+    "🥗":["🥗","💨"], "🥩":["🥩","💥"], "🥬":["🥬","💨"], "🥯":["🥯","💥"],
+    "🥵":["🥵","🔥"], "🦞":["🦞","💦"], "🧀":["🧀","💥"], "🧅":["🧅","💨"],
+    "🧈":["🧈","💛"], "🧊":["🧊","❄️"], "🧱":["🧱","💥"], "🩸":["🩸","💢"],
+    "🩹":["🩹","💚"], "🪨":["🪨","💥"], "🫕":["🫕","🔥"],
+  };
+  function moveParticles(move, fallback){
+    return (move && ICON_FX[move.icon]) || fallback;
+  }
+
   const FX = {
-    hitBoss(){ spawnParticles(bossVisual, ["💥","⚡"], 6, 34, 550); flashFx(bossVisual, "rgba(192,57,43,0.55)"); shakeVisual(bossVisual); },
-    hitBossBig(){
-      spawnParticles(bossVisual, ["💥","💢"], 9, 40, 620); flashFx(bossVisual, "rgba(192,57,43,0.6)");
+    hitBoss(move){
+      spawnParticles(bossVisual, moveParticles(move, ["💥","⚡"]), 6, 34, 550); flashFx(bossVisual, "rgba(192,57,43,0.55)");
+      spawnImpactRing(bossVisual, "rgba(255,255,255,0.85)"); shakeVisual(bossVisual);
+    },
+    hitBossBig(move){
+      spawnParticles(bossVisual, moveParticles(move, ["💥","💢"]), 9, 40, 620); flashFx(bossVisual, "rgba(192,57,43,0.6)");
+      spawnImpactRing(bossVisual, "rgba(255,255,255,0.9)"); spawnImpactRing(bossVisual, "rgba(228,87,46,0.7)");
       shakeVisual(bossVisual); setTimeout(()=>shakeVisual(bossVisual), 160);
     },
-    debuffBoss(){ spawnParticles(bossVisual, ["🍅","💦"], 6, 30, 600); flashFx(bossVisual, "rgba(228,87,46,0.5)"); shakeVisual(bossVisual); },
-    freezeBoss(){
-      spawnParticles(bossVisual, ["❄️","🥶"], 7, 32, 650); flashFx(bossVisual, "rgba(79,143,209,0.5)"); shakeVisual(bossVisual);
+    debuffBoss(move){
+      spawnParticles(bossVisual, moveParticles(move, ["🍅","💦"]), 6, 30, 600); flashFx(bossVisual, "rgba(228,87,46,0.5)");
+      spawnImpactRing(bossVisual, "rgba(228,87,46,0.8)"); shakeVisual(bossVisual);
     },
-    buffHero(){ spawnParticles(heroVisual, ["⭐","⬆️"], 6, 30, 600); flashFx(heroVisual, "rgba(246,196,69,0.55)"); },
-    healHero(){ spawnParticles(heroVisual, ["✨","💚"], 6, 30, 600); flashFx(heroVisual, "rgba(143,191,159,0.55)"); },
-    hitHero(){ spawnParticles(heroVisual, ["💢","💥"], 5, 28, 500); flashFx(heroVisual, "rgba(192,57,43,0.5)"); shakeVisual(heroVisual); },
-    burnBoss(){ spawnParticles(bossVisual, ["🔥","💥"], 7, 34, 650); flashFx(bossVisual, "rgba(228,87,46,0.55)"); shakeVisual(bossVisual); },
+    freezeBoss(move){
+      spawnParticles(bossVisual, moveParticles(move, ["❄️","🥶"]), 7, 32, 650); flashFx(bossVisual, "rgba(79,143,209,0.5)");
+      spawnImpactRing(bossVisual, "rgba(79,143,209,0.85)"); shakeVisual(bossVisual);
+    },
+    buffHero(move){ spawnParticles(heroVisual, moveParticles(move, ["⭐","⬆️"]), 6, 30, 600); flashFx(heroVisual, "rgba(246,196,69,0.55)"); spawnImpactRing(heroVisual, "rgba(246,196,69,0.7)"); },
+    healHero(move){ spawnParticles(heroVisual, moveParticles(move, ["✨","💚"]), 6, 30, 600); flashFx(heroVisual, "rgba(143,191,159,0.55)"); spawnImpactRing(heroVisual, "rgba(143,191,159,0.7)"); },
+    hitHero(){ spawnParticles(heroVisual, ["💢","💥"], 5, 28, 500); flashFx(heroVisual, "rgba(192,57,43,0.5)"); spawnImpactRing(heroVisual, "rgba(192,57,43,0.75)"); shakeVisual(heroVisual); },
+    burnBoss(move){
+      spawnParticles(bossVisual, moveParticles(move, ["🔥","💥"]), 7, 34, 650); flashFx(bossVisual, "rgba(228,87,46,0.55)");
+      spawnImpactRing(bossVisual, "rgba(228,87,46,0.85)"); shakeVisual(bossVisual);
+    },
     burnTick(){ spawnParticles(bossVisual, ["🔥"], 4, 26, 500); },
-    shieldHero(){ spawnParticles(heroVisual, ["🛡️","✨"], 6, 30, 600); flashFx(heroVisual, "rgba(79,143,209,0.5)"); },
-    drain(){
-      spawnParticles(bossVisual, ["🩸","💢"], 5, 28, 550); flashFx(bossVisual, "rgba(192,57,43,0.5)"); shakeVisual(bossVisual);
+    shieldHero(move){ spawnParticles(heroVisual, moveParticles(move, ["🛡️","✨"]), 6, 30, 600); flashFx(heroVisual, "rgba(79,143,209,0.5)"); spawnImpactRing(heroVisual, "rgba(79,143,209,0.7)"); },
+    drain(move){
+      spawnParticles(bossVisual, moveParticles(move, ["🩸","💢"]), 5, 28, 550); flashFx(bossVisual, "rgba(192,57,43,0.5)");
+      spawnImpactRing(bossVisual, "rgba(192,57,43,0.75)"); shakeVisual(bossVisual);
       spawnParticles(heroVisual, ["💚","✨"], 5, 26, 550); flashFx(heroVisual, "rgba(143,191,159,0.5)");
     },
+    castGlow(el, color){ spawnParticles(el, ["✨","⭐"], 4, 22, 350); flashFx(el, color); },
     victory(){ spawnParticles(bossVisual, ["🎉","✨","🏆","🌟"], 16, 58, 950); flashFx(bossVisual, "rgba(246,196,69,0.5)"); },
     defeat(){
       combatRow.classList.remove("shake-strong"); void combatRow.offsetWidth; combatRow.classList.add("shake-strong");
@@ -2483,13 +3243,19 @@
     heroBuffTag.textContent = "⚡ ATK Up (" + heroBuff.turns + ")";
     heroShieldTag.style.display = heroShield.turns>0 ? "inline-block" : "none";
     heroShieldTag.textContent = "🛡️ Shielded (" + heroShield.turns + ")";
+    const shieldNowActive = heroShield.turns>0;
+    if(heroShieldWasActive && !shieldNowActive){ spawnShieldShatter(heroVisual); }
+    heroShieldWasActive = shieldNowActive;
+    heroVisual.classList.toggle("walled", shieldNowActive);
     bossDebuffTag.style.display = bossDebuff.turns>0 ? "inline-block" : "none";
     bossDebuffTag.textContent = "↓ ATK Down (" + bossDebuff.turns + ")";
     bossBurnTag.style.display = bossBurn.turns>0 ? "inline-block" : "none";
     bossBurnTag.textContent = "🔥 Burning (" + bossBurn.turns + ")";
   }
 
-  function playerUseMove(move){
+  const OFFENSIVE_KINDS = ["dmg","dmg2","dmg_debuff","dmg_stun","drain","burn","crit","multi3"];
+
+  async function playerUseMove(move){
     if(phase !== "player") return;
     const h = activeHero();
     if(!h) return;
@@ -2498,10 +3264,30 @@
     phase = "busy";
     renderBattleStatic();
 
+    // Hero winds up before releasing the move
+    FX.castGlow(heroVisual, "rgba(255,255,255,0.6)");
+
+    if(OFFENSIVE_KINDS.includes(move.kind)){
+      const trajectory = moveTrajectory(move);
+      await launchProjectile(heroVisual, bossVisual, move.icon, trajectory === "sky" ? 550 : 380, trajectory, move);
+    } else {
+      // small self-cast beat so buffs/heals/shields don't resolve instantly
+      await new Promise(r=>setTimeout(r, 140));
+    }
+
     if(move.kind === "dmg" || move.kind === "dmg_debuff" || move.kind === "dmg_stun"){
       const dmg = Math.max(1, Math.round(atkStat * move.power));
       state.battle.bossHp -= dmg;
-      if(move.kind === "dmg_stun") FX.freezeBoss(); else if(move.kind === "dmg_debuff") FX.debuffBoss(); else FX.hitBoss();
+      const special = specialMoveEffect(move);
+      if(special === "blackhole"){ spawnBlackHole(bossVisual); }
+      else if(special === "skull"){ spawnSkullOverlay(bossVisual); shakeVisual(bossVisual); }
+      else if(special === "beeswarm"){ spawnBeeSwarm(bossVisual); FX.hitBoss(move); }
+      else if(special === "icecrystal"){ spawnIceCrystal(bossVisual); shakeVisual(bossVisual); }
+      else if(special === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
+      else if(special === "cheesemelt"){ spawnCheeseDrip(bossVisual); shakeVisual(bossVisual); }
+      else if(move.kind === "dmg_stun") FX.freezeBoss(move);
+      else if(move.kind === "dmg_debuff") FX.debuffBoss(move);
+      else FX.hitBoss(move);
       showFloat(bossVisual, "-"+fmt(dmg), "boss");
       addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP.");
       if(move.kind === "dmg_debuff"){
@@ -2519,23 +3305,29 @@
         const dmg = Math.max(1, Math.round(atkStat * move.power));
         state.battle.bossHp -= dmg; total += dmg;
       }
-      FX.hitBossBig();
+      FX.hitBossBig(move);
+      spawnDoubleSlash(bossVisual);
       showFloat(bossVisual, "-"+fmt(total), "boss");
       addLog(h.name + " used " + move.name + "! Hits twice for -" + fmt(total) + " HP total.");
     } else if(move.kind === "buff"){
       heroBuff = {mult:1.5, turns:3};
-      FX.buffHero();
+      const special = specialMoveEffect(move);
+      if(special === "crown"){ spawnCrownDescend(heroVisual); flashFx(heroVisual, "rgba(246,196,69,0.55)"); }
+      else if(special === "shockwave"){ spawnShockwave(heroVisual, "rgba(246,196,69,0.7)"); spawnParticles(heroVisual, ["⭐","⬆️"], 6, 30, 600); }
+      else FX.buffHero(move);
       addLog(h.name + " used " + move.name + "! ATK is boosted!");
     } else if(move.kind === "heal"){
       const max = heroMaxHp(h, rec);
       const healAmt = Math.round(max*0.3);
       state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
-      FX.healHero();
+      if(specialMoveEffect(move) === "goldenrain"){ spawnGoldenRain(heroVisual); }
+      else FX.healHero(move);
       showFloat(heroVisual, "+"+fmt(healAmt), "heal");
       addLog(h.name + " used " + move.name + "! Recovered " + fmt(healAmt) + " HP.");
     } else if(move.kind === "shield"){
       heroShield = {reduction:0.5, turns:3};
-      FX.shieldHero();
+      if(specialMoveEffect(move) === "risingwall"){ spawnRisingWall(heroVisual); flashFx(heroVisual, "rgba(79,143,209,0.5)"); }
+      else FX.shieldHero(move);
       addLog(h.name + " used " + move.name + "! A protective shield forms!");
     } else if(move.kind === "drain"){
       const dmg = Math.max(1, Math.round(atkStat * move.power));
@@ -2543,7 +3335,8 @@
       const healAmt = Math.round(dmg*0.5);
       const max = heroMaxHp(h, rec);
       state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
-      FX.drain();
+      if(specialMoveEffect(move) === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
+      else FX.drain(move);
       showFloat(bossVisual, "-"+fmt(dmg), "boss");
       showFloat(heroVisual, "+"+fmt(healAmt), "heal");
       addLog(h.name + " used " + move.name + "! Drains " + fmt(dmg) + " HP and heals " + fmt(healAmt) + "!");
@@ -2551,13 +3344,13 @@
       const dmg = Math.max(1, Math.round(atkStat * move.power));
       state.battle.bossHp -= dmg;
       bossBurn = {dmgPerTurn: Math.max(1, Math.round(atkStat*0.3)), turns:3};
-      FX.burnBoss();
+      FX.burnBoss(move);
       showFloat(bossVisual, "-"+fmt(dmg), "boss");
       addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP and set the foe ablaze!");
     } else if(move.kind === "crit"){
       const critMult = 1.8 + Math.random()*0.6;
       const dmg = Math.max(1, Math.round(atkStat * move.power * critMult));
-      FX.hitBossBig();
+      FX.hitBossBig(move);
       showFloat(bossVisual, "-"+fmt(dmg)+"!", "boss");
       state.battle.bossHp -= dmg;
       addLog(h.name + " used " + move.name + "! CRITICAL HIT for -" + fmt(dmg) + " HP!");
@@ -2567,10 +3360,15 @@
         const dmg = Math.max(1, Math.round(atkStat * move.power));
         state.battle.bossHp -= dmg; total += dmg;
       }
-      FX.hitBossBig(); setTimeout(()=>shakeVisual(bossVisual), 300);
+      FX.hitBossBig(move); setTimeout(()=>shakeVisual(bossVisual), 300);
+      spawnTripleSlash(bossVisual);
       showFloat(bossVisual, "-"+fmt(total), "boss");
       addLog(h.name + " used " + move.name + "! Hits three times for -" + fmt(total) + " HP total!");
     }
+
+    // Epic/Legendary/Ultra Legendary heroes get extra flair on every move they use,
+    // so their attacks and casts visibly stand out from Common/Rare heroes.
+    applyRarityFlair(h.rarity, OFFENSIVE_KINDS.includes(move.kind) ? bossVisual : heroVisual);
 
     renderBattleStatic(); renderBattleDynamic();
 
@@ -2581,7 +3379,7 @@
     setTimeout(bossTurn, 700);
   }
 
-  function bossTurn(){
+  async function bossTurn(){
     const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
     const boss = BOSS_DEFS[state.battle.bossIndex];
 
@@ -2609,6 +3407,7 @@
       const h = activeHero();
       if(h){
         const rec = state.heroes[h.id];
+        await launchProjectile(bossVisual, heroVisual, boss.icon, 340, "ground");
         const bossAtk = bStats.atk * (bossDebuff.turns>0 ? bossDebuff.mult : 1);
         let dmg = Math.max(1, Math.round(bossAtk * (0.85 + Math.random()*0.3)));
         if(heroShield.turns>0){ dmg = Math.max(1, Math.round(dmg * (1 - heroShield.reduction))); }
@@ -3102,6 +3901,22 @@
     renderAll();
     save();
   });
+
+  // ---------- UPDATE LOG & TUTORIAL MODALS ----------
+  const updateLogOpenBtn = document.getElementById("updateLogOpenBtn");
+  const updateLogOverlay = document.getElementById("updateLogOverlay");
+  const updateLogClose = document.getElementById("updateLogClose");
+  const tutorialOpenBtn = document.getElementById("tutorialOpenBtn");
+  const tutorialOverlay = document.getElementById("tutorialOverlay");
+  const tutorialClose = document.getElementById("tutorialClose");
+  const homeTutorialBtn = document.getElementById("homeTutorialBtn");
+
+  updateLogOpenBtn.addEventListener("click", ()=>{ updateLogOverlay.style.display = "flex"; });
+  updateLogClose.addEventListener("click", ()=>{ updateLogOverlay.style.display = "none"; });
+  function openTutorial(){ tutorialOverlay.style.display = "flex"; }
+  tutorialOpenBtn.addEventListener("click", openTutorial);
+  homeTutorialBtn.addEventListener("click", openTutorial);
+  tutorialClose.addEventListener("click", ()=>{ tutorialOverlay.style.display = "none"; });
 
   initGame();
 })();
