@@ -315,6 +315,19 @@
     background:linear-gradient(180deg, #f3e2c2, var(--parchment-card));
     border:2px solid var(--line); border-radius:18px; padding:18px 16px;
     display:flex; flex-direction:column; align-items:center; gap:12px;
+    overflow:hidden;
+  }
+  .battle-area-pulse{
+    position:absolute; inset:0; pointer-events:none; z-index:1; opacity:0;
+    background:radial-gradient(circle at 50% 45%, var(--pulse-color,rgba(255,255,255,0.5)), transparent 70%);
+  }
+  .battle-area-pulse.firing{animation:areaPulseFlash 0.4s ease-out forwards;}
+  .battle-area-pulse.wash{animation:areaPulseWash 1.1s ease-out forwards;}
+  @keyframes areaPulseFlash{
+    0%{opacity:0;} 25%{opacity:0.65;} 100%{opacity:0;}
+  }
+  @keyframes areaPulseWash{
+    0%{opacity:0;} 15%{opacity:0.8;} 60%{opacity:0.35;} 100%{opacity:0;}
   }
   .stage-tag{font-size:11.5px; font-weight:800; color:var(--wood-dark);}
 
@@ -608,16 +621,32 @@
   }
   .float-dmg{
     position:absolute; pointer-events:none; font-weight:900; font-size:15px; z-index:3;
-    animation:dmgUp 0.8s ease-out forwards; text-shadow:1px 1px 0 #fff; left:50%; top:10px;
+    animation:dmgUp 0.85s cubic-bezier(.2,1.4,.4,1) forwards; text-shadow:1px 1px 0 #fff; left:50%; top:10px;
   }
   .float-dmg.boss{color:var(--danger);}
   .float-dmg.hero{color:var(--sky);}
   .float-dmg.heal{color:var(--mint-dark);}
-  @keyframes dmgUp{0%{opacity:1; transform:translate(-50%,0);} 100%{opacity:0; transform:translate(-50%,-50px);}}
+  .float-dmg.big{
+    font-size:26px; text-shadow:2px 2px 0 #fff, 0 0 10px rgba(230,57,70,0.6);
+    animation:dmgUpBig 0.95s cubic-bezier(.2,1.6,.3,1) forwards;
+  }
+  @keyframes dmgUp{
+    0%{opacity:0; transform:translate(-50%,6px) scale(0.5);}
+    18%{opacity:1; transform:translate(-50%,-4px) scale(1.15);}
+    35%{transform:translate(-50%,-8px) scale(1);}
+    100%{opacity:0; transform:translate(-50%,-52px) scale(1);}
+  }
+  @keyframes dmgUpBig{
+    0%{opacity:0; transform:translate(-50%,10px) scale(0.4) rotate(-6deg);}
+    20%{opacity:1; transform:translate(-50%,-8px) scale(1.35) rotate(4deg);}
+    38%{transform:translate(-50%,-14px) scale(1.1) rotate(-2deg);}
+    100%{opacity:0; transform:translate(-50%,-62px) scale(1.1) rotate(0deg);}
+  }
   .fighter-name{font-family:'Baloo 2',cursive; font-size:13.5px; color:var(--ink); text-align:center;}
   .fighter-hp-wrap{width:100%; max-width:150px;}
-  .hp-bar-outer{background:#e7dcc4; border:2px solid var(--ink); border-radius:8px; height:14px; overflow:hidden;}
-  .hp-bar-inner{height:100%; background:linear-gradient(90deg, #7fbf6e, var(--danger)); transition:width 0.3s ease;}
+  .hp-bar-outer{position:relative; background:#e7dcc4; border:2px solid var(--ink); border-radius:8px; height:14px; overflow:hidden;}
+  .hp-bar-ghost{position:absolute; top:0; left:0; height:100%; background:rgba(255,255,255,0.85); z-index:0; transition:width 0.6s ease 0.22s;}
+  .hp-bar-inner{position:relative; z-index:1; height:100%; background:linear-gradient(90deg, #7fbf6e, var(--danger)); transition:width 0.22s ease;}
   .hp-bar-inner.hero-hp{background:linear-gradient(90deg, #6fb1e0, var(--sky));}
   .hp-text{font-size:9.5px; font-weight:800; color:var(--wood-dark); text-align:center; margin-top:2px;}
   .vs-label{font-family:'Baloo 2',cursive; font-size:16px; color:var(--wood-dark); align-self:center; margin-top:30px;}
@@ -953,7 +982,7 @@
       <label class="settings-toggle-row"><input type="checkbox" id="skipRareToggle"><span>Rare</span></label>
       <label class="settings-toggle-row"><input type="checkbox" id="skipEpicToggle"><span>Epic</span></label>
       <label class="settings-toggle-row"><input type="checkbox" id="skipLegendToggle"><span>Legendary</span></label>
-      <label class="settings-toggle-row"><input type="checkbox" id="skipUltraToggle"><span>Ultra Legendary</span></label>
+      <label class="settings-toggle-row"><input type="checkbox" id="skipUltraToggle"><span>Secret</span></label>
     </div>
     <button class="admin-close-btn" id="settingsClose">Close</button>
   </div>
@@ -965,7 +994,7 @@
     <div class="admin-title">📖 Update Log</div>
     <div class="info-scroll">
       <ul class="update-log-list">
-        <li><b>Ultra Legendary tier</b> — a new rarity above Legendary, with premium fine-dining heroes (Beef Wellington, Lobster Thermidor, Truffle Foie Gras) and its own fiery summon cutscene.</li>
+        <li><b>Secret tier</b> — a new rarity above Legendary, with premium fine-dining heroes (Beef Wellington, Lobster Thermidor, Truffle Foie Gras) and its own fiery summon cutscene.</li>
         <li><b>Summon pity system</b> — Epic or better is now guaranteed within 15 pulls, and Legendary or better within 50, with a live counter on the Summon tab.</li>
         <li><b>Turn-based boss battles</b> — pick moves, manage HP, and swap heroes mid-fight, with Shield, Drain, Burn, Crit, and Triple-Hit move types.</li>
         <li><b>Battle Team Selection</b> — choose up to 15 heroes from your full roster to bring into battle.</li>
@@ -1096,6 +1125,7 @@
   <div class="panel" id="panel-battle">
     <div class="section-label">BOSS BATTLE</div>
     <div class="battle-area">
+      <div class="battle-area-pulse" id="battleAreaPulse"></div>
       <div class="stage-tag" id="stageTag">Cycle 1 · Stage 1 of 8</div>
       <button class="team-select-btn" id="openTeamSelectBtn">🛡️ Select Team (<span id="teamCountLabel">0/15</span>)</button>
 
@@ -1104,7 +1134,7 @@
           <div class="fighter-visual" id="heroVisual"><span id="heroEmojiSpan">🍔</span></div>
           <div class="fighter-name" id="heroFighterName">—</div>
           <div class="fighter-hp-wrap">
-            <div class="hp-bar-outer"><div class="hp-bar-inner hero-hp" id="heroHpInner" style="width:100%;"></div></div>
+            <div class="hp-bar-outer"><div class="hp-bar-ghost" id="heroHpGhost" style="width:100%;"></div><div class="hp-bar-inner hero-hp" id="heroHpInner" style="width:100%;"></div></div>
             <div class="hp-text" id="heroHpText">0 / 0 HP</div>
           </div>
           <span class="buff-tag" id="heroBuffTag" style="display:none;"></span>
@@ -1116,7 +1146,7 @@
           <div class="fighter-name" id="bossName">Greasy Goblin</div>
           <div class="type-tag" id="bossTypeTag">🌶️ Spicy</div>
           <div class="fighter-hp-wrap">
-            <div class="hp-bar-outer"><div class="hp-bar-inner" id="bossHpInner" style="width:100%;"></div></div>
+            <div class="hp-bar-outer"><div class="hp-bar-ghost" id="bossHpGhost" style="width:100%;"></div><div class="hp-bar-inner" id="bossHpInner" style="width:100%;"></div></div>
             <div class="hp-text" id="bossHpText">0 / 0 HP</div>
           </div>
           <span class="debuff-tag" id="bossDebuffTag" style="display:none;"></span>
@@ -1157,7 +1187,7 @@
         <button class="summon-btn" id="summon1Btn">Summon x1 — 10 ✨</button>
         <button class="summon-btn" id="summon10Btn">Summon x10 — 90 ✨</button>
       </div>
-      <div class="odds-note">Odds: Common 58.5% · Rare 30% · Epic 8% · Legendary 3% · Ultra Legendary 0.5%. Duplicate heroes are refunded as bonus Crumbs.</div>
+      <div class="odds-note">Odds: Common 58.5% · Rare 30% · Epic 8% · Legendary 3% · Secret 0.5%. Duplicate heroes are refunded as bonus Crumbs.</div>
       <div class="pity-note" id="pityNote">Pity: Epic guaranteed in 15 pulls · Legendary guaranteed in 50 pulls</div>
       <div class="cook-stage" id="cookStage">
         <div class="cook-stage-name" id="cookStageName">🍳 Pan-Frying</div>
@@ -1288,7 +1318,7 @@
 
   // ---------- BURGER HEROES & FAST-FOOD MOVES ----------
   const RARITY_WEIGHT = {common:1, rare:3, epic:8, legend:20, ultra:60, admin:500};
-  const RARITY_LABEL  = {common:"Common", rare:"Rare", epic:"Epic", legend:"Legendary", ultra:"Ultra Legendary", admin:"???"};
+  const RARITY_LABEL  = {common:"Common", rare:"Rare", epic:"Epic", legend:"Legendary", ultra:"Secret", admin:"???"};
   const RARITY_ODDS   = {common:0.585, rare:0.30, epic:0.08, legend:0.03, ultra:0.005};
   const RARITY_RANK   = {common:0, rare:1, epic:2, legend:3, ultra:4};
   const PITY_EPIC_AT   = 15; // pulls without Epic+ before the next pull is guaranteed Epic or better
@@ -2148,7 +2178,7 @@
         {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
       ]},
 
-    // --- Ultra Legendary: premium fine-dining heroes ---
+    // --- Secret (Ultra) tier: premium fine-dining heroes ---
     {id:"h122", name:"Beef Wellington", emoji:"🥩", role:"Attack", rarity:"ultra",
       moves:[
         {name:"Pastry-Wrapped Fury", icon:"🥐", power:1.4,  kind:"dmg",   desc:"A perfectly wrapped strike, seared to perfection."},
@@ -2348,8 +2378,8 @@
     {id:"q23",icon:"👑", name:"Prestige Master",  desc:"Accumulate 5 Crowns from Royal Charters.",    target:5,  reward:{sesame:100},               get:(s)=>s.crowns},
     {id:"q24",icon:"📖", name:"Summon Addict",    desc:"Use the Recipe Summon 50 times.",             target:50, reward:{sesame:80},                get:(s)=>s.stats.summonsDone},
     {id:"q25",icon:"🎂", name:"Endgame Emperor",  desc:"Reach Cycle 20 in the Boss Battle.",          target:20, reward:{coins:1000000000, sesame:200}, get:(s)=>s.battle.cycle},
-    {id:"q26",icon:"🥩", name:"Ultra Collector",  desc:"Recruit an Ultra Legendary hero.",            target:1,  reward:{coins:10000000, sesame:150}, get:(s)=>HERO_DEFS.some(h=>h.rarity==="ultra" && s.heroes[h.id] && s.heroes[h.id].owned) ? 1 : 0},
-    {id:"q27",icon:"🏆", name:"Legendary Dozen",  desc:"Recruit 10 Legendary or Ultra Legendary heroes.", target:10, reward:{sesame:120, crumbs:20000}, get:(s)=>HERO_DEFS.filter(h=>(h.rarity==="legend"||h.rarity==="ultra") && s.heroes[h.id] && s.heroes[h.id].owned).length},
+    {id:"q26",icon:"🥩", name:"Secret Collector",  desc:"Recruit a Secret rarity hero.",                target:1,  reward:{coins:10000000, sesame:150}, get:(s)=>HERO_DEFS.some(h=>h.rarity==="ultra" && s.heroes[h.id] && s.heroes[h.id].owned) ? 1 : 0},
+    {id:"q27",icon:"🏆", name:"Legendary Dozen",  desc:"Recruit 10 Legendary or Secret heroes.",         target:10, reward:{sesame:120, crumbs:20000}, get:(s)=>HERO_DEFS.filter(h=>(h.rarity==="legend"||h.rarity==="ultra") && s.heroes[h.id] && s.heroes[h.id].owned).length},
     {id:"q28",icon:"📖", name:"Century Summoner", desc:"Use the Recipe Summon 100 times.",             target:100,reward:{sesame:150, crumbs:50000}, get:(s)=>s.stats.summonsDone},
   ];
   function questProgress(q){ return Math.min(q.target, q.get(state)); }
@@ -2559,12 +2589,14 @@
 
   const stageTag = document.getElementById("stageTag");
   const combatRow = document.getElementById("combatRow");
+  const battleAreaPulse = document.getElementById("battleAreaPulse");
   const openTeamSelectBtn = document.getElementById("openTeamSelectBtn");
   const teamCountLabel = document.getElementById("teamCountLabel");
   const heroVisual = document.getElementById("heroVisual");
   const heroEmojiSpan = document.getElementById("heroEmojiSpan");
   const heroFighterName = document.getElementById("heroFighterName");
   const heroHpInner = document.getElementById("heroHpInner");
+  const heroHpGhost = document.getElementById("heroHpGhost");
   const heroHpText = document.getElementById("heroHpText");
   const heroBuffTag = document.getElementById("heroBuffTag");
   const heroShieldTag = document.getElementById("heroShieldTag");
@@ -2573,6 +2605,7 @@
   const bossName = document.getElementById("bossName");
   const bossTypeTag = document.getElementById("bossTypeTag");
   const bossHpInner = document.getElementById("bossHpInner");
+  const bossHpGhost = document.getElementById("bossHpGhost");
   const bossHpText = document.getElementById("bossHpText");
   const bossDebuffTag = document.getElementById("bossDebuffTag");
   const bossBurnTag = document.getElementById("bossBurnTag");
@@ -3079,6 +3112,7 @@
     spawnSparkleRing(container, flair.particles, flair.sparkleRing, flair.spread*0.7, 650);
     if(rarity === "ultra"){
       setTimeout(()=> spawnSparkleRing(container, flair.particles, flair.sparkleRing, flair.spread*1.1, 700), 120);
+      shakeScreen();
     }
   }
 
@@ -3242,15 +3276,25 @@
     });
   }
 
-  function showFloat(container, text, cls){
+  function showFloat(container, text, cls, big){
     const el = document.createElement("div");
-    el.className = "float-dmg " + cls;
+    el.className = "float-dmg " + cls + (big ? " big" : "");
     el.textContent = text;
     el.style.left = (45 + (Math.random()*20-10)) + "%";
     container.appendChild(el);
-    setTimeout(()=>el.remove(), 800);
+    setTimeout(()=>el.remove(), big ? 950 : 800);
   }
   function shakeVisual(el){ el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); }
+  function shakeScreen(){
+    combatRow.classList.remove("shake-strong"); void combatRow.offsetWidth; combatRow.classList.add("shake-strong");
+    pulseBattleArea("rgba(230,57,70,0.5)", "firing");
+  }
+  function pulseBattleArea(color, kind){
+    battleAreaPulse.classList.remove("firing","wash");
+    void battleAreaPulse.offsetWidth;
+    battleAreaPulse.style.setProperty("--pulse-color", color);
+    battleAreaPulse.classList.add(kind || "firing");
+  }
 
   // ---------- CUSTOM VFX ----------
   function spawnParticles(container, emojis, count, spreadPx, durationMs){
@@ -3384,10 +3428,15 @@
       spawnParticles(heroVisual, ["💚","✨"], 5, 26, 550); flashFx(heroVisual, "rgba(143,191,159,0.5)");
     },
     castGlow(el, color){ spawnParticles(el, ["✨","⭐"], 4, 22, 350); flashFx(el, color); },
-    victory(){ spawnParticles(bossVisual, ["🎉","✨","🏆","🌟"], 16, 58, 950); flashFx(bossVisual, "rgba(246,196,69,0.5)"); },
+    victory(){
+      spawnParticles(bossVisual, ["🎉","✨","🏆","🌟"], 16, 58, 950);
+      flashFx(bossVisual, "rgba(246,196,69,0.5)");
+      pulseBattleArea("rgba(246,196,69,0.6)", "wash");
+    },
     defeat(){
-      combatRow.classList.remove("shake-strong"); void combatRow.offsetWidth; combatRow.classList.add("shake-strong");
+      shakeScreen();
       flashFx(heroVisual, "rgba(192,57,43,0.6)");
+      pulseBattleArea("rgba(192,57,43,0.55)", "wash");
     }
   };
 
@@ -3471,6 +3520,7 @@
     const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
     const bossPct = Math.max(0, Math.min(100, (state.battle.bossHp/bStats.hp)*100));
     bossHpInner.style.width = bossPct + "%";
+    bossHpGhost.style.width = bossPct + "%";
     bossHpText.textContent = fmt(Math.max(0,state.battle.bossHp)) + " / " + fmt(bStats.hp) + " HP";
 
     const h = activeHero();
@@ -3480,6 +3530,7 @@
       const hp = state.battle.heroHp[h.id] || 0;
       const pct = Math.max(0, Math.min(100, (hp/max)*100));
       heroHpInner.style.width = pct + "%";
+      heroHpGhost.style.width = pct + "%";
       heroHpText.textContent = fmt(Math.max(0,hp)) + " / " + fmt(max) + " HP";
     }
 
@@ -3529,6 +3580,8 @@
     if(moveCooldownRemaining(h.id, move) > 0) return;
     const rec = state.heroes[h.id];
     const atkStat = heroAtk(h, rec) * (heroBuff.turns>0 ? heroBuff.mult : 1);
+    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const isBigHit = (dmg)=> (dmg / bStats.hp) > 0.05;
     phase = "busy";
     renderBattleStatic();
 
@@ -3562,6 +3615,7 @@
 
     if(move.kind === "dmg" || move.kind === "dmg_debuff" || move.kind === "dmg_stun"){
       const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
+      const big = isBigHit(dmg);
       state.battle.bossHp -= dmg;
       if(!skipAnim){
         const special = specialMoveEffect(move);
@@ -3574,8 +3628,9 @@
         else if(move.kind === "dmg_stun") FX.freezeBoss(move);
         else if(move.kind === "dmg_debuff") FX.debuffBoss(move);
         else FX.hitBoss(move);
+        if(big) shakeScreen();
       }
-      showFloat(bossVisual, "-"+fmt(dmg), "boss");
+      showFloat(bossVisual, "-"+fmt(dmg), "boss", big);
       addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP.");
       if(typeEff > 1) addLog("🔥 Super effective!");
       else if(typeEff < 1) addLog("💤 Not very effective...");
@@ -3597,8 +3652,9 @@
       if(!skipAnim){
         FX.hitBossBig(move);
         spawnDoubleSlash(bossVisual);
+        shakeScreen();
       }
-      showFloat(bossVisual, "-"+fmt(total), "boss");
+      showFloat(bossVisual, "-"+fmt(total), "boss", true);
       addLog(h.name + " used " + move.name + "! Hits twice for -" + fmt(total) + " HP total.");
       if(typeEff > 1) addLog("🔥 Super effective!");
       else if(typeEff < 1) addLog("💤 Not very effective...");
@@ -3630,6 +3686,7 @@
       addLog(h.name + " used " + move.name + "! A protective shield forms!");
     } else if(move.kind === "drain"){
       const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
+      const big = isBigHit(dmg);
       state.battle.bossHp -= dmg;
       const healAmt = Math.round(dmg*0.5);
       const max = heroMaxHp(h, rec);
@@ -3637,26 +3694,28 @@
       if(!skipAnim){
         if(specialMoveEffect(move) === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
         else FX.drain(move);
+        if(big) shakeScreen();
       }
-      showFloat(bossVisual, "-"+fmt(dmg), "boss");
+      showFloat(bossVisual, "-"+fmt(dmg), "boss", big);
       showFloat(heroVisual, "+"+fmt(healAmt), "heal");
       addLog(h.name + " used " + move.name + "! Drains " + fmt(dmg) + " HP and heals " + fmt(healAmt) + "!");
       if(typeEff > 1) addLog("🔥 Super effective!");
       else if(typeEff < 1) addLog("💤 Not very effective...");
     } else if(move.kind === "burn"){
       const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
+      const big = isBigHit(dmg);
       state.battle.bossHp -= dmg;
       bossBurn = {dmgPerTurn: Math.max(1, Math.round(atkStat*0.3)), turns:3};
-      if(!skipAnim) FX.burnBoss(move);
-      showFloat(bossVisual, "-"+fmt(dmg), "boss");
+      if(!skipAnim){ FX.burnBoss(move); if(big) shakeScreen(); }
+      showFloat(bossVisual, "-"+fmt(dmg), "boss", big);
       addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP and set the foe ablaze!");
       if(typeEff > 1) addLog("🔥 Super effective!");
       else if(typeEff < 1) addLog("💤 Not very effective...");
     } else if(move.kind === "crit"){
       const critMult = 1.8 + Math.random()*0.6;
       const dmg = Math.max(1, Math.round(atkStat * move.power * critMult * typeEff));
-      if(!skipAnim) FX.hitBossBig(move);
-      showFloat(bossVisual, "-"+fmt(dmg)+"!", "boss");
+      if(!skipAnim){ FX.hitBossBig(move); shakeScreen(); }
+      showFloat(bossVisual, "-"+fmt(dmg)+"!", "boss", true);
       state.battle.bossHp -= dmg;
       addLog(h.name + " used " + move.name + "! CRITICAL HIT for -" + fmt(dmg) + " HP!");
       if(typeEff > 1) addLog("🔥 Super effective!");
@@ -3670,8 +3729,9 @@
       if(!skipAnim){
         FX.hitBossBig(move); setTimeout(()=>shakeVisual(bossVisual), 300);
         spawnTripleSlash(bossVisual);
+        shakeScreen();
       }
-      showFloat(bossVisual, "-"+fmt(total), "boss");
+      showFloat(bossVisual, "-"+fmt(total), "boss", true);
       addLog(h.name + " used " + move.name + "! Hits three times for -" + fmt(total) + " HP total!");
       if(typeEff > 1) addLog("🔥 Super effective!");
       else if(typeEff < 1) addLog("💤 Not very effective...");
@@ -3683,7 +3743,7 @@
       state.battle.moveCooldowns[moveCooldownKey(h.id, move)] = cdLength;
     }
 
-    // Epic/Legendary/Ultra Legendary heroes get extra flair on every move they use,
+    // Epic/Legendary/Secret heroes get extra flair on every move they use,
     // so their attacks and casts visibly stand out from Common/Rare heroes —
     // unless that rarity has animations skipped.
     if(!skipAnim){
@@ -3908,7 +3968,7 @@
     },
     ultra: {
       sub: "🥂 A PREMIUM COURSE IS PLATED 🥂",
-      title: "AN ULTRA LEGENDARY HERO APPEARS!",
+      title: "A SECRET HERO APPEARS!",
       particles: ["🔥","💎","✨","🎆","🥂","⭐"],
       particleCount: 30, spread: 120,
       flashColor: "rgba(230,57,70,0.9)",
