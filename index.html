@@ -106,6 +106,14 @@
   .update-log-list li, .tutorial-list li{font-size:12.5px; color:var(--wood-dark); line-height:1.45;}
   .update-log-list b, .tutorial-list b{color:var(--ink);}
   .info-card .admin-close-btn{align-self:center;}
+  .settings-section-label{font-family:'Baloo 2',cursive; font-size:13px; color:var(--royal); margin-bottom:6px;}
+  .settings-note{font-size:11px; color:var(--wood-dark); margin:0 0 12px; line-height:1.45;}
+  .settings-toggle-row{
+    display:flex; align-items:center; gap:10px; padding:9px 2px; font-size:13px; font-weight:700;
+    color:var(--ink); border-bottom:1px dashed var(--line); cursor:pointer;
+  }
+  .settings-toggle-row:last-child{border-bottom:none;}
+  .settings-toggle-row input{width:18px; height:18px; accent-color:var(--ketchup); cursor:pointer;}
 
   /* ---------- HEADER ---------- */
   header{
@@ -164,6 +172,14 @@
     clip-path: polygon(4% 0, 96% 0, 100% 50%, 96% 100%, 4% 100%, 0 50%);
     box-shadow:1px 2px 0 rgba(0,0,0,0.15);
   }
+  .multi-select-row{display:flex; align-items:center; gap:6px; margin:-4px 0 12px;}
+  .multi-select-label{font-size:11px; font-weight:800; color:var(--wood-dark);}
+  .multi-select-btn{
+    font-family:'Baloo 2',cursive; font-size:11.5px; font-weight:700; border:2px solid var(--ink);
+    border-radius:8px; padding:4px 10px; cursor:pointer; background:var(--parchment-card); color:var(--ink);
+  }
+  .multi-select-btn.active{background:var(--ketchup); color:#fff; border-color:var(--ketchup-dark);}
+  .multi-select-btn:active{transform:translateY(1px);}
 
   /* ---------- KINGDOM TAB ---------- */
   main{display:grid; grid-template-columns:260px 1fr; gap:20px;}
@@ -375,6 +391,19 @@
     position:absolute; width:13px; height:13px; border-radius:50%; pointer-events:none; z-index:6;
     box-shadow:0 0 18px currentColor, 0 0 7px #fff;
     transform:translate(-50%,-50%);
+  }
+  .impact-burst{
+    position:absolute; pointer-events:none; z-index:7;
+    background:var(--burst-color,#fff);
+    clip-path:polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+    transform:translate(-50%,-50%) scale(0.2) rotate(-12deg); opacity:0;
+    filter:drop-shadow(0 0 8px var(--burst-color,#fff));
+    animation:impactBurstPop 0.4s ease-out forwards;
+  }
+  @keyframes impactBurstPop{
+    0%{transform:translate(-50%,-50%) scale(0.2) rotate(-16deg); opacity:0;}
+    35%{transform:translate(-50%,-50%) scale(1.25) rotate(6deg); opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1.55) rotate(14deg); opacity:0;}
   }
   .impact-ring{
     position:absolute; left:50%; top:50%; border-radius:50%; pointer-events:none; z-index:3;
@@ -596,6 +625,10 @@
   .debuff-tag{font-size:9px; font-weight:800; color:var(--danger); background:#fbe7e3; border-radius:8px; padding:1px 6px;}
   .shield-tag{font-size:9px; font-weight:800; color:var(--sky); background:#e8f2fa; border-radius:8px; padding:1px 6px;}
   .burn-tag{font-size:9px; font-weight:800; color:#e4572e; background:#fbe8df; border-radius:8px; padding:1px 6px;}
+  .type-tag{
+    font-size:9.5px; font-weight:800; color:var(--ink); background:var(--cheese); border-radius:8px;
+    padding:1px 7px; margin-top:2px; display:inline-block;
+  }
 
   .move-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(128px,1fr)); gap:8px; width:100%; max-width:460px;}
   .move-btn{
@@ -604,8 +637,17 @@
   }
   .move-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--wood);}
   .move-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .move-btn.super-effective{border-color:var(--mint-dark); box-shadow:0 3px 0 var(--mint-dark), 0 0 8px rgba(143,191,159,0.6);}
+  .move-btn.not-effective{opacity:0.75;}
   .move-name{font-weight:800; font-size:12.5px;}
   .move-desc{font-size:9.5px; color:var(--wood-dark); margin-top:1px;}
+  .move-type-row{display:flex; justify-content:space-between; align-items:center; margin-top:3px;}
+  .move-type-chip{font-size:8.5px; font-weight:800; color:var(--wood-dark); background:#eee2c8; border-radius:6px; padding:1px 5px;}
+  .move-eff-chip{font-size:8.5px; font-weight:900; border-radius:6px; padding:1px 5px;}
+  .move-eff-chip.super{color:#fff; background:var(--mint-dark);}
+  .move-eff-chip.weak{color:#fff; background:var(--wood);}
+  .move-btn.on-cooldown{opacity:0.55; filter:grayscale(0.3);}
+  .move-cd-chip{font-size:8.5px; font-weight:900; color:#fff; background:var(--wood-dark); border-radius:6px; padding:1px 5px;}
 
   .bench-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:2px;}
   .bench-chip{
@@ -890,8 +932,31 @@
 
 <!-- ===== TOP-RIGHT CORNER BUTTONS ===== -->
 <div class="topcorner-btns">
+  <button class="corner-btn" id="settingsOpenBtn" title="Settings">⚙️</button>
   <button class="corner-btn" id="tutorialOpenBtn" title="How to Play">❓</button>
   <button class="corner-btn" id="updateLogOpenBtn" title="Update Log">📖</button>
+</div>
+
+<!-- ===== SETTINGS MODAL ===== -->
+<div class="info-overlay" id="settingsOverlay">
+  <div class="info-card">
+    <div class="admin-title">⚙️ Settings</div>
+    <div class="info-scroll">
+      <div class="settings-section-label">Skip Animations By Rarity</div>
+      <p class="settings-note">
+        When enabled for a rarity, both battle moves and Recipe Summon pulls for that
+        rarity skip their windup/dash/impact effects and cooking or cutscene animations —
+        damage, healing, hero reveals, and log messages still all apply instantly. Handy
+        for speeding through content with heroes or pulls you've already seen plenty of.
+      </p>
+      <label class="settings-toggle-row"><input type="checkbox" id="skipCommonToggle"><span>Common</span></label>
+      <label class="settings-toggle-row"><input type="checkbox" id="skipRareToggle"><span>Rare</span></label>
+      <label class="settings-toggle-row"><input type="checkbox" id="skipEpicToggle"><span>Epic</span></label>
+      <label class="settings-toggle-row"><input type="checkbox" id="skipLegendToggle"><span>Legendary</span></label>
+      <label class="settings-toggle-row"><input type="checkbox" id="skipUltraToggle"><span>Ultra Legendary</span></label>
+    </div>
+    <button class="admin-close-btn" id="settingsClose">Close</button>
+  </div>
 </div>
 
 <!-- ===== UPDATE LOG MODAL ===== -->
@@ -923,7 +988,7 @@
       <ol class="tutorial-list">
         <li><b>🏰 Kingdom</b> — Build kitchen buildings to earn Coins automatically over time. Each building gets pricier the more you own, so spread out your spending.</li>
         <li><b>🍔 Burger Heroes</b> — Recruit heroes from summons, then spend Crumbs to level them up. Higher rarity and level means more ATK and HP.</li>
-        <li><b>⚔️ Boss Battle</b> — Tap <b>Select Team</b> to pick up to 15 heroes. In battle, choose a move each turn — some deal damage, others heal, shield, or debuff the boss. Defeated heroes get swapped out automatically if you have a healthy one left.</li>
+        <li><b>⚔️ Boss Battle</b> — Tap <b>Select Team</b> to pick up to 15 heroes. In battle, choose a move each turn — some deal damage, others heal, shield, or debuff the boss. Stronger moves need a few turns to recharge after use (shown as ⏳ on the button), so mix in your basic attack while you wait. Match your move's food type against the boss's for bonus damage. Defeated heroes get swapped out automatically if you have a healthy one left.</li>
         <li><b>📜 Quests</b> — Complete objectives for one-time rewards. Check back as your kingdom grows — new quests unlock naturally.</li>
         <li><b>📖 Recipe Summon</b> — Spend Golden Sesame to summon new heroes. Rarer heroes are stronger; the pity counter guarantees you won't go too long without an Epic or Legendary.</li>
         <li><b>👑 Royal Charter</b> — Once you've earned enough, prestige to reset your coins and buildings for permanent Crowns, which boost everything forever.</li>
@@ -991,6 +1056,12 @@
 
       <div>
         <div class="section-label">KINGDOM BUILDINGS</div>
+        <div class="multi-select-row" id="buildMultiRow">
+          <span class="multi-select-label">Buy:</span>
+          <button class="multi-select-btn active" data-mult="1">x1</button>
+          <button class="multi-select-btn" data-mult="10">x10</button>
+          <button class="multi-select-btn" data-mult="max">Max</button>
+        </div>
         <div class="gen-list" id="genList"></div>
 
         <div class="prestige-box">
@@ -1012,6 +1083,12 @@
       <span>Kingdom Boost: <b id="heroBoostPct">+0%</b> output</span>
     </div>
     <div class="section-label">BURGER HERO ROSTER</div>
+    <div class="multi-select-row" id="levelMultiRow">
+      <span class="multi-select-label">Level Up:</span>
+      <button class="multi-select-btn active" data-mult="1">x1</button>
+      <button class="multi-select-btn" data-mult="10">x10</button>
+      <button class="multi-select-btn" data-mult="max">Max</button>
+    </div>
     <div class="hero-grid" id="heroGrid"></div>
   </div>
 
@@ -1037,6 +1114,7 @@
         <div class="fighter-col">
           <div class="fighter-visual" id="bossVisual"><span id="bossEmojiSpan">🧌</span></div>
           <div class="fighter-name" id="bossName">Greasy Goblin</div>
+          <div class="type-tag" id="bossTypeTag">🌶️ Spicy</div>
           <div class="fighter-hp-wrap">
             <div class="hp-bar-outer"><div class="hp-bar-inner" id="bossHpInner" style="width:100%;"></div></div>
             <div class="hp-text" id="bossHpText">0 / 0 HP</div>
@@ -2108,122 +2186,122 @@
 
   // ---------- BOSSES (turn-based scale) ----------
   const BOSS_DEFS = [
-    {name:"Greasy Goblin",       icon:"🧌", hp:60,   atk:6},
-    {name:"Onion Ogre",          icon:"🧅", hp:90,   atk:9},
-    {name:"Pickle Golem",        icon:"🥒", hp:130,  atk:12},
-    {name:"Sauce Serpent",       icon:"🐍", hp:180,  atk:16},
-    {name:"Cheese Dragon",       icon:"🐉", hp:240,  atk:20},
-    {name:"Frosty Yeti Bun",     icon:"❄️", hp:310,  atk:25},
-    {name:"The Shadow King",     icon:"🌑", hp:400,  atk:31},
-    {name:"Grand Feast Titan",   icon:"🏆", hp:520,  atk:38},
-    {name:"Milkshake Kraken",    icon:"🥤", hp:650,  atk:44},
-    {name:"Waffle Wyvern",       icon:"🧇", hp:820,  atk:50},
-    {name:"Taco Terror",         icon:"🌮", hp:1050, atk:58},
-    {name:"Pizza Overlord",      icon:"🍕", hp:1350, atk:67},
-    {name:"Donut Djinn",         icon:"🍩", hp:1750, atk:78},
+    {name:"Greasy Goblin", icon:"🧌", hp:60, atk:6},
+    {name:"Onion Ogre", icon:"🧅", hp:90, atk:9},
+    {name:"Pickle Golem", icon:"🥒", hp:130, atk:12},
+    {name:"Sauce Serpent", icon:"🐍", hp:180, atk:16},
+    {name:"Cheese Dragon", icon:"🐉", hp:240, atk:20},
+    {name:"Frosty Yeti Bun", icon:"❄️", hp:310, atk:25},
+    {name:"The Shadow King", icon:"🌑", hp:400, atk:31},
+    {name:"Grand Feast Titan", icon:"🏆", hp:520, atk:38},
+    {name:"Milkshake Kraken", icon:"🥤", hp:650, atk:44},
+    {name:"Waffle Wyvern", icon:"🧇", hp:820, atk:50},
+    {name:"Taco Terror", icon:"🌮", hp:1050, atk:58},
+    {name:"Pizza Overlord", icon:"🍕", hp:1350, atk:67},
+    {name:"Donut Djinn", icon:"🍩", hp:1750, atk:78},
     {name:"Butter Lobster King", icon:"🦞", hp:2250, atk:90},
-    {name:"Calamari Colossus",   icon:"🐙", hp:2900, atk:104},
-    {name:"Grand Buffet Emperor",icon:"🎂", hp:3800, atk:120},
-    {name:"Shadow Golem", icon:"👹", hp:5124, atk:151},
-    {name:"Putrid Ravager", icon:"👺", hp:6251, atk:175},
-    {name:"Toxic Ravager", icon:"🧟", hp:7627, atk:203},
-    {name:"Grim Reaper", icon:"👻", hp:9304, atk:235},
-    {name:"Radiant Overlord", icon:"🐲", hp:11351, atk:273},
-    {name:"Blazing Beast", icon:"🦖", hp:13849, atk:317},
-    {name:"Savage Marauder", icon:"🦑", hp:16895, atk:367},
-    {name:"Gilded Beast", icon:"🕷️", hp:20612, atk:426},
-    {name:"Grim Horror", icon:"🦂", hp:25147, atk:494},
-    {name:"Feral Fiend", icon:"🐺", hp:30679, atk:573},
-    {name:"Shadow Warlord", icon:"🦈", hp:37429, atk:665},
-    {name:"Molten Wraith", icon:"🐊", hp:45663, atk:772},
-    {name:"Radiant Sovereign", icon:"🦇", hp:55709, atk:895},
-    {name:"Savage Specter", icon:"🐗", hp:67965, atk:1038},
-    {name:"Savage Horror", icon:"🦁", hp:82918, atk:1205},
-    {name:"Blazing Horror", icon:"🐘", hp:101159, atk:1397},
-    {name:"Withered Overlord", icon:"🦏", hp:123415, atk:1621},
-    {name:"Sour Devourer", icon:"🦍", hp:150566, atk:1880},
-    {name:"Blazing Devourer", icon:"🐋", hp:183690, atk:2181},
-    {name:"Rotten Leviathan", icon:"🦕", hp:224102, atk:2530},
-    {name:"Sour Beast", icon:"🍲", hp:273405, atk:2935},
-    {name:"Infernal Wraith", icon:"🥘", hp:333554, atk:3404},
-    {name:"Withered Golem", icon:"🍛", hp:406935, atk:3949},
-    {name:"Infernal Hydra", icon:"🍝", hp:496461, atk:4581},
-    {name:"Grim Warlord", icon:"🥣", hp:605683, atk:5314},
-    {name:"Frozen Overlord", icon:"🫕", hp:738933, atk:6164},
-    {name:"Sour Abomination", icon:"🍥", hp:901498, atk:7150},
-    {name:"Sour Golem", icon:"🍡", hp:1099827, atk:8294},
-    {name:"Savage Abomination", icon:"🍧", hp:1341789, atk:9621},
-    {name:"Savage Overlord", icon:"🍨", hp:1636983, atk:11160},
-    {name:"Colossal Overlord", icon:"👹", hp:1997119, atk:12946},
-    {name:"Shadow Leviathan", icon:"👺", hp:2436486, atk:15018},
-    {name:"Blazing Abomination", icon:"🧟", hp:2972513, atk:17420},
-    {name:"Frozen Wraith", icon:"👻", hp:3626465, atk:20208},
-    {name:"Rotten Reaper", icon:"🐲", hp:4424288, atk:23441},
-    {name:"Rancid Tyrant", icon:"🦖", hp:5397631, atk:27191},
-    {name:"Grim Marauder", icon:"🦑", hp:6585110, atk:31542},
-    {name:"Gilded Abomination", icon:"🕷️", hp:8033834, atk:36589},
-    {name:"Rabid Warlord", icon:"🦂", hp:9801278, atk:42443},
-    {name:"Ancient Leviathan", icon:"🐺", hp:11957559, atk:49234},
-    {name:"Cursed Warlord", icon:"🦈", hp:14588221, atk:57111},
-    {name:"Colossal Wraith", icon:"🐊", hp:17797630, atk:66249},
-    {name:"Colossal Horror", icon:"🦇", hp:21713109, atk:76849},
-    {name:"Cursed Sovereign", icon:"🐗", hp:26489993, atk:89145},
-    {name:"Shadow Tyrant", icon:"🦁", hp:32317791, atk:103408},
-    {name:"Toxic Behemoth", icon:"🐘", hp:39427705, atk:119953},
-    {name:"Savage Harbinger", icon:"🦏", hp:48101800, atk:139145},
-    {name:"Radiant Behemoth", icon:"🦍", hp:58684197, atk:161409},
-    {name:"Molten Sovereign", icon:"🐋", hp:71594720, atk:187234},
-    {name:"Cursed Marauder", icon:"🦕", hp:87345558, atk:217191},
-    {name:"Colossal Juggernaut", icon:"🍲", hp:106561581, atk:251942},
-    {name:"Infernal Marauder", icon:"🥘", hp:130005129, atk:292253},
-    {name:"Withered Marauder", icon:"🍛", hp:158606257, atk:339013},
-    {name:"Putrid Beast", icon:"🍝", hp:193499634, atk:393255},
-    {name:"Molten Juggernaut", icon:"🥣", hp:236069553, atk:456176},
-    {name:"Cursed Horror", icon:"🫕", hp:288004855, atk:529165},
-    {name:"Molten Golem", icon:"🍥", hp:351365923, atk:613831},
-    {name:"Radiant Ravager", icon:"🍡", hp:428666425, atk:712044},
-    {name:"Colossal Abomination", icon:"🍧", hp:522973039, atk:825971},
-    {name:"Radiant Abomination", icon:"🍨", hp:638027108, atk:958126},
-    {name:"Withered Fiend", icon:"👹", hp:778393071, atk:1111426},
-    {name:"Blazing Leviathan", icon:"👺", hp:949639547, atk:1289255},
-    {name:"Colossal Devourer", icon:"🧟", hp:1158560247, atk:1495535},
-    {name:"Withered Specter", icon:"👻", hp:1413443502, atk:1734821},
-    {name:"Ancient Specter", icon:"🐲", hp:1724401072, atk:2012392},
-    {name:"Frozen Sovereign", icon:"🦖", hp:2103769308, atk:2334375},
-    {name:"Gilded Ravager", icon:"🦑", hp:2566598556, atk:2707875},
-    {name:"Withered Beast", icon:"🕷️", hp:3131250238, atk:3141135},
-    {name:"Blazing Behemoth", icon:"🦂", hp:3820125291, atk:3643717},
-    {name:"Grim Sovereign", icon:"🐺", hp:4660552855, atk:4226711},
-    {name:"Grim Behemoth", icon:"🦈", hp:5685874483, atk:4902985},
-    {name:"Frozen Tyrant", icon:"🐊", hp:6936766869, atk:5687463},
-    {name:"Rancid Overlord", icon:"🦇", hp:8462855580, atk:6597457},
-    {name:"Cursed Reaper", icon:"🐗", hp:10324683808, atk:7653050},
-    {name:"Putrid Leviathan", icon:"🦁", hp:12596114246, atk:8877538},
-    {name:"Molten Beast", icon:"🐘", hp:15367259380, atk:10297944},
-    {name:"Ancient Wraith", icon:"🦏", hp:18748056444, atk:11945615},
-    {name:"Frozen Harbinger", icon:"🦍", hp:22872628861, atk:13856914},
-    {name:"Ancient Marauder", icon:"🐋", hp:27904607211, atk:16074020},
-    {name:"Putrid Devourer", icon:"🦕", hp:34043620797, atk:18645863},
-    {name:"Rancid Harbinger", icon:"🍲", hp:41533217372, atk:21629201},
-    {name:"Feral Sovereign", icon:"🥘", hp:50670525194, atk:25089873},
-    {name:"Molten Behemoth", icon:"🍛", hp:61818040737, atk:29104253},
-    {name:"Toxic Tyrant", icon:"🍝", hp:75418009699, atk:33760934},
-    {name:"Rotten Wraith", icon:"🥣", hp:92009971833, atk:39162683},
-    {name:"Blazing Juggernaut", icon:"🫕", hp:112252165636, atk:45428712},
-    {name:"Sour Sovereign", icon:"🍥", hp:136947642076, atk:52697306},
-    {name:"Gilded Juggernaut", icon:"🍡", hp:167076123333, atk:61128875},
-    {name:"Colossal Sovereign", icon:"🍧", hp:203832870466, atk:70909495},
-    {name:"Frozen Marauder", icon:"🍨", hp:248676101969, atk:82255014},
-    {name:"Ancient Horror", icon:"👹", hp:303384844402, atk:95415817},
-    {name:"Rabid Reaper", icon:"👺", hp:370129510170, atk:110682347},
-    {name:"Shadow Abomination", icon:"🧟", hp:451558002408, atk:128391523},
-    {name:"Blazing Reaper", icon:"👻", hp:550900762937, atk:148934167},
-    {name:"Ancient Beast", icon:"🐲", hp:672098930784, atk:172763633},
-    {name:"Rotten Harbinger", icon:"🦖", hp:819960695556, atk:200405815},
-    {name:"Ancient Abomination", icon:"🦑", hp:1000352048578, atk:232470745},
-    {name:"Rotten Devourer", icon:"🕷️", hp:1220429499266, atk:269666064},
-    {name:"Frozen Fiend", icon:"🦂", hp:1488923989104, atk:312812634},
-    {name:"Gilded Tyrant", icon:"🐺", hp:1816487266707, atk:362862656},
+    {name:"Calamari Colossus", icon:"🐙", hp:2900, atk:104},
+    {name:"Grand Buffet Emperor", icon:"🎂", hp:3800, atk:120},
+    {name:"Shadow Golem", icon:"👹", hp:4431, atk:135},
+    {name:"Putrid Ravager", icon:"👺", hp:4675, atk:141},
+    {name:"Toxic Ravager", icon:"🧟", hp:4932, atk:146},
+    {name:"Grim Reaper", icon:"👻", hp:5203, atk:152},
+    {name:"Radiant Overlord", icon:"🐲", hp:5489, atk:158},
+    {name:"Blazing Beast", icon:"🦖", hp:5791, atk:164},
+    {name:"Savage Marauder", icon:"🦑", hp:6110, atk:171},
+    {name:"Gilded Beast", icon:"🕷️", hp:6446, atk:178},
+    {name:"Grim Horror", icon:"🦂", hp:6800, atk:185},
+    {name:"Feral Fiend", icon:"🐺", hp:7174, atk:192},
+    {name:"Shadow Warlord", icon:"🦈", hp:7569, atk:200},
+    {name:"Molten Wraith", icon:"🐊", hp:7985, atk:208},
+    {name:"Radiant Sovereign", icon:"🦇", hp:8424, atk:216},
+    {name:"Savage Specter", icon:"🐗", hp:8888, atk:225},
+    {name:"Savage Horror", icon:"🦁", hp:9376, atk:234},
+    {name:"Blazing Horror", icon:"🐘", hp:9892, atk:243},
+    {name:"Withered Overlord", icon:"🦏", hp:10436, atk:253},
+    {name:"Sour Devourer", icon:"🦍", hp:11010, atk:263},
+    {name:"Blazing Devourer", icon:"🐋", hp:11616, atk:274},
+    {name:"Rotten Leviathan", icon:"🦕", hp:12255, atk:285},
+    {name:"Sour Beast", icon:"🍲", hp:12929, atk:296},
+    {name:"Infernal Wraith", icon:"🥘", hp:13640, atk:308},
+    {name:"Withered Golem", icon:"🍛", hp:14390, atk:320},
+    {name:"Infernal Hydra", icon:"🍝", hp:15181, atk:333},
+    {name:"Grim Warlord", icon:"🥣", hp:16016, atk:347},
+    {name:"Frozen Overlord", icon:"🫕", hp:16897, atk:360},
+    {name:"Sour Abomination", icon:"🍥", hp:17826, atk:375},
+    {name:"Sour Golem", icon:"🍡", hp:18807, atk:390},
+    {name:"Savage Abomination", icon:"🍧", hp:19841, atk:405},
+    {name:"Savage Overlord", icon:"🍨", hp:20933, atk:422},
+    {name:"Colossal Overlord", icon:"👹", hp:22084, atk:439},
+    {name:"Shadow Leviathan", icon:"👺", hp:23299, atk:456},
+    {name:"Blazing Abomination", icon:"🧟", hp:24580, atk:474},
+    {name:"Frozen Wraith", icon:"👻", hp:25932, atk:493},
+    {name:"Rotten Reaper", icon:"🐲", hp:27358, atk:513},
+    {name:"Rancid Tyrant", icon:"🦖", hp:28863, atk:534},
+    {name:"Grim Marauder", icon:"🦑", hp:30450, atk:555},
+    {name:"Gilded Abomination", icon:"🕷️", hp:32125, atk:577},
+    {name:"Rabid Warlord", icon:"🦂", hp:33892, atk:600},
+    {name:"Ancient Leviathan", icon:"🐺", hp:35756, atk:624},
+    {name:"Cursed Warlord", icon:"🦈", hp:37722, atk:649},
+    {name:"Colossal Wraith", icon:"🐊", hp:39797, atk:675},
+    {name:"Colossal Horror", icon:"🦇", hp:41986, atk:702},
+    {name:"Cursed Sovereign", icon:"🐗", hp:44295, atk:730},
+    {name:"Shadow Tyrant", icon:"🦁", hp:46732, atk:759},
+    {name:"Toxic Behemoth", icon:"🐘", hp:49302, atk:790},
+    {name:"Savage Harbinger", icon:"🦏", hp:52013, atk:821},
+    {name:"Radiant Behemoth", icon:"🦍", hp:54874, atk:854},
+    {name:"Molten Sovereign", icon:"🐋", hp:57892, atk:888},
+    {name:"Cursed Marauder", icon:"🦕", hp:61076, atk:924},
+    {name:"Colossal Juggernaut", icon:"🍲", hp:64435, atk:961},
+    {name:"Infernal Marauder", icon:"🥘", hp:67979, atk:999},
+    {name:"Withered Marauder", icon:"🍛", hp:71718, atk:1039},
+    {name:"Putrid Beast", icon:"🍝", hp:75663, atk:1081},
+    {name:"Molten Juggernaut", icon:"🥣", hp:79824, atk:1124},
+    {name:"Cursed Horror", icon:"🫕", hp:84215, atk:1169},
+    {name:"Molten Golem", icon:"🍥", hp:88846, atk:1216},
+    {name:"Radiant Ravager", icon:"🍡", hp:93733, atk:1264},
+    {name:"Colossal Abomination", icon:"🍧", hp:98888, atk:1315},
+    {name:"Radiant Abomination", icon:"🍨", hp:104327, atk:1368},
+    {name:"Withered Fiend", icon:"👹", hp:110065, atk:1422},
+    {name:"Blazing Leviathan", icon:"👺", hp:116119, atk:1479},
+    {name:"Colossal Devourer", icon:"🧟", hp:122505, atk:1538},
+    {name:"Withered Specter", icon:"👻", hp:129243, atk:1600},
+    {name:"Ancient Specter", icon:"🐲", hp:136351, atk:1664},
+    {name:"Frozen Sovereign", icon:"🦖", hp:143851, atk:1730},
+    {name:"Gilded Ravager", icon:"🦑", hp:151762, atk:1800},
+    {name:"Withered Beast", icon:"🕷️", hp:160109, atk:1872},
+    {name:"Blazing Behemoth", icon:"🦂", hp:168915, atk:1946},
+    {name:"Grim Sovereign", icon:"🐺", hp:178206, atk:2024},
+    {name:"Grim Behemoth", icon:"🦈", hp:188007, atk:2105},
+    {name:"Frozen Tyrant", icon:"🐊", hp:198347, atk:2189},
+    {name:"Rancid Overlord", icon:"🦇", hp:209256, atk:2277},
+    {name:"Cursed Reaper", icon:"🐗", hp:220766, atk:2368},
+    {name:"Putrid Leviathan", icon:"🦁", hp:232908, atk:2463},
+    {name:"Molten Beast", icon:"🐘", hp:245718, atk:2561},
+    {name:"Ancient Wraith", icon:"🦏", hp:259232, atk:2664},
+    {name:"Frozen Harbinger", icon:"🦍", hp:273490, atk:2770},
+    {name:"Ancient Marauder", icon:"🐋", hp:288532, atk:2881},
+    {name:"Putrid Devourer", icon:"🦕", hp:304401, atk:2996},
+    {name:"Rancid Harbinger", icon:"🍲", hp:321143, atk:3116},
+    {name:"Feral Sovereign", icon:"🥘", hp:338806, atk:3241},
+    {name:"Molten Behemoth", icon:"🍛", hp:357440, atk:3371},
+    {name:"Toxic Tyrant", icon:"🍝", hp:377099, atk:3505},
+    {name:"Rotten Wraith", icon:"🥣", hp:397840, atk:3646},
+    {name:"Blazing Juggernaut", icon:"🫕", hp:419721, atk:3791},
+    {name:"Sour Sovereign", icon:"🍥", hp:442806, atk:3943},
+    {name:"Gilded Juggernaut", icon:"🍡", hp:467160, atk:4101},
+    {name:"Colossal Sovereign", icon:"🍧", hp:492854, atk:4265},
+    {name:"Frozen Marauder", icon:"🍨", hp:519961, atk:4436},
+    {name:"Ancient Horror", icon:"👹", hp:548559, atk:4613},
+    {name:"Rabid Reaper", icon:"👺", hp:578729, atk:4797},
+    {name:"Shadow Abomination", icon:"🧟", hp:610560, atk:4989},
+    {name:"Blazing Reaper", icon:"👻", hp:644140, atk:5189},
+    {name:"Ancient Beast", icon:"🐲", hp:679568, atk:5396},
+    {name:"Rotten Harbinger", icon:"🦖", hp:716944, atk:5612},
+    {name:"Ancient Abomination", icon:"🦑", hp:756376, atk:5837},
+    {name:"Rotten Devourer", icon:"🕷️", hp:797977, atk:6070},
+    {name:"Frozen Fiend", icon:"🦂", hp:841866, atk:6313},
+    {name:"Gilded Tyrant", icon:"🐺", hp:888168, atk:6566},
   ];
   function bossStatsFor(idx, cycle){
     const b = BOSS_DEFS[idx];
@@ -2285,13 +2363,14 @@
   }
   function freshBattle(){
     const stats = bossStatsFor(0,1);
-    return { bossIndex:0, cycle:1, bossHp:stats.hp, activeHeroId:null, heroHp:{}, log:["A challenger approaches the Grand Feast Arena!"] };
+    return { bossIndex:0, cycle:1, bossHp:stats.hp, activeHeroId:null, heroHp:{}, moveCooldowns:{}, log:["A challenger approaches the Grand Feast Arena!"] };
   }
   function freshState(){
     const s = {
       coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(),
       lastSesameTick:Date.now(), battle:freshBattle(), battleTeam: STARTER_HERO_IDS.slice(),
-      stats:{ bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 }, questsClaimed:{}
+      stats:{ bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 }, questsClaimed:{},
+      settings:{ skipAnim:{ common:false, rare:false, epic:false, legend:false, ultra:false } }
     };
     GEN_DEFS.forEach(g=> s.gens[g.id]=0);
     return s;
@@ -2309,6 +2388,18 @@
   }
 
   function genCost(def, owned){ return Math.ceil(def.baseCost * Math.pow(GROWTH, owned)); }
+  // Previews (and computes the total cost of) buying up to `cap` of a building in
+  // one go, stopping early if coins run out. cap === "max" buys as many as affordable.
+  function multiBuyPreview(costFn, startLevel, coins, cap){
+    let count = 0, totalCost = 0, cur = startLevel;
+    const limit = cap === "max" ? 100000 : cap;
+    while(count < limit){
+      const c = costFn(cur);
+      if(totalCost + c > coins) break;
+      totalCost += c; count++; cur++;
+    }
+    return { count, totalCost };
+  }
   function crownMultiplier(){ return 1 + state.crowns*0.1; }
 
   function ownedHeroList(){ return HERO_DEFS.filter(h => state.heroes[h.id] && state.heroes[h.id].owned); }
@@ -2412,11 +2503,17 @@
     HERO_DEFS.forEach(h=>{ if(!(h.id in state.heroes)) state.heroes[h.id]={owned:STARTER_HERO_IDS.includes(h.id), level:0}; });
     if(!state.battle) state.battle = freshBattle();
     if(!state.battle.heroHp) state.battle.heroHp = {};
+    if(!state.battle.moveCooldowns) state.battle.moveCooldowns = {};
     if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 };
     if(state.stats.pityEpic === undefined) state.stats.pityEpic = 0;
     if(state.stats.pityLegend === undefined) state.stats.pityLegend = 0;
     if(!state.questsClaimed) state.questsClaimed = {};
     if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
+    if(!state.settings) state.settings = { skipAnim:{} };
+    if(!state.settings.skipAnim) state.settings.skipAnim = {};
+    ["common","rare","epic","legend","ultra"].forEach(r=>{
+      if(typeof state.settings.skipAnim[r] !== "boolean") state.settings.skipAnim[r] = false;
+    });
     lastSavedAt = Date.now();
   }
 
@@ -2474,6 +2571,7 @@
   const bossVisual = document.getElementById("bossVisual");
   const bossEmojiSpan = document.getElementById("bossEmojiSpan");
   const bossName = document.getElementById("bossName");
+  const bossTypeTag = document.getElementById("bossTypeTag");
   const bossHpInner = document.getElementById("bossHpInner");
   const bossHpText = document.getElementById("bossHpText");
   const bossDebuffTag = document.getElementById("bossDebuffTag");
@@ -2539,13 +2637,17 @@
   });
 
   // ---------- RENDER: KINGDOM ----------
+  let buildMulti = 1; // 1 | 10 | "max"
   function renderGens(){
     genList.innerHTML="";
     GEN_DEFS.forEach(def=>{
       const owned = state.gens[def.id];
-      const cost = genCost(def, owned);
-      const affordable = state.coins >= cost;
+      const preview = multiBuyPreview(o=>genCost(def,o), owned, state.coins, buildMulti);
+      const affordable = preview.count > 0;
+      const nextCost = genCost(def, owned);
       const prod = def.baseProd * owned * crownMultiplier() * heroBoostMult();
+      const buyLabel = preview.count > 1 ? `Build x${preview.count}` : "Build";
+      const costLabel = preview.count > 0 ? fmt(preview.totalCost) : fmt(nextCost);
       const card = document.createElement("div");
       card.className = "gen-card" + (affordable? " affordable":"");
       card.innerHTML = `
@@ -2555,8 +2657,8 @@
           <div class="gen-meta">${fmt(def.baseProd)} coin/s each &middot; producing ${fmt(prod)}/s</div>
         </div>
         <div class="gen-buy">
-          <div class="gen-cost">🍔 ${fmt(cost)}</div>
-          <button class="buy-btn" data-id="${def.id}" ${affordable? "":"disabled"}>Build</button>
+          <div class="gen-cost">🍔 ${costLabel}</div>
+          <button class="buy-btn" data-id="${def.id}" ${affordable? "":"disabled"}>${buyLabel}</button>
         </div>`;
       genList.appendChild(card);
     });
@@ -2564,14 +2666,19 @@
       btn.addEventListener("click", ()=>{
         const id = btn.getAttribute("data-id");
         const def = GEN_DEFS.find(g=>g.id===id);
-        const cost = genCost(def, state.gens[id]);
-        if(state.coins >= cost){ state.coins -= cost; state.gens[id]++; renderAll(); }
+        const preview = multiBuyPreview(o=>genCost(def,o), state.gens[id], state.coins, buildMulti);
+        if(preview.count > 0){
+          state.coins -= preview.totalCost;
+          state.gens[id] += preview.count;
+          renderAll();
+        }
       });
     });
   }
 
   // ---------- RENDER: HEROES ----------
   function heroLevelCost(h, rec){ return Math.ceil(10 * RARITY_WEIGHT[h.rarity] * Math.pow(1.22, rec.level)); }
+  let levelMulti = 1; // 1 | 10 | "max"
   function renderHeroes(){
     heroGrid.innerHTML="";
     let ownedCount=0;
@@ -2588,8 +2695,11 @@
           <div class="hero-locked-label">Not recruited</div>`;
       } else {
         const power = Math.round(RARITY_WEIGHT[h.rarity] * (1+rec.level*0.5) * 10)/10;
-        const cost = heroLevelCost(h, rec);
-        const canLevel = state.crumbs >= cost;
+        const costOf = lvl => Math.ceil(10 * RARITY_WEIGHT[h.rarity] * Math.pow(1.22, lvl));
+        const preview = multiBuyPreview(costOf, rec.level, state.crumbs, levelMulti);
+        const canLevel = preview.count > 0;
+        const levelLabel = preview.count > 1 ? `Level x${preview.count}` : "🍞";
+        const costLabel = preview.count > 0 ? fmt(preview.totalCost) : fmt(costOf(rec.level));
         const moves = heroMoves(h).map(m=>m.icon+" "+m.name).join(" · ");
         card.innerHTML = `
           <div class="hero-rarity-tag">${RARITY_LABEL[h.rarity]}</div>
@@ -2599,7 +2709,7 @@
           <div class="hero-moves-note">${moves}</div>
           <div class="hero-level">Lv. ${rec.level}</div>
           <div class="hero-power">Power ${power}</div>
-          <button class="level-btn" data-id="${h.id}" ${canLevel? "":"disabled"}>🍞 ${fmt(cost)}</button>`;
+          <button class="level-btn" data-id="${h.id}" ${canLevel? "":"disabled"}>${levelLabel} ${costLabel}</button>`;
       }
       heroGrid.appendChild(card);
     });
@@ -2612,9 +2722,11 @@
         const id = btn.getAttribute("data-id");
         const h = HERO_DEFS.find(x=>x.id===id);
         const rec = state.heroes[id];
-        const cost = heroLevelCost(h, rec);
-        if(state.crumbs >= cost){
-          state.crumbs -= cost; rec.level++;
+        const costOf = lvl => Math.ceil(10 * RARITY_WEIGHT[h.rarity] * Math.pow(1.22, lvl));
+        const preview = multiBuyPreview(costOf, rec.level, state.crumbs, levelMulti);
+        if(preview.count > 0){
+          state.crumbs -= preview.totalCost;
+          rec.level += preview.count;
           if(state.battle.heroHp[id] !== undefined){
             state.battle.heroHp[id] = Math.min(state.battle.heroHp[id]+0, heroMaxHp(h, rec));
           }
@@ -2703,6 +2815,48 @@
     smallWords.forEach(w=>{ if(text.includes(w)) scale -= 0.12; });
 
     return Math.max(0.55, Math.min(2.4, scale));
+  }
+
+  // Detects whether a move's own name/description describe a physical, hands-on hit
+  // (a bash, slam, punch, cut...) rather than an elemental/energy attack — physical
+  // moves land with a comic-style impact burst instead of a glowing energy beam.
+  function moveImpactStyle(move){
+    if(!move) return "energy";
+    const text = ((move.name || "") + " " + (move.desc || "")).toLowerCase();
+    const physicalWords = ["bash","slam","punch","strike","smash","crush","chop","slice","cut",
+      "uppercut","kick","tackle","ram","charge","jab","cleaver","cutter","hit","blow","wallop",
+      "pound","stomp","slap","poke","combo","claw","fist","knockout","headbutt"];
+    return physicalWords.some(w=> text.includes(w)) ? "physical" : "energy";
+  }
+
+  // A comic-book style impact star: pops in with a hard flash and a spray of dust
+  // and debris, for moves that describe a physical hit rather than an energy blast.
+  function fireImpactBurst(x, y, color, scale){
+    scale = scale || 1;
+    const burst = document.createElement("div");
+    burst.className = "impact-burst";
+    burst.style.left = x + "px";
+    burst.style.top = y + "px";
+    burst.style.width = (62*scale) + "px";
+    burst.style.height = (62*scale) + "px";
+    burst.style.setProperty("--burst-color", color);
+    combatRow.appendChild(burst);
+    setTimeout(()=>burst.remove(), 430);
+
+    spawnPointFlash(x, y, color, 34*scale);
+    for(let i=0;i<6;i++){
+      const angle = Math.random()*Math.PI*2;
+      const dist = (22 + Math.random()*20) * scale;
+      const p = document.createElement("span");
+      p.className = "vfx-particle";
+      p.textContent = ["💥","💢","🪨","💨"][Math.floor(Math.random()*4)];
+      p.style.setProperty("--dx", Math.cos(angle)*dist + "px");
+      p.style.setProperty("--dy", Math.sin(angle)*dist + "px");
+      p.style.setProperty("--rot", (Math.random()*360-180) + "deg");
+      p.style.animationDuration = (450 + Math.random()*180) + "ms";
+      combatRow.appendChild(p);
+      setTimeout(()=>p.remove(), 700);
+    }
   }
 
   // Draws a rich, layered energy beam between two points in combatRow's coordinate
@@ -3010,6 +3164,25 @@
     return null;
   }
 
+  // Lunges the hero itself forward toward the boss and back, so attacks read as
+  // the character actually closing the distance to deliver the hit, not just a
+  // detached icon flying over while the hero stands still.
+  function dashHeroToTarget(){
+    const heroRect = heroVisual.getBoundingClientRect();
+    const bossRect = bossVisual.getBoundingClientRect();
+    const dx = (bossRect.left + bossRect.width/2) - (heroRect.left + heroRect.width/2);
+    const dashDist = dx * 0.6;
+
+    heroVisual.style.transition = "transform 230ms cubic-bezier(.34,0,.2,1)";
+    heroVisual.style.transform = `translateX(${dashDist}px)`;
+
+    setTimeout(()=>{
+      heroVisual.style.transition = "transform 280ms cubic-bezier(.3,0,.25,1)";
+      heroVisual.style.transform = "translateX(0)";
+      setTimeout(()=>{ heroVisual.style.transition = ""; }, 290);
+    }, 230);
+  }
+
   // Animates a move's icon physically crossing the battlefield to land the hit,
   // trailing a comet-like glow behind it and finishing with a beam flash on impact.
   // "ground" trajectory: flies from the attacker straight to the target.
@@ -3057,7 +3230,11 @@
 
       setTimeout(()=>{
         clearInterval(trailTimer);
-        fireBeam(startX, startY, endX, endY, trailColor, moveBeamScale(move));
+        if(moveImpactStyle(move) === "physical"){
+          fireImpactBurst(endX, endY, trailColor, moveBeamScale(move));
+        } else {
+          fireBeam(startX, startY, endX, endY, trailColor, moveBeamScale(move));
+        }
         if(trajectory === "sky") spawnCraterImpact(toEl);
         proj.remove();
         resolve();
@@ -3120,6 +3297,60 @@
     return (move && ICON_FX[move.icon]) || fallback;
   }
 
+  // ---------- FOOD TYPING SYSTEM ----------
+  // Six food types in a rock-paper-scissors style cycle: each beats the next one
+  // and is weak to the one before it. 1.5x damage when super effective, 0.75x
+  // when resisted, 1x otherwise.
+  const TYPE_LABEL = {
+    spicy:"🌶️ Spicy", frozen:"❄️ Frozen", savory:"🧀 Savory",
+    sweet:"🍯 Sweet", fresh:"🥬 Fresh", baked:"🍞 Baked",
+  };
+  const TYPE_BEATS = { spicy:"frozen", frozen:"savory", savory:"sweet", sweet:"fresh", fresh:"baked", baked:"spicy" };
+  const TYPE_LOSES_TO = {};
+  Object.keys(TYPE_BEATS).forEach(k=>{ TYPE_LOSES_TO[TYPE_BEATS[k]] = k; });
+
+  // Every move icon maps to the food type it represents.
+  const ICON_TYPE = {
+    "⚡":"spicy", "⛰️":"savory", "❄️":"frozen", "⭐":"sweet",
+    "🌭":"savory", "🌰":"baked", "🌱":"fresh", "🌶️":"spicy",
+    "🌿":"fresh", "🍄":"savory", "🍅":"fresh", "🍔":"savory",
+    "🍢":"savory", "🍦":"frozen", "🍯":"sweet", "🍷":"savory",
+    "🎆":"sweet", "🎯":"fresh", "🎺":"sweet", "🏰":"baked",
+    "🐝":"sweet", "👊":"savory", "👑":"baked", "💀":"frozen",
+    "💥":"spicy", "💨":"fresh", "💫":"sweet", "📯":"sweet",
+    "🔥":"spicy", "🔪":"savory", "🔫":"spicy", "🗡️":"savory",
+    "🛡️":"baked", "🥐":"baked", "🥒":"fresh", "🥖":"baked",
+    "🥗":"fresh", "🥩":"savory", "🥬":"fresh", "🥯":"baked",
+    "🥵":"spicy", "🦞":"savory", "🧀":"savory", "🧅":"fresh",
+    "🧈":"savory", "🧊":"frozen", "🧱":"baked", "🩸":"savory",
+    "🩹":"fresh", "🪨":"baked", "🫕":"savory",
+  };
+  function moveFoodType(move){ return (move && ICON_TYPE[move.icon]) || "savory"; }
+
+  // The original 16 hand-designed bosses get thematically fitting types;
+  // every generated boss beyond that gets a deterministic type from its name,
+  // so the same boss always has the same type across sessions.
+  const BOSS_TYPE_OVERRIDE = [
+    "savory","fresh","fresh","savory","savory","frozen","frozen","savory",
+    "sweet","baked","spicy","baked","sweet","savory","savory","sweet",
+  ];
+  const FOOD_TYPE_LIST = ["spicy","frozen","savory","sweet","fresh","baked"];
+  function bossFoodType(idx, name){
+    if(idx < BOSS_TYPE_OVERRIDE.length) return BOSS_TYPE_OVERRIDE[idx];
+    let hash = 0;
+    for(let i=0;i<name.length;i++){ hash = (hash*31 + name.charCodeAt(i)) >>> 0; }
+    return FOOD_TYPE_LIST[hash % FOOD_TYPE_LIST.length];
+  }
+  function currentBossType(){
+    const boss = BOSS_DEFS[state.battle.bossIndex];
+    return bossFoodType(state.battle.bossIndex, boss.name);
+  }
+  function typeEffectiveness(moveType, bossType){
+    if(TYPE_BEATS[moveType] === bossType) return 1.5;
+    if(TYPE_LOSES_TO[moveType] === bossType) return 0.75;
+    return 1;
+  }
+
   const FX = {
     hitBoss(move){
       spawnParticles(bossVisual, moveParticles(move, ["💥","⚡"]), 6, 34, 550); flashFx(bossVisual, "rgba(192,57,43,0.55)");
@@ -3167,6 +3398,8 @@
     stageTag.textContent = "Cycle " + state.battle.cycle + " · Stage " + (state.battle.bossIndex+1) + " of " + BOSS_DEFS.length;
     bossEmojiSpan.textContent = boss.icon;
     bossName.textContent = boss.name;
+    const bType = currentBossType();
+    bossTypeTag.textContent = TYPE_LABEL[bType];
     teamCountLabel.textContent = state.battleTeam.length + "/" + MAX_TEAM_SIZE;
 
     const team = battleTeamHeroList();
@@ -3188,10 +3421,21 @@
       // moves
       moveGrid.innerHTML = "";
       heroMoves(h).forEach((m, idx)=>{
+        const isOffensive = OFFENSIVE_KINDS.includes(m.kind);
+        const mType = moveFoodType(m);
+        const eff = isOffensive ? typeEffectiveness(mType, bType) : 1;
+        const cdLeft = moveCooldownRemaining(h.id, m);
         const btn = document.createElement("button");
-        btn.className = "move-btn";
-        btn.disabled = (phase !== "player");
-        btn.innerHTML = `<div class="move-name">${m.icon} ${m.name}</div><div class="move-desc">${m.desc}</div>`;
+        btn.className = "move-btn" + (eff>1 ? " super-effective" : (eff<1 ? " not-effective" : "")) + (cdLeft>0 ? " on-cooldown" : "");
+        btn.disabled = (phase !== "player") || cdLeft>0;
+        const effChip = isOffensive
+          ? (eff>1 ? `<span class="move-eff-chip super">Super!</span>` : (eff<1 ? `<span class="move-eff-chip weak">Weak</span>` : ""))
+          : "";
+        const cdChip = cdLeft>0 ? `<span class="move-cd-chip">⏳ ${cdLeft} turn${cdLeft===1?"":"s"}</span>` : "";
+        btn.innerHTML = `
+          <div class="move-name">${m.icon} ${m.name}</div>
+          <div class="move-desc">${m.desc}</div>
+          <div class="move-type-row"><span class="move-type-chip">${TYPE_LABEL[mType]}</span>${effChip}${cdChip}</div>`;
         btn.addEventListener("click", ()=> playerUseMove(m));
         moveGrid.appendChild(btn);
       });
@@ -3255,128 +3499,204 @@
 
   const OFFENSIVE_KINDS = ["dmg","dmg2","dmg_debuff","dmg_stun","drain","burn","crit","multi3"];
 
+  // ---------- MOVE COOLDOWNS ----------
+  // How many of the player's OWN turns a move is locked out for after use — a
+  // move's basic "dmg" hit is always free, while stronger/utility moves need to
+  // recharge. Stored value is (turns-to-skip + 1): tickMoveCooldowns() runs once
+  // per round inside bossTurn(), which fires between this use and the player's
+  // very next turn, so the raw counter needs that extra +1 or a "1 turn" cooldown
+  // would already be back to 0 before the player ever saw it blocked.
+  const MOVE_COOLDOWN = {
+    dmg:0, dmg2:2, dmg_debuff:2, dmg_stun:2, drain:2, burn:2,
+    crit:3, multi3:3, buff:3, heal:2, shield:3,
+  };
+  function moveCooldownKey(heroId, move){ return heroId + "|" + move.name; }
+  function moveCooldownRemaining(heroId, move){
+    return state.battle.moveCooldowns[moveCooldownKey(heroId, move)] || 0;
+  }
+  function tickMoveCooldowns(){
+    Object.keys(state.battle.moveCooldowns).forEach(key=>{
+      const left = state.battle.moveCooldowns[key] - 1;
+      if(left <= 0) delete state.battle.moveCooldowns[key];
+      else state.battle.moveCooldowns[key] = left;
+    });
+  }
+
   async function playerUseMove(move){
     if(phase !== "player") return;
     const h = activeHero();
     if(!h) return;
+    if(moveCooldownRemaining(h.id, move) > 0) return;
     const rec = state.heroes[h.id];
     const atkStat = heroAtk(h, rec) * (heroBuff.turns>0 ? heroBuff.mult : 1);
     phase = "busy";
     renderBattleStatic();
 
-    // Hero winds up before releasing the move
-    FX.castGlow(heroVisual, "rgba(255,255,255,0.6)");
+    // If this hero's rarity has animations skipped, the move resolves near-instantly:
+    // damage, healing, status effects, and log messages still all apply normally —
+    // only the windup, dash, projectile/beam, and impact VFX are skipped.
+    const skipAnim = skipAnimFor(h.rarity);
 
-    if(OFFENSIVE_KINDS.includes(move.kind)){
-      const trajectory = moveTrajectory(move);
-      await launchProjectile(heroVisual, bossVisual, move.icon, trajectory === "sky" ? 550 : 380, trajectory, move);
-    } else {
-      // small self-cast beat so buffs/heals/shields don't resolve instantly
-      await new Promise(r=>setTimeout(r, 140));
+    if(!skipAnim){
+      FX.castGlow(heroVisual, "rgba(255,255,255,0.6)");
     }
 
+    if(OFFENSIVE_KINDS.includes(move.kind)){
+      if(!skipAnim){
+        const trajectory = moveTrajectory(move);
+        dashHeroToTarget();
+        await launchProjectile(heroVisual, bossVisual, move.icon, trajectory === "sky" ? 550 : 380, trajectory, move);
+      }
+    } else {
+      if(!skipAnim){
+        // small self-cast beat so buffs/heals/shields don't resolve instantly
+        await new Promise(r=>setTimeout(r, 140));
+      }
+    }
+
+    // Food typing: a move's type (from its icon) vs the boss's type gives a
+    // 1.5x bonus when super effective, or 0.75x when resisted.
+    const typeEff = OFFENSIVE_KINDS.includes(move.kind)
+      ? typeEffectiveness(moveFoodType(move), currentBossType())
+      : 1;
+
     if(move.kind === "dmg" || move.kind === "dmg_debuff" || move.kind === "dmg_stun"){
-      const dmg = Math.max(1, Math.round(atkStat * move.power));
+      const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
       state.battle.bossHp -= dmg;
-      const special = specialMoveEffect(move);
-      if(special === "blackhole"){ spawnBlackHole(bossVisual); }
-      else if(special === "skull"){ spawnSkullOverlay(bossVisual); shakeVisual(bossVisual); }
-      else if(special === "beeswarm"){ spawnBeeSwarm(bossVisual); FX.hitBoss(move); }
-      else if(special === "icecrystal"){ spawnIceCrystal(bossVisual); shakeVisual(bossVisual); }
-      else if(special === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
-      else if(special === "cheesemelt"){ spawnCheeseDrip(bossVisual); shakeVisual(bossVisual); }
-      else if(move.kind === "dmg_stun") FX.freezeBoss(move);
-      else if(move.kind === "dmg_debuff") FX.debuffBoss(move);
-      else FX.hitBoss(move);
+      if(!skipAnim){
+        const special = specialMoveEffect(move);
+        if(special === "blackhole"){ spawnBlackHole(bossVisual); }
+        else if(special === "skull"){ spawnSkullOverlay(bossVisual); shakeVisual(bossVisual); }
+        else if(special === "beeswarm"){ spawnBeeSwarm(bossVisual); FX.hitBoss(move); }
+        else if(special === "icecrystal"){ spawnIceCrystal(bossVisual); shakeVisual(bossVisual); }
+        else if(special === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
+        else if(special === "cheesemelt"){ spawnCheeseDrip(bossVisual); shakeVisual(bossVisual); }
+        else if(move.kind === "dmg_stun") FX.freezeBoss(move);
+        else if(move.kind === "dmg_debuff") FX.debuffBoss(move);
+        else FX.hitBoss(move);
+      }
       showFloat(bossVisual, "-"+fmt(dmg), "boss");
       addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP.");
+      if(typeEff > 1) addLog("🔥 Super effective!");
+      else if(typeEff < 1) addLog("💤 Not very effective...");
       if(move.kind === "dmg_debuff"){
         bossDebuff = {mult:0.7, turns:3};
         addLog(BOSS_DEFS[state.battle.bossIndex].name + "'s ATK dropped!");
       }
       if(move.kind === "dmg_stun" && Math.random() < 0.5){
         bossStunTurns = 1;
-        bossVisual.classList.add("frozen");
+        if(!skipAnim) bossVisual.classList.add("frozen");
         addLog(BOSS_DEFS[state.battle.bossIndex].name + " is frozen solid!");
       }
     } else if(move.kind === "dmg2"){
       let total = 0;
       for(let i=0;i<2;i++){
-        const dmg = Math.max(1, Math.round(atkStat * move.power));
+        const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
         state.battle.bossHp -= dmg; total += dmg;
       }
-      FX.hitBossBig(move);
-      spawnDoubleSlash(bossVisual);
+      if(!skipAnim){
+        FX.hitBossBig(move);
+        spawnDoubleSlash(bossVisual);
+      }
       showFloat(bossVisual, "-"+fmt(total), "boss");
       addLog(h.name + " used " + move.name + "! Hits twice for -" + fmt(total) + " HP total.");
+      if(typeEff > 1) addLog("🔥 Super effective!");
+      else if(typeEff < 1) addLog("💤 Not very effective...");
     } else if(move.kind === "buff"){
       heroBuff = {mult:1.5, turns:3};
-      const special = specialMoveEffect(move);
-      if(special === "crown"){ spawnCrownDescend(heroVisual); flashFx(heroVisual, "rgba(246,196,69,0.55)"); }
-      else if(special === "shockwave"){ spawnShockwave(heroVisual, "rgba(246,196,69,0.7)"); spawnParticles(heroVisual, ["⭐","⬆️"], 6, 30, 600); }
-      else FX.buffHero(move);
+      if(!skipAnim){
+        const special = specialMoveEffect(move);
+        if(special === "crown"){ spawnCrownDescend(heroVisual); flashFx(heroVisual, "rgba(246,196,69,0.55)"); }
+        else if(special === "shockwave"){ spawnShockwave(heroVisual, "rgba(246,196,69,0.7)"); spawnParticles(heroVisual, ["⭐","⬆️"], 6, 30, 600); }
+        else FX.buffHero(move);
+      }
       addLog(h.name + " used " + move.name + "! ATK is boosted!");
     } else if(move.kind === "heal"){
       const max = heroMaxHp(h, rec);
       const healAmt = Math.round(max*0.3);
       state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
-      if(specialMoveEffect(move) === "goldenrain"){ spawnGoldenRain(heroVisual); }
-      else FX.healHero(move);
+      if(!skipAnim){
+        if(specialMoveEffect(move) === "goldenrain"){ spawnGoldenRain(heroVisual); }
+        else FX.healHero(move);
+      }
       showFloat(heroVisual, "+"+fmt(healAmt), "heal");
       addLog(h.name + " used " + move.name + "! Recovered " + fmt(healAmt) + " HP.");
     } else if(move.kind === "shield"){
       heroShield = {reduction:0.5, turns:3};
-      if(specialMoveEffect(move) === "risingwall"){ spawnRisingWall(heroVisual); flashFx(heroVisual, "rgba(79,143,209,0.5)"); }
-      else FX.shieldHero(move);
+      if(!skipAnim){
+        if(specialMoveEffect(move) === "risingwall"){ spawnRisingWall(heroVisual); flashFx(heroVisual, "rgba(79,143,209,0.5)"); }
+        else FX.shieldHero(move);
+      }
       addLog(h.name + " used " + move.name + "! A protective shield forms!");
     } else if(move.kind === "drain"){
-      const dmg = Math.max(1, Math.round(atkStat * move.power));
+      const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
       state.battle.bossHp -= dmg;
       const healAmt = Math.round(dmg*0.5);
       const max = heroMaxHp(h, rec);
       state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
-      if(specialMoveEffect(move) === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
-      else FX.drain(move);
+      if(!skipAnim){
+        if(specialMoveEffect(move) === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
+        else FX.drain(move);
+      }
       showFloat(bossVisual, "-"+fmt(dmg), "boss");
       showFloat(heroVisual, "+"+fmt(healAmt), "heal");
       addLog(h.name + " used " + move.name + "! Drains " + fmt(dmg) + " HP and heals " + fmt(healAmt) + "!");
+      if(typeEff > 1) addLog("🔥 Super effective!");
+      else if(typeEff < 1) addLog("💤 Not very effective...");
     } else if(move.kind === "burn"){
-      const dmg = Math.max(1, Math.round(atkStat * move.power));
+      const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
       state.battle.bossHp -= dmg;
       bossBurn = {dmgPerTurn: Math.max(1, Math.round(atkStat*0.3)), turns:3};
-      FX.burnBoss(move);
+      if(!skipAnim) FX.burnBoss(move);
       showFloat(bossVisual, "-"+fmt(dmg), "boss");
       addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP and set the foe ablaze!");
+      if(typeEff > 1) addLog("🔥 Super effective!");
+      else if(typeEff < 1) addLog("💤 Not very effective...");
     } else if(move.kind === "crit"){
       const critMult = 1.8 + Math.random()*0.6;
-      const dmg = Math.max(1, Math.round(atkStat * move.power * critMult));
-      FX.hitBossBig(move);
+      const dmg = Math.max(1, Math.round(atkStat * move.power * critMult * typeEff));
+      if(!skipAnim) FX.hitBossBig(move);
       showFloat(bossVisual, "-"+fmt(dmg)+"!", "boss");
       state.battle.bossHp -= dmg;
       addLog(h.name + " used " + move.name + "! CRITICAL HIT for -" + fmt(dmg) + " HP!");
+      if(typeEff > 1) addLog("🔥 Super effective!");
+      else if(typeEff < 1) addLog("💤 Not very effective...");
     } else if(move.kind === "multi3"){
       let total = 0;
       for(let i=0;i<3;i++){
-        const dmg = Math.max(1, Math.round(atkStat * move.power));
+        const dmg = Math.max(1, Math.round(atkStat * move.power * typeEff));
         state.battle.bossHp -= dmg; total += dmg;
       }
-      FX.hitBossBig(move); setTimeout(()=>shakeVisual(bossVisual), 300);
-      spawnTripleSlash(bossVisual);
+      if(!skipAnim){
+        FX.hitBossBig(move); setTimeout(()=>shakeVisual(bossVisual), 300);
+        spawnTripleSlash(bossVisual);
+      }
       showFloat(bossVisual, "-"+fmt(total), "boss");
       addLog(h.name + " used " + move.name + "! Hits three times for -" + fmt(total) + " HP total!");
+      if(typeEff > 1) addLog("🔥 Super effective!");
+      else if(typeEff < 1) addLog("💤 Not very effective...");
+    }
+
+    // Put this move on cooldown for its next use
+    const cdLength = MOVE_COOLDOWN[move.kind] || 0;
+    if(cdLength > 0){
+      state.battle.moveCooldowns[moveCooldownKey(h.id, move)] = cdLength;
     }
 
     // Epic/Legendary/Ultra Legendary heroes get extra flair on every move they use,
-    // so their attacks and casts visibly stand out from Common/Rare heroes.
-    applyRarityFlair(h.rarity, OFFENSIVE_KINDS.includes(move.kind) ? bossVisual : heroVisual);
+    // so their attacks and casts visibly stand out from Common/Rare heroes —
+    // unless that rarity has animations skipped.
+    if(!skipAnim){
+      applyRarityFlair(h.rarity, OFFENSIVE_KINDS.includes(move.kind) ? bossVisual : heroVisual);
+    }
 
     renderBattleStatic(); renderBattleDynamic();
 
     if(state.battle.bossHp <= 0){
-      setTimeout(handleVictory, 500);
+      setTimeout(handleVictory, skipAnim ? 60 : 500);
       return;
     }
-    setTimeout(bossTurn, 700);
+    setTimeout(bossTurn, skipAnim ? 120 : 700);
   }
 
   async function bossTurn(){
@@ -3421,6 +3741,7 @@
     if(heroBuff.turns>0){ heroBuff.turns--; if(heroBuff.turns<=0) heroBuff={mult:1,turns:0}; }
     if(bossDebuff.turns>0){ bossDebuff.turns--; if(bossDebuff.turns<=0) bossDebuff={mult:1,turns:0}; }
     if(heroShield.turns>0){ heroShield.turns--; if(heroShield.turns<=0) heroShield={reduction:0,turns:0}; }
+    tickMoveCooldowns();
 
     renderBattleDynamic();
 
@@ -3462,6 +3783,7 @@
     state.battle.bossHp = bStats.hp;
     heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
     heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    state.battle.moveCooldowns = {};
     bossVisual.classList.remove("frozen");
     addLog("🍔 Your burgers regroup and restart the fight against " + BOSS_DEFS[state.battle.bossIndex].name + "!");
     phase = "player";
@@ -3492,6 +3814,7 @@
     healTeamFully();
     heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
     heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    state.battle.moveCooldowns = {};
     phase = "player";
     battleMsg.textContent = "A new challenger appears! Choose an attack!";
     ensureHeroHp();
@@ -3621,6 +3944,10 @@
     });
   }
 
+  function skipAnimFor(rarity){
+    return !!(state.settings && state.settings.skipAnim && state.settings.skipAnim[rarity]);
+  }
+
   async function doSummon(count, cost){
     if(state.sesame < cost || summonBusy) return;
     summonBusy = true;
@@ -3633,9 +3960,14 @@
     renderGens(); renderHeroes(); renderQuests(); updatePityNote();
 
     const bestRarity = highestRarity(results.map(r=>r.hero.rarity));
-    await playCookingAnimation(bestRarity);
+    if(!skipAnimFor(bestRarity)){
+      await playCookingAnimation(bestRarity);
+    }
 
-    const showcasePulls = results.filter(r => r.hero.rarity === "legend" || r.hero.rarity === "epic" || r.hero.rarity === "ultra");
+    const showcasePulls = results.filter(r =>
+      (r.hero.rarity === "legend" || r.hero.rarity === "epic" || r.hero.rarity === "ultra")
+      && !skipAnimFor(r.hero.rarity)
+    );
     for(const res of showcasePulls){
       await playRarityCutscene(res.hero, res.hero.rarity);
     }
@@ -3687,6 +4019,21 @@
     summon1Btn.disabled = state.sesame < 10 || summonBusy;
     summon10Btn.disabled = state.sesame < 90 || summonBusy;
   }
+  // ---------- MULTI-BUY / MULTI-LEVEL SELECTORS ----------
+  function wireMultiSelectRow(rowId, onChange){
+    const row = document.getElementById(rowId);
+    row.querySelectorAll(".multi-select-btn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        row.querySelectorAll(".multi-select-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        const raw = btn.getAttribute("data-mult");
+        onChange(raw === "max" ? "max" : parseInt(raw, 10));
+      });
+    });
+  }
+  wireMultiSelectRow("buildMultiRow", (val)=>{ buildMulti = val; renderGens(); });
+  wireMultiSelectRow("levelMultiRow", (val)=>{ levelMulti = val; renderHeroes(); });
+
   function renderAll(){
     ensureHeroHp();
     renderTopStats();
@@ -3790,6 +4137,7 @@
       phase = "player";
       heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
     heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    state.battle.moveCooldowns = {};
       bossVisual.classList.remove("frozen");
       state.battle.bossHp = 0;
       handleVictory();
@@ -3917,6 +4265,29 @@
   tutorialOpenBtn.addEventListener("click", openTutorial);
   homeTutorialBtn.addEventListener("click", openTutorial);
   tutorialClose.addEventListener("click", ()=>{ tutorialOverlay.style.display = "none"; });
+
+  // ---------- SETTINGS MODAL ----------
+  const settingsOpenBtn = document.getElementById("settingsOpenBtn");
+  const settingsOverlay = document.getElementById("settingsOverlay");
+  const settingsClose = document.getElementById("settingsClose");
+  const skipToggles = {
+    common: document.getElementById("skipCommonToggle"),
+    rare: document.getElementById("skipRareToggle"),
+    epic: document.getElementById("skipEpicToggle"),
+    legend: document.getElementById("skipLegendToggle"),
+    ultra: document.getElementById("skipUltraToggle"),
+  };
+  settingsOpenBtn.addEventListener("click", ()=>{
+    Object.keys(skipToggles).forEach(r=>{ skipToggles[r].checked = !!state.settings.skipAnim[r]; });
+    settingsOverlay.style.display = "flex";
+  });
+  settingsClose.addEventListener("click", ()=>{ settingsOverlay.style.display = "none"; });
+  Object.keys(skipToggles).forEach(r=>{
+    skipToggles[r].addEventListener("change", ()=>{
+      state.settings.skipAnim[r] = skipToggles[r].checked;
+      save();
+    });
+  });
 
   initGame();
 })();
