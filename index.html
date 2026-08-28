@@ -89,8 +89,15 @@
   .corner-btn{
     width:40px; height:40px; border-radius:50%; border:2px solid var(--ink); background:var(--parchment-card);
     font-size:18px; cursor:pointer; box-shadow:0 3px 0 var(--wood); display:flex; align-items:center; justify-content:center;
+    position:relative;
   }
   .corner-btn:active{transform:translateY(2px); box-shadow:0 1px 0 var(--wood);}
+  .story-badge{
+    position:absolute; top:-4px; right:-4px; width:16px; height:16px; border-radius:50%;
+    background:var(--ketchup); color:#fff; font-size:10px; font-weight:900; border:2px solid #fff;
+    display:flex; align-items:center; justify-content:center; animation:storyBadgePulse 1.2s ease-in-out infinite;
+  }
+  @keyframes storyBadgePulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.15);}}
   .info-overlay{
     display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:195;
     align-items:center; justify-content:center; padding:20px;
@@ -108,6 +115,15 @@
   .info-card .admin-close-btn{align-self:center;}
   .settings-section-label{font-family:'Baloo 2',cursive; font-size:13px; color:var(--royal); margin-bottom:6px;}
   .settings-note{font-size:11px; color:var(--wood-dark); margin:0 0 12px; line-height:1.45;}
+  .story-text{font-size:12.5px; color:var(--wood-dark); line-height:1.55; margin:0 0 12px;}
+  .story-text b{color:var(--ink);}
+  .story-chapter{
+    border:2px solid var(--line); border-radius:10px; padding:9px 11px; margin-bottom:8px; background:var(--parchment-card);
+  }
+  .story-chapter-title{font-family:'Baloo 2',cursive; font-size:13px; color:var(--royal); margin-bottom:3px;}
+  .story-chapter-text{font-size:11.5px; color:var(--wood-dark); line-height:1.5;}
+  .story-chapter.locked{opacity:0.55;}
+  .story-chapter.locked .story-chapter-title{color:var(--wood-dark);}
   .settings-toggle-row{
     display:flex; align-items:center; gap:10px; padding:9px 2px; font-size:13px; font-weight:700;
     color:var(--ink); border-bottom:1px dashed var(--line); cursor:pointer;
@@ -272,6 +288,13 @@
   .hero-card.legend .hero-rarity-tag{background:var(--c-legend); color:var(--ink);}
   .hero-card.ultra .hero-rarity-tag{background:var(--c-ultra); color:#fff;}
   .hero-card.admin .hero-rarity-tag{background:#8a1620; color:#fff;}
+  .hero-lore-btn{
+    position:absolute; top:5px; left:5px; width:20px; height:20px; border-radius:50%;
+    border:1.5px solid var(--ink); background:var(--parchment-card); font-size:10px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0; z-index:2;
+  }
+  .hero-lore-btn:active{transform:scale(0.9);}
+  .hero-lore-emoji{font-size:44px; text-align:center; margin-bottom:8px;}
   .hero-emoji{font-size:40px; margin:6px 0 2px;}
   .hero-name{font-weight:800; font-size:12.5px; line-height:1.15; min-height:30px; display:flex; align-items:center; justify-content:center;}
   .hero-role{font-size:10px; font-weight:700; color:var(--wood-dark); margin-bottom:2px;}
@@ -687,16 +710,32 @@
   .bench-chip .chip-emoji{
     width:38px; height:38px; border-radius:50%; background:var(--parchment-card); border:2px solid var(--c-common);
     display:flex; align-items:center; justify-content:center; font-size:19px;
+    animation:benchIdleBob 2.4s ease-in-out infinite;
   }
   .bench-chip.rare .chip-emoji{border-color:var(--c-rare);}
   .bench-chip.epic .chip-emoji{border-color:var(--c-epic);}
   .bench-chip.legend .chip-emoji{border-color:var(--c-legend);}
   .bench-chip.ultra .chip-emoji{border-color:var(--c-ultra); box-shadow:0 0 8px rgba(230,57,70,0.7);}
   .bench-chip.admin .chip-emoji{border-color:#8a1620; box-shadow:0 0 8px rgba(200,30,30,0.6);}
-  .bench-chip.fainted .chip-emoji{opacity:0.35; filter:grayscale(1);}
+  .bench-chip.fainted .chip-emoji{opacity:0.35; filter:grayscale(1); animation:none;}
   .bench-chip .chip-hp-outer{width:38px; height:5px; background:#e7dcc4; border-radius:4px; overflow:hidden;}
   .bench-chip .chip-hp-inner{height:100%; background:var(--mint-dark);}
   .bench-chip:disabled{cursor:default;}
+  @keyframes benchIdleBob{0%,100%{transform:translateY(0);} 50%{transform:translateY(-3px);}}
+  .bench-chip.cheering .chip-emoji{animation:benchCheer 0.5s ease-in-out;}
+  @keyframes benchCheer{
+    0%{transform:translateY(0) scale(1);}
+    30%{transform:translateY(-9px) scale(1.15);}
+    55%{transform:translateY(0) scale(0.95);}
+    100%{transform:translateY(0) scale(1);}
+  }
+  .bench-chip.flinching .chip-emoji{animation:benchFlinch 0.4s ease-in-out;}
+  @keyframes benchFlinch{
+    0%{transform:translateX(0) scale(1);}
+    25%{transform:translateX(-3px) scale(0.92);}
+    50%{transform:translateX(3px) scale(0.92);}
+    100%{transform:translateX(0) scale(1);}
+  }
 
   .battle-msg{
     font-size:12px; font-weight:800; color:var(--ink); min-height:18px; text-align:center;
@@ -802,6 +841,13 @@
     border-radius:10px; padding:8px 14px; cursor:pointer; box-shadow:0 3px 0 #443a5c;
   }
   .team-select-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #443a5c;}
+  .side-quest-btn{
+    font-family:'Baloo 2',cursive; font-size:11.5px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, #6a4a2e, #4a3018); border:none;
+    border-radius:10px; padding:7px 14px; cursor:pointer; box-shadow:0 3px 0 #2e1c0c;
+  }
+  .side-quest-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #2e1c0c;}
+  .side-quest-btn.active-side{background:linear-gradient(180deg, var(--ketchup), var(--ketchup-dark)); box-shadow:0 3px 0 var(--ketchup-dark);}
   .team-select-overlay{
     display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:180;
     align-items:center; justify-content:center; padding:20px;
@@ -846,6 +892,9 @@
   .rarity-cutscene.rc-ultra{
     background:radial-gradient(circle at 50% 50%, rgba(90,15,20,0.95), rgba(10,2,3,0.98));
   }
+  .rarity-cutscene.rc-domain{
+    background:radial-gradient(circle at 50% 50%, rgba(20,8,40,0.97), rgba(2,1,6,0.99));
+  }
   .rarity-cutscene::before{
     content:""; position:absolute; top:50%; left:50%; width:250vmax; height:250vmax;
     margin:-125vmax 0 0 -125vmax;
@@ -859,6 +908,10 @@
     background:repeating-conic-gradient(rgba(230,57,70,0.32) 0deg 8deg, transparent 8deg 24deg);
     animation:raysSpin 6s linear infinite;
   }
+  .rarity-cutscene.rc-domain::before{
+    background:repeating-conic-gradient(rgba(120,60,220,0.35) 0deg 4deg, transparent 4deg 16deg);
+    animation:raysSpin 3.5s linear infinite;
+  }
   @keyframes raysSpin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
   .rarity-cutscene-content{
     position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:20px;
@@ -868,6 +921,7 @@
   }
   .rarity-cutscene.rc-epic .rarity-cutscene-sub{ color:#c9a8ec; }
   .rarity-cutscene.rc-ultra .rarity-cutscene-sub{ color:#ff8a8a; }
+  .rarity-cutscene.rc-domain .rarity-cutscene-sub{ color:#b78cff; }
   .rarity-cutscene-title{
     font-family:'Baloo 2',cursive; font-size:clamp(19px,5.5vw,30px); color:var(--cheese);
     text-shadow:0 0 18px rgba(246,196,69,0.85), 2px 2px 0 var(--ink);
@@ -878,6 +932,10 @@
   }
   .rarity-cutscene.rc-ultra .rarity-cutscene-title{
     color:#ff8a8a; text-shadow:0 0 22px rgba(230,57,70,0.9), 2px 2px 0 var(--ink);
+  }
+  .rarity-cutscene.rc-domain .rarity-cutscene-title{
+    font-size:clamp(16px,4.6vw,24px); color:#c9a5ff;
+    text-shadow:0 0 26px rgba(140,70,230,0.95), 2px 2px 0 #000;
   }
   @keyframes titlePulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.06);}}
   .rarity-cutscene-emoji{
@@ -891,6 +949,9 @@
   .rarity-cutscene.rc-ultra .rarity-cutscene-emoji{
     filter:drop-shadow(0 0 34px rgba(230,57,70,0.95));
   }
+  .rarity-cutscene.rc-domain .rarity-cutscene-emoji{
+    filter:drop-shadow(0 0 38px rgba(140,70,230,0.95));
+  }
   .rarity-cutscene-emoji > *{position:relative; z-index:1;}
   @keyframes lcEmojiEnter{0%{transform:scale(0) rotate(-30deg); opacity:0;} 60%{transform:scale(1.2) rotate(8deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
   .rarity-cutscene-name{
@@ -898,6 +959,46 @@
     opacity:0; animation:nameFadeIn 0.5s ease forwards; animation-delay:0.4s;
   }
   @keyframes nameFadeIn{ to{opacity:1;} }
+  .rarity-cutscene-lore{
+    max-width:280px; margin-top:6px; font-style:italic; font-weight:700; font-size:11.5px; color:#fff;
+    text-shadow:1px 1px 0 rgba(0,0,0,0.6); opacity:0; animation:loreFadeIn 0.6s ease forwards; animation-delay:0.75s;
+  }
+  @keyframes loreFadeIn{ to{opacity:0.92;} }
+
+  /* ---------- OVERCOMPLICATED SIGNATURE-MOVE CUTSCENE EXTRAS ---------- */
+  .cutscene-letterbox{
+    position:absolute; left:0; right:0; height:0; background:#000; z-index:5; pointer-events:none;
+    transition:height 0.35s cubic-bezier(.2,.8,.3,1);
+  }
+  .cutscene-letterbox.top{top:0;}
+  .cutscene-letterbox.bottom{bottom:0;}
+  .cutscene-letterbox.bars-in{height:11%;}
+  .cutscene-power-meter{
+    position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:6px;
+    opacity:0; pointer-events:none;
+  }
+  .cutscene-power-meter.showing{animation:powerMeterFade 0.35s ease forwards;}
+  @keyframes powerMeterFade{ to{opacity:1;} }
+  .cutscene-power-label{
+    font-family:'Baloo 2',cursive; font-size:13px; letter-spacing:1px; color:#ff8a8a;
+    text-shadow:1px 1px 0 rgba(0,0,0,0.6);
+  }
+  .cutscene-power-bar-outer{
+    width:220px; height:16px; border:2px solid #fff; border-radius:9px; overflow:hidden; background:rgba(255,255,255,0.15);
+  }
+  .cutscene-power-bar-inner{
+    height:100%; width:0%; background:linear-gradient(90deg,#ffcf6b,#e63946);
+    transition:width 0.6s cubic-bezier(.2,.7,.3,1);
+  }
+  .cutscene-power-number{
+    font-family:'Baloo 2',cursive; font-size:26px; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.6);
+  }
+  .cutscene-quote{
+    position:relative; z-index:2; max-width:80%; text-align:center; font-style:italic; font-weight:700;
+    font-size:15px; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.6); opacity:0; pointer-events:none;
+  }
+  .cutscene-quote.showing{animation:quoteFade 0.5s ease forwards;}
+  @keyframes quoteFade{ 0%{opacity:0; transform:translateY(8px);} 100%{opacity:1; transform:translateY(0);} }
 
   footer{text-align:center; font-size:10.5px; color:var(--wood-dark); margin-top:26px; opacity:0.75;}
 
@@ -954,6 +1055,7 @@
   @keyframes revealPop{0%{transform:scale(0.3) rotate(-8deg); opacity:0;} 70%{transform:scale(1.08) rotate(2deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
   .reveal-emoji{font-size:36px;}
   .reveal-name{font-size:11px; font-weight:800; margin-top:4px;}
+  .reveal-lore{font-size:7.5px; font-style:italic; color:var(--wood-dark); line-height:1.3; margin-top:3px;}
   .reveal-dup{font-size:9.5px; color:var(--ketchup); font-weight:800; margin-top:2px;}
 </style>
 </head>
@@ -961,9 +1063,49 @@
 
 <!-- ===== TOP-RIGHT CORNER BUTTONS ===== -->
 <div class="topcorner-btns">
+  <button class="corner-btn story-btn-wrap" id="storyOpenBtn" title="Story">📜<span class="story-badge" id="storyBadge" style="display:none;">!</span></button>
   <button class="corner-btn" id="settingsOpenBtn" title="Settings">⚙️</button>
   <button class="corner-btn" id="tutorialOpenBtn" title="How to Play">❓</button>
   <button class="corner-btn" id="updateLogOpenBtn" title="Update Log">📖</button>
+</div>
+
+<!-- ===== STORY MODAL ===== -->
+<div class="info-overlay" id="storyOverlay">
+  <div class="info-card">
+    <div class="admin-title">📜 The Tale of the Burger Kingdom</div>
+    <div class="info-scroll">
+      <p class="story-text">
+        Long ago, the Grand Feast Arena stood as a symbol of peace between every
+        corner of the culinary world — Spicy peppers, Frozen desserts, Savory
+        roasts, Sweet pastries, Fresh greens, and Baked breads all lived in
+        harmony, feeding one kingdom together.
+      </p>
+      <p class="story-text">
+        Then the Greasy Goblin seized the arena's throne, and one by one, twisted
+        food-beasts rose up to guard it in his name. The old recipes were
+        forgotten. The kitchens fell silent.
+      </p>
+      <p class="story-text">
+        You are the last heir to the Burger Throne. Fight your way through every
+        guardian standing between you and the crown that was always yours.
+      </p>
+      <div class="settings-section-label">Chapters</div>
+      <div id="storyChapterList"></div>
+    </div>
+    <button class="admin-close-btn" id="storyClose">Close</button>
+  </div>
+</div>
+
+<!-- ===== HERO LORE MODAL ===== -->
+<div class="info-overlay" id="heroLoreOverlay">
+  <div class="info-card">
+    <div class="admin-title" id="heroLoreTitle">📖 Hero Lore</div>
+    <div class="info-scroll">
+      <div class="hero-lore-emoji" id="heroLoreEmoji">🥯</div>
+      <p class="story-text" id="heroLoreText"></p>
+    </div>
+    <button class="admin-close-btn" id="heroLoreClose">Close</button>
+  </div>
 </div>
 
 <!-- ===== SETTINGS MODAL ===== -->
@@ -1128,6 +1270,7 @@
       <div class="battle-area-pulse" id="battleAreaPulse"></div>
       <div class="stage-tag" id="stageTag">Cycle 1 · Stage 1 of 8</div>
       <button class="team-select-btn" id="openTeamSelectBtn">🛡️ Select Team (<span id="teamCountLabel">0/15</span>)</button>
+      <button class="side-quest-btn" id="sideQuestBtn" style="display:none;">📖 Enter Side Story: The Lost Recipe</button>
 
       <div class="combat-row" id="combatRow">
         <div class="fighter-col">
@@ -1256,6 +1399,25 @@
       <div class="rarity-cutscene-title" id="rarityCutsceneTitle">A LEGENDARY HERO APPEARS!</div>
       <div class="rarity-cutscene-emoji" id="rarityCutsceneEmoji"><span id="rarityCutsceneEmojiSpan">👑</span></div>
       <div class="rarity-cutscene-name" id="rarityCutsceneName">Kingsbun Regent</div>
+      <div class="rarity-cutscene-lore" id="rarityCutsceneLore"></div>
+    </div>
+  </div>
+
+  <!-- ===== SIGNATURE ATTACK CUTSCENE (battle) ===== -->
+  <div class="rarity-cutscene rc-ultra" id="battleCutscene">
+    <div class="cutscene-letterbox top" id="cutsceneLetterboxTop"></div>
+    <div class="cutscene-letterbox bottom" id="cutsceneLetterboxBottom"></div>
+    <div class="cutscene-power-meter" id="cutscenePowerMeter">
+      <div class="cutscene-power-label">POWER LEVEL RISING</div>
+      <div class="cutscene-power-bar-outer"><div class="cutscene-power-bar-inner" id="cutscenePowerBarInner"></div></div>
+      <div class="cutscene-power-number" id="cutscenePowerNumber">0</div>
+    </div>
+    <div class="cutscene-quote" id="cutsceneQuote"></div>
+    <div class="rarity-cutscene-content" id="battleCutsceneContent">
+      <div class="rarity-cutscene-sub" id="battleCutsceneSub">🥩 A SIGNATURE MOVE 🥩</div>
+      <div class="rarity-cutscene-title" id="battleCutsceneTitle">MICHELIN STAR CUT!</div>
+      <div class="rarity-cutscene-emoji" id="battleCutsceneEmoji"><span id="battleCutsceneEmojiSpan">🥩</span></div>
+      <div class="rarity-cutscene-name" id="battleCutsceneName">Beef Wellington</div>
     </div>
   </div>
 
@@ -2340,6 +2502,204 @@
     return { hp: Math.round(b.hp*hpMult), atk: Math.round(b.atk*atkMult) };
   }
 
+  // ---------- SIDE STORY: "The Lost Recipe" ----------
+  // A short optional 5-boss gauntlet, separate from the main throne-reclaiming
+  // arc — flat stats, no cycle scaling, since it's a one-time side challenge
+  // rather than an endless loop like the main roster.
+  const SIDE_BOSS_DEFS = [
+    { name:"Recipe Keeper",   icon:"📖", hp:800,   atk:25  },
+    { name:"Inkwell Wraith",  icon:"🖋️", hp:1800,  atk:45  },
+    { name:"Binding Golem",   icon:"📚", hp:3500,  atk:70  },
+    { name:"The Forgotten Sous", icon:"🔪", hp:6000, atk:110 },
+    { name:"The First Recipe",icon:"🕯️", hp:12000, atk:180 },
+  ];
+  const SIDE_BOSS_STORY = [
+    "📖 Bound in leather older than the throne itself, the Recipe Keeper doesn't fight to win. It fights to make sure this story's ending is never written.",
+    "🖋️ Spilled sauce, forgotten signatures, and one very angry ghost — the Inkwell Wraith has been rewriting its own history for centuries.",
+    "📚 A hundred cookbooks fused into one furious binding — every page it's ever eaten still screams beneath the cover.",
+    "🔪 Erased from every guest list, every credit, every memory. It still shows up to work anyway.",
+    "🕯️ Before there were kingdoms or thrones, there was a single recipe everything else was copied from. You're not fighting a guardian anymore. You're fighting the original.",
+  ];
+  function sideBossStatsFor(idx){
+    const b = SIDE_BOSS_DEFS[idx];
+    return { hp: b.hp, atk: b.atk };
+  }
+  function activeBossList(){ return state.battle.sideMode ? SIDE_BOSS_DEFS : BOSS_DEFS; }
+  function activeBossIdx(){ return state.battle.sideMode ? state.battle.sideBossIndex : state.battle.bossIndex; }
+  function currentBoss(){ return activeBossList()[activeBossIdx()]; }
+  function activeBossStats(){
+    return state.battle.sideMode ? sideBossStatsFor(state.battle.sideBossIndex) : bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+  }
+  function sideStoryUnlocked(){ return state.stats.bossesDefeated >= 4; }
+  function introduceSideBossIfNew(idx){
+    if(!state.stats.sideBossIntrosSeen.includes(idx)){
+      addLog(SIDE_BOSS_STORY[idx]);
+      state.stats.sideBossIntrosSeen.push(idx);
+    }
+  }
+
+  // ---------- STORY ----------
+  // A one-line tale for each of the 16 hand-designed guardians, revealed in the
+  // battle log the first time you ever reach them.
+  const BOSS_STORY = [
+    "🧌 The Greasy Goblin cackles from atop a mountain of cold fries — the first guardian of the throne he stole.",
+    "🧅 Tears stream from the Onion Ogre's eyes, but his grip on the arena gates never wavers.",
+    "🥒 Pickled in brine for a thousand years, the Golem remembers when this kingdom had a king who cared.",
+    "🐍 The Sauce Serpent slithers through the old spice vaults, guarding secrets no one alive still remembers.",
+    "🐉 Molten and ancient, the Cheese Dragon once warmed the Great Hearth. Now it only burns.",
+    "❄️ Deep in the Frozen Larder, the Yeti Bun waits — the kingdom's last dessert course, gone feral.",
+    "🌑 Some say he was the true king's own shadow, split away the night the throne fell.",
+    "🏆 The Titan was built to host the greatest feast this kingdom ever saw. It never got the chance.",
+    "🥤 Beyond the arena gates, the sea churns thick and sweet — something enormous lives beneath the shake.",
+    "🧇 Its wings are golden and crisp, syrup dripping like venom from every talon.",
+    "🌮 A folded nightmare from the old border kitchens, still hungry after all these years.",
+    "🍕 He carved the old dining hall into eight equal slices and crowned himself ruler of each one.",
+    "🍩 Three wishes, one glaze, infinite hunger — the Djinn has never once let a soul leave satisfied.",
+    "🦞 Drowned in his own butter throne, the Lobster King still believes the kingdom is his to rule.",
+    "🐙 Eight arms, eight grudges — the Colossus remembers every hero who never came back.",
+    "🎂 The self-crowned Emperor sits at the very last table before the throne. Beyond him, only your birthright remains.",
+  ];
+  function introduceBossIfNew(idx){
+    if(idx < BOSS_STORY.length && !state.stats.bossIntrosSeen.includes(idx)){
+      addLog(BOSS_STORY[idx]);
+      state.stats.bossIntrosSeen.push(idx);
+    }
+  }
+
+  // ---------- STORY PROGRESSION ----------
+  // Hand-written chapters that unlock as you clear key bosses and complete cycles.
+  // Each is checked against current state; once unlocked it's permanent and gets
+  // logged into the battle log plus the growing chapter list in the Story modal.
+  const STORY_CHAPTERS = [
+    { id:"ch1", title:"A Kingdom in Ashes",
+      trigger:(s)=> true,
+      text:"The Grand Feast Arena once fed six realms in peace — Spicy, Frozen, Savory, Sweet, Fresh, and Baked, all at one table. Then the Greasy Goblin seized the throne, and the kitchens fell silent. You are the last heir to the Burger Throne. Today, you take the first step back." },
+    { id:"ch2", title:"The Outer Gates Fall",
+      trigger:(s)=> s.stats.bossesDefeated >= 4,
+      text:"Four guardians have fallen. The outer gates of the arena creak open for the first time in a generation. Word of a challenger begins to spread through the old kitchens." },
+    { id:"ch3", title:"Whispers of the Shadow King",
+      trigger:(s)=> s.stats.bossesDefeated >= 7,
+      text:"They say the Shadow King was never a separate creature at all — just the true king's own shadow, torn away the night the throne fell. If that's true, defeating him means something deeper than victory." },
+    { id:"ch4", title:"The Grand Feast Remembered",
+      trigger:(s)=> s.stats.bossesDefeated >= 8,
+      text:"Beyond the Titan's collapsed hall, you find the outline of a banquet table long since gone cold — set for a feast that never happened. Somewhere, that feast is still owed." },
+    { id:"ch5", title:"Beyond the Sea of Shakes",
+      trigger:(s)=> s.stats.bossesDefeated >= 10,
+      text:"Past the milkshake tides, the road forks toward stranger guardians — folded, fried, and glazed things that were never meant to move on their own. The kingdom's borders were wider than anyone remembered." },
+    { id:"ch6", title:"The Inner Sanctum",
+      trigger:(s)=> s.stats.bossesDefeated >= 13,
+      text:"You've reached the inner sanctum — the ring of guardians closest to the throne room itself. The air smells like butter and old smoke. Whatever's left of the kingdom's court is just ahead." },
+    { id:"ch7", title:"The Last Table",
+      trigger:(s)=> s.stats.bossesDefeated >= 16,
+      text:"Sixteen guardians, sixteen fallen. The Grand Buffet Emperor was the last hand-picked defender of the stolen throne — but the arena keeps generating more with every step you take. The kingdom is bigger, and stranger, than the old stories ever let on." },
+    { id:"ch7b", title:"Into the Unwritten Arena",
+      trigger:(s)=> s.stats.bossesDefeated >= 60,
+      text:"Sixty guardians down, and you've long since left the old stories behind. These newer defenders have no names in any book, no legends passed through the kitchens — just endless, hungry variations on the same stolen throne. Somewhere in all this repetition, you start to wonder if the arena is even generating them anymore, or just... remembering harder." },
+    { id:"ch8", title:"A Throne Reclaimed... For Now",
+      trigger:(s)=> s.stats.bossesDefeated >= 116,
+      text:"You've cleared the arena from end to end. The throne is finally in sight — but the moment you reach for it, the whole arena resets around you, guardians and all, only hungrier this time. Reclaiming a kingdom, it turns out, isn't a single fight. It's a habit." },
+    { id:"ch9", title:"Whispers of a Lost Recipe",
+      trigger:(s)=> s.stats.sideStoryComplete,
+      text:"The First Recipe is gone, but its steam lingers in your memory like a half-remembered dream. Back in the main arena, something's different now — the guardians seem to glance toward the horizon when they think you're not looking, like they know something's coming that even they can't stop." },
+    { id:"ch10", title:"The Second Feast",
+      trigger:(s)=> s.stats.bossesDefeated >= 232,
+      text:"The arena has reset twice now, and each time it comes back hungrier, stranger, more elaborate than before. You start to wonder if 'winning' was ever really the point — or if the throne itself feeds on being fought for." },
+    { id:"ch11", title:"Domains Within Domains",
+      trigger:(s)=> s.stats.domainMovesUsed >= 1,
+      text:"For one impossible moment, the arena wasn't the arena anymore — it was somewhere your hero built themselves, a space where only their rules applied. You've felt something like that before, back when the old king still sat the throne. Maybe that's what a kingdom actually is." },
+    { id:"ch12", title:"The Kingdom That Never Ends",
+      trigger:(s)=> s.stats.bossesDefeated >= 464,
+      text:"Hundreds of guardians in, and the throne still hasn't let you sit on it — not really. Maybe that was never how this story ends. Maybe the point was never the throne at all. It was every guardian you didn't have to fight alone, every hero who answered the call, every table you set back up one bun at a time. The kingdom isn't reclaimed. It's just yours now, however long you keep showing up for it." },
+  ];
+  function checkStoryProgression(){
+    STORY_CHAPTERS.forEach(ch=>{
+      if(!state.stats.storyChaptersUnlocked.includes(ch.id) && ch.trigger(state)){
+        state.stats.storyChaptersUnlocked.push(ch.id);
+        addLog("📜 New chapter unlocked: \"" + ch.title + "\" — check the Story book!");
+      }
+    });
+    if(typeof updateStoryBadge === "function") updateStoryBadge();
+  }
+
+  // ---------- HERO LORE ----------
+  // Bespoke backstories for the 18 flagship heroes with hand-designed movesets.
+  const HERO_LORE = {
+    h1:  "Toasted young and tough as day-old bread, the Sesame Scout was the first volunteer when the call to reclaim the throne went out — not because it was strong, but because everyone else was still deciding.",
+    h2:  "Fresh off the griddle and eager to prove it, Patty Private charges first and asks questions during, not before.",
+    h3:  "Brined in the same barrels for years before the uprising, the Pickle Medic learned that a little sourness now saves a lot of pain later.",
+    h4:  "Nobody sought out the Onion Ring Ranger's company, and nobody left the fight without it either. Tears now, victory later.",
+    h5:  "Aged in the coldest cellar of the old kitchen, the Cheddar Cavalier grew sharper with every year the throne stayed stolen.",
+    h6:  "It crackles before it strikes, and by the time you hear it, it's already too late to guard.",
+    h7:  "Grown in the arena's last untouched garden, the Lettuce Lancer fights to keep something green alive in a kingdom gone to rust and grease.",
+    h8:  "Equal parts field medic and secret ingredient, nobody's quite sure if Tomato Tonic heals wounds or just makes them taste better.",
+    h9:  "Old money, older magic — the Truffle Duke remembers a court that existed before the Goblin, and intends to see it again.",
+    h10: "Banished from three kitchens for being 'structurally unsafe to cook with,' the Ghost Pepper Gunner found a much better use for that reputation.",
+    h11: "Sharp-tongued and sharper-tempered, the Mustard Maven has strong opinions about tactics, condiments, and everything in between.",
+    h12: "Sweetness as a weapon, patience as a virtue — the Honey Glaze Healer has mended more heroes than the arena has produced villains.",
+    h13: "The last bread to be blessed by the true king before the coup, the Kingsbun Regent carries a crown it never asked for and refuses to remove.",
+    h14: "Bred for greatness before it ever set foot in the arena, the Wagyu Sovereign fights like it has something left to prove — and it does.",
+    h122:"Wrapped in pastry, tempered by fire, and plated with more ceremony than most coronations — Beef Wellington doesn't just fight for the throne. It fights like it already deserves one.",
+    h123:"Drenched in brandy and second-guessed by no one, Lobster Thermidor commands a kitchen — and a battlefield — the same way: with absolute confidence and a little too much butter.",
+    h124:"The rarest ingredient in the old recipe books, served only on the night the kingdom fell. It has been waiting a long time to be useful again.",
+    h15: "It was never supposed to be playable. Nobody quite remembers unlocking it, and nobody's brave enough to ask what happens if you delete it.",
+  };
+  // Every other hero gets a deterministic, seeded-by-id lore line combining a
+  // role-flavored origin with a rarity-flavored reputation, so all 124 heroes
+  // have something to read — not just the hand-written flagships above.
+  const LORE_ORIGIN_BY_ROLE = {
+    Tank:    ["once stood as a living wall between hungry crowds and the kitchen door",
+              "was forged in a kitchen that never once ran out of orders",
+              "learned to take a hit before it ever learned to throw one"],
+    Attack:  ["was sharpened on the griddle's hottest corner",
+              "never met a fight it didn't charge headfirst into",
+              "trained by dodging flying spatulas in a kitchen twice its size"],
+    Heal:    ["spent years mending burnt edges and broken spirits alike",
+              "kept a whole kitchen standing on nothing but patience and broth",
+              "believes no wound is beyond a little warmth and care"],
+    Support: ["learned to read a battle the way a chef reads a ticket rail",
+              "rallies the whole line with nothing but presence and timing",
+              "has saved more fights with a well-timed word than a blade"],
+  };
+  const LORE_FLAVOR_BY_RARITY = {
+    common: ["It's the kind of hero every kitchen needs, even if no one writes songs about it.",
+             "Not the flashiest name on the menu, but always reliable.",
+             "You won't find it on a plaque, but you'll find it on the front line."],
+    rare:   ["Word of its skill has started to spread beyond its own kitchen.",
+             "It's earned a reputation nobody's quite able to explain.",
+             "Regulars ask for it by name now."],
+    epic:   ["Chefs three towns over have heard the stories.",
+             "Its name shows up in kitchen legend more than kitchen rosters.",
+             "There's a waiting list just to fight alongside it."],
+    legend: ["Its name is etched somewhere in the old dining hall, if you know where to look.",
+             "Some say the recipe books were rewritten because of it.",
+             "It didn't just join the fight for the throne — it became part of the reason it's still worth fighting."],
+    ultra:  ["Few have tasted its work. Fewer still lived to describe it properly.",
+             "It doesn't cook for a kitchen. Kitchens are built around it.",
+             "Some dishes are secret. This hero basically is one."],
+    admin:  ["This one shouldn't exist. And yet, somehow, it always has."],
+  };
+  function getHeroLore(hero){
+    if(HERO_LORE[hero.id]) return HERO_LORE[hero.id];
+    let seed = 0;
+    for(let i=0;i<hero.id.length;i++){ seed = (seed*31 + hero.id.charCodeAt(i)) >>> 0; }
+    function pick(arr){ seed = (seed*1103515245 + 12345) >>> 0; return arr[seed % arr.length]; }
+    const origins = LORE_ORIGIN_BY_ROLE[hero.role] || LORE_ORIGIN_BY_ROLE.Attack;
+    const flavors = LORE_FLAVOR_BY_RARITY[hero.rarity] || LORE_FLAVOR_BY_RARITY.common;
+    return hero.name + " " + pick(origins) + ". " + pick(flavors);
+  }
+  // A short teaser cut from the hero's full lore — used in summon reveals where
+  // there isn't room for the whole backstory. Breaks at a sentence or word
+  // boundary so it never cuts off mid-word.
+  function loreSnippet(hero, maxLen){
+    const full = getHeroLore(hero);
+    if(full.length <= maxLen) return "\"" + full + "\"";
+    const firstSentence = full.split(/(?<=[.!?])\s/)[0];
+    if(firstSentence.length <= maxLen) return "\"" + firstSentence + "\"";
+    const cut = full.slice(0, maxLen);
+    const lastSpace = cut.lastIndexOf(" ");
+    return "\"" + cut.slice(0, lastSpace > 0 ? lastSpace : maxLen) + "…\"";
+  }
+
   // ---------- QUESTS ----------
   const QUEST_DEFS = [
     // --- Tier 1: Getting started ---
@@ -2393,13 +2753,14 @@
   }
   function freshBattle(){
     const stats = bossStatsFor(0,1);
-    return { bossIndex:0, cycle:1, bossHp:stats.hp, activeHeroId:null, heroHp:{}, moveCooldowns:{}, log:["A challenger approaches the Grand Feast Arena!"] };
+    return { bossIndex:0, cycle:1, bossHp:stats.hp, sideMode:false, sideBossIndex:0, activeHeroId:null, heroHp:{}, moveCooldowns:{}, log:["A challenger approaches the Grand Feast Arena!"] };
   }
   function freshState(){
     const s = {
       coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(),
       lastSesameTick:Date.now(), battle:freshBattle(), battleTeam: STARTER_HERO_IDS.slice(),
-      stats:{ bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 }, questsClaimed:{},
+      stats:{ bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0, bossIntrosSeen:[], storyChaptersUnlocked:[], storyChaptersRead:0,
+        sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0 }, questsClaimed:{},
       settings:{ skipAnim:{ common:false, rare:false, epic:false, legend:false, ultra:false } }
     };
     GEN_DEFS.forEach(g=> s.gens[g.id]=0);
@@ -2534,9 +2895,18 @@
     if(!state.battle) state.battle = freshBattle();
     if(!state.battle.heroHp) state.battle.heroHp = {};
     if(!state.battle.moveCooldowns) state.battle.moveCooldowns = {};
-    if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0 };
+    if(typeof state.battle.sideMode !== "boolean") state.battle.sideMode = false;
+    if(typeof state.battle.sideBossIndex !== "number") state.battle.sideBossIndex = 0;
+    if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0, bossIntrosSeen:[], storyChaptersUnlocked:[], storyChaptersRead:0, sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0 };
     if(state.stats.pityEpic === undefined) state.stats.pityEpic = 0;
     if(state.stats.pityLegend === undefined) state.stats.pityLegend = 0;
+    if(!Array.isArray(state.stats.bossIntrosSeen)) state.stats.bossIntrosSeen = [];
+    if(!Array.isArray(state.stats.storyChaptersUnlocked)) state.stats.storyChaptersUnlocked = [];
+    if(typeof state.stats.storyChaptersRead !== "number") state.stats.storyChaptersRead = 0;
+    if(typeof state.stats.sideBossesDefeated !== "number") state.stats.sideBossesDefeated = 0;
+    if(typeof state.stats.sideStoryComplete !== "boolean") state.stats.sideStoryComplete = false;
+    if(!Array.isArray(state.stats.sideBossIntrosSeen)) state.stats.sideBossIntrosSeen = [];
+    if(typeof state.stats.domainMovesUsed !== "number") state.stats.domainMovesUsed = 0;
     if(!state.questsClaimed) state.questsClaimed = {};
     if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
     if(!state.settings) state.settings = { skipAnim:{} };
@@ -2583,6 +2953,20 @@
   const rarityCutsceneEmoji = document.getElementById("rarityCutsceneEmoji");
   const rarityCutsceneEmojiSpan = document.getElementById("rarityCutsceneEmojiSpan");
   const rarityCutsceneName = document.getElementById("rarityCutsceneName");
+  const rarityCutsceneLore = document.getElementById("rarityCutsceneLore");
+  const battleCutscene = document.getElementById("battleCutscene");
+  const battleCutsceneSub = document.getElementById("battleCutsceneSub");
+  const battleCutsceneTitle = document.getElementById("battleCutsceneTitle");
+  const battleCutsceneEmoji = document.getElementById("battleCutsceneEmoji");
+  const battleCutsceneEmojiSpan = document.getElementById("battleCutsceneEmojiSpan");
+  const battleCutsceneName = document.getElementById("battleCutsceneName");
+  const battleCutsceneContent = document.getElementById("battleCutsceneContent");
+  const cutsceneLetterboxTop = document.getElementById("cutsceneLetterboxTop");
+  const cutsceneLetterboxBottom = document.getElementById("cutsceneLetterboxBottom");
+  const cutscenePowerMeter = document.getElementById("cutscenePowerMeter");
+  const cutscenePowerBarInner = document.getElementById("cutscenePowerBarInner");
+  const cutscenePowerNumber = document.getElementById("cutscenePowerNumber");
+  const cutsceneQuote = document.getElementById("cutsceneQuote");
   const saveBtn = document.getElementById("saveBtn");
   const saveStatus = document.getElementById("saveStatus");
   const resetBtn = document.getElementById("resetBtn");
@@ -2591,6 +2975,7 @@
   const combatRow = document.getElementById("combatRow");
   const battleAreaPulse = document.getElementById("battleAreaPulse");
   const openTeamSelectBtn = document.getElementById("openTeamSelectBtn");
+  const sideQuestBtn = document.getElementById("sideQuestBtn");
   const teamCountLabel = document.getElementById("teamCountLabel");
   const heroVisual = document.getElementById("heroVisual");
   const heroEmojiSpan = document.getElementById("heroEmojiSpan");
@@ -2736,6 +3121,7 @@
         const moves = heroMoves(h).map(m=>m.icon+" "+m.name).join(" · ");
         card.innerHTML = `
           <div class="hero-rarity-tag">${RARITY_LABEL[h.rarity]}</div>
+          <button class="hero-lore-btn" data-id="${h.id}" title="Lore">📖</button>
           <div class="hero-emoji">${h.emoji}</div>
           <div class="hero-name">${h.name}</div>
           <div class="hero-role">${h.role} · ATK ${heroAtk(h,rec)} · HP ${heroMaxHp(h,rec)}</div>
@@ -2750,6 +3136,13 @@
     totalHeroPowerEl.textContent = Math.round(totalHeroPower()*10)/10;
     heroBoostPct.textContent = "+" + Math.round((heroBoostMult()-1)*100) + "%";
 
+    heroGrid.querySelectorAll(".hero-lore-btn").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const h = HERO_DEFS.find(x=>x.id===btn.getAttribute("data-id"));
+        openHeroLore(h);
+      });
+    });
     heroGrid.querySelectorAll(".level-btn").forEach(btn=>{
       btn.addEventListener("click", ()=>{
         const id = btn.getAttribute("data-id");
@@ -3198,6 +3591,193 @@
     return null;
   }
 
+  // A curated set of standout heroes get a full-screen cinematic beat when they
+  // unleash their signature move, matching the drama of the Recipe Summon reveals
+  // — deliberately overproduced with letterbox bars, a fake charging power meter,
+  // and a dramatic quote card before the actual hero reveal.
+  const SIGNATURE_MOVES = {
+    "h122|Michelin Star Cut":      { sub:"🥩 A SIGNATURE MOVE 🥩",       quote:"\"Perfection isn't a garnish. It's a promise.\"",        power:9001 },
+    "h123|Brandy Flambé":          { sub:"🔥 A SIGNATURE MOVE 🔥",        quote:"\"They say I cook with fire. I cook WITH RAGE.\"",       power:8888 },
+    "h124|Shaved Truffle Frost":   { sub:"❄️ A SIGNATURE MOVE ❄️",        quote:"\"Cold precision. Warm heart. Frozen enemies.\"",        power:7777 },
+    "h15|Black Hole":              { sub:"🎆 AN IMPOSSIBLE POWER 🎆",     quote:"\"Even the void deserves a scoop.\"",                    power:99999 },
+  };
+  function signatureMoveProfile(hero, move){
+    return SIGNATURE_MOVES[hero.id + "|" + move.name] || null;
+  }
+
+  // Domain Moves — an even higher tier than a signature move: five Legendary/Epic
+  // heroes each have one technique that opens their own named Domain, announced
+  // with "DOMAIN EXPANSION: <name>" instead of the move's own name.
+  const DOMAIN_MOVES = {
+    "h13|Sovereign Slam":     { domain:"The Boundless Banquet",   sub:"👑 A DOMAIN OPENS 👑",  quote:"\"Every table in this arena was always mine to set.\"",  power:14000, effect:"feast" },
+    "h14|Triple Sear":        { domain:"The Eternal Sear",        sub:"🥩 A DOMAIN OPENS 🥩",  quote:"\"It's not overcooked. It's inevitable.\"",              power:13500, effect:"sear_burn" },
+    "h9|Earthy Uppercut":     { domain:"The Fungal Dominion",     sub:"🍄 A DOMAIN OPENS 🍄",  quote:"\"Every spore in this ground already knows your name.\"",power:11000, effect:"wither" },
+    "h10|Scoville Overload":  { domain:"The Scoville Singularity",sub:"🌶️ A DOMAIN OPENS 🌶️", quote:"\"There is no scale. There is only more.\"",             power:12500, effect:"inferno" },
+    "h11|Tangy Squeeze":      { domain:"The Tangy Purge",         sub:"🌭 A DOMAIN OPENS 🌭",  quote:"\"Nothing leaves this domain undressed.\"",              power:10000, effect:"purge" },
+    // Secret-tier heroes get a Domain too — on a *different* move than their
+    // existing Signature Move, so both cutscenes coexist per hero.
+    "h122|Duxelles Barrage":       { domain:"The Perfect Wrap",     sub:"🥐 A DOMAIN OPENS 🥐",  quote:"\"Wrapped once. Perfected forever.\"",                       power:25000, effect:"wrap_shield" },
+    "h123|Butter Poach Siphon":    { domain:"The Bisque Abyss",     sub:"🧈 A DOMAIN OPENS 🧈",  quote:"\"Everything drowns eventually. Might as well taste good doing it.\"", power:27000, effect:"siphon" },
+    "h124|Reduction Strike":       { domain:"The Silken Reduction", sub:"🍷 A DOMAIN OPENS 🍷",  quote:"\"Reduced to its purest form — inevitability.\"",           power:24000, effect:"reduction_heal" },
+    "h15|Death":                   { domain:"The Eternal Freezer",  sub:"💀 A DOMAIN OPENS 💀",  quote:"\"Some things melt. I don't.\"",                             power:999999999, effect:"eternal_freeze" },
+  };
+  function domainMoveProfile(hero, move){
+    return DOMAIN_MOVES[hero.id + "|" + move.name] || null;
+  }
+  // Applies each Domain Move's own themed payoff — tanks get shields/team support,
+  // attackers get burns, support/heal roles get cleansing or restoration, and
+  // Master Ice Cream's domain genuinely freezes the boss in place.
+  function applyDomainEffect(profile, h, rec){
+    const max = heroMaxHp(h, rec);
+    const heal = (amt)=>{ state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0) + amt); };
+    switch(profile.effect){
+      case "feast":
+        heroBuff = {mult:1.6, turns:5};
+        heroShield = {reduction:0.4, turns:5};
+        heal(Math.round(max*0.5));
+        addLog("🍽️ The Boundless Banquet feeds your whole line — healed, shielded, and ATK up!");
+        break;
+      case "sear_burn":
+        heroBuff = {mult:1.8, turns:5};
+        bossBurn = {dmgPerTurn: Math.max(1, Math.round(heroAtk(h,rec)*0.4)), turns:5};
+        addLog("🥩 The Eternal Sear leaves the boss smoldering — ATK up, and burning for 5 turns!");
+        break;
+      case "wither":
+        bossDebuff = {mult:0.4, turns:6};
+        heroBuff = {mult:1.3, turns:5};
+        addLog("🍄 The Fungal Dominion spreads through every joint — the boss is massively weakened!");
+        break;
+      case "inferno":
+        heroBuff = {mult:2.2, turns:5};
+        bossBurn = {dmgPerTurn: Math.max(1, Math.round(heroAtk(h,rec)*0.5)), turns:5};
+        addLog("🌶️ The Scoville Singularity sets the whole arena ablaze — ATK way up, boss set on fire!");
+        break;
+      case "purge":
+        heal(Math.round(max*0.5));
+        bossDebuff = {mult:0.5, turns:5};
+        addLog("🌭 The Tangy Purge cleanses your line and weakens the boss's resolve!");
+        break;
+      case "wrap_shield":
+        heroShield = {reduction:0.6, turns:5};
+        heroBuff = {mult:1.6, turns:5};
+        addLog("🥐 The Perfect Wrap encases your hero in flawless pastry armor!");
+        break;
+      case "siphon": {
+        const siphonHeal = Math.round(state.battle.bossHp * 0.15);
+        heal(siphonHeal);
+        bossDebuff = {mult:0.5, turns:5};
+        addLog("🧈 The Bisque Abyss siphons " + fmt(siphonHeal) + " HP straight from the boss's own strength!");
+        break;
+      }
+      case "reduction_heal":
+        heal(max);
+        bossDebuff = {mult:0.6, turns:5};
+        addLog("🍷 The Silken Reduction restores your hero to full and weakens the boss!");
+        break;
+      case "eternal_freeze":
+        bossStunTurns = Math.max(bossStunTurns, 2);
+        bossVisual.classList.add("frozen");
+        heroBuff = {mult:2.5, turns:5};
+        addLog("💀 The Eternal Freezer locks the boss in absolute stillness — frozen solid, and your ATK skyrockets!");
+        break;
+      default:
+        heroBuff = {mult:2.0, turns:5};
+        bossDebuff = {mult:0.5, turns:5};
+        addLog("🌀 Trapped inside the Domain — your team is empowered and the boss is severely weakened!");
+    }
+  }
+  function wait(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+  async function playSignatureCutscene(hero, move, profile){
+    const isDomain = !!profile.domain;
+    battleCutscene.className = "rarity-cutscene rc-ultra" + (isDomain ? " rc-domain" : "");
+    battleCutscene.style.display = "flex";
+    battleCutsceneContent.style.display = "none";
+    cutsceneQuote.style.display = "none";
+    cutsceneQuote.classList.remove("showing");
+    cutscenePowerMeter.style.display = "none";
+    cutscenePowerMeter.classList.remove("showing");
+    cutscenePowerBarInner.style.width = "0%";
+    cutscenePowerNumber.textContent = "0";
+    cutsceneLetterboxTop.classList.remove("bars-in");
+    cutsceneLetterboxBottom.classList.remove("bars-in");
+
+    // PHASE 1: cinematic bars slide in
+    void battleCutscene.offsetWidth;
+    cutsceneLetterboxTop.classList.add("bars-in");
+    cutsceneLetterboxBottom.classList.add("bars-in");
+    await wait(350);
+
+    // PHASE 2: a fake "power level" charges up with a rapidly ticking counter
+    cutscenePowerMeter.style.display = "flex";
+    cutscenePowerMeter.classList.add("showing");
+    await wait(80);
+    cutscenePowerBarInner.style.width = "100%";
+    const target = profile.power;
+    const tickStart = Date.now();
+    const tickDuration = 650;
+    await new Promise(resolve=>{
+      const tick = ()=>{
+        const t = Math.min(1, (Date.now()-tickStart)/tickDuration);
+        cutscenePowerNumber.textContent = fmt(Math.round(target * t));
+        if(t < 1){ requestAnimationFrame(tick); } else { resolve(); }
+      };
+      requestAnimationFrame(tick);
+    });
+    shakeScreen();
+    await wait(450);
+    cutscenePowerMeter.classList.remove("showing");
+    cutscenePowerMeter.style.display = "none";
+
+    // PHASE 3: a dramatic quote card
+    cutsceneQuote.textContent = profile.quote;
+    cutsceneQuote.style.display = "block";
+    cutsceneQuote.classList.add("showing");
+    await wait(950);
+    cutsceneQuote.classList.remove("showing");
+    cutsceneQuote.style.display = "none";
+
+    // PHASE 3.5 (domain moves only): the "DOMAIN EXPANSION" announcement card
+    if(isDomain){
+      battleCutsceneSub.textContent = profile.sub;
+      battleCutsceneTitle.textContent = "DOMAIN EXPANSION:";
+      battleCutsceneEmojiSpan.textContent = hero.emoji;
+      battleCutsceneName.textContent = "";
+      battleCutsceneContent.style.display = "flex";
+      const preEls = [battleCutsceneEmoji, battleCutsceneTitle];
+      preEls.forEach(el=>{ el.style.animation = "none"; });
+      void battleCutscene.offsetWidth;
+      preEls.forEach(el=>{ el.style.animation = ""; });
+      shakeScreen();
+      pulseBattleArea("rgba(140,70,230,0.6)", "wash");
+      await wait(900);
+      battleCutsceneContent.style.display = "none";
+    }
+
+    // PHASE 4: the actual hero + move reveal
+    battleCutsceneSub.textContent = profile.sub;
+    battleCutsceneTitle.textContent = isDomain
+      ? "DOMAIN EXPANSION: " + profile.domain.toUpperCase()
+      : move.icon + " " + move.name.toUpperCase() + "!";
+    battleCutsceneEmojiSpan.textContent = hero.emoji;
+    battleCutsceneName.textContent = hero.name + (isDomain ? " — " + move.icon + " " + move.name : "");
+    battleCutsceneContent.style.display = "flex";
+    const els = [battleCutsceneEmoji, battleCutsceneName, battleCutsceneTitle];
+    els.forEach(el=>{ el.style.animation = "none"; });
+    void battleCutscene.offsetWidth;
+    els.forEach(el=>{ el.style.animation = ""; });
+    spawnParticles(battleCutsceneEmoji, isDomain ? ["🌀","💜","✨","🔮","⭐"] : ["🔥","💎","✨","🎆","⭐"], 26, 110, 1000);
+    flashFx(battleCutsceneEmoji, isDomain ? "rgba(140,70,230,0.85)" : "rgba(230,57,70,0.85)");
+    await wait(1650);
+
+    // PHASE 5: bars slide back out
+    cutsceneLetterboxTop.classList.remove("bars-in");
+    cutsceneLetterboxBottom.classList.remove("bars-in");
+    await wait(350);
+
+    battleCutscene.style.display = "none";
+  }
+
   // Lunges the hero itself forward toward the boss and back, so attacks read as
   // the character actually closing the distance to deliver the hit, not just a
   // detached icon flying over while the hero stands still.
@@ -3295,6 +3875,20 @@
     battleAreaPulse.style.setProperty("--pulse-color", color);
     battleAreaPulse.classList.add(kind || "firing");
   }
+  // The whole bench reacts together — cheering when the active hero lands a hit,
+  // flinching when the boss strikes back — so the team feels present in the fight,
+  // not just whoever's currently up front.
+  function reactBench(cls){
+    benchRow.querySelectorAll(".bench-chip:not(.fainted)").forEach(chip=>{
+      if(chip.classList.contains("active-chip")) return;
+      chip.classList.remove("cheering","flinching");
+      void chip.offsetWidth;
+      chip.classList.add(cls);
+      setTimeout(()=>chip.classList.remove(cls), 550);
+    });
+  }
+  function cheerBench(){ reactBench("cheering"); }
+  function flinchBench(){ reactBench("flinching"); }
 
   // ---------- CUSTOM VFX ----------
   function spawnParticles(container, emojis, count, spreadPx, durationMs){
@@ -3386,6 +3980,12 @@
     return FOOD_TYPE_LIST[hash % FOOD_TYPE_LIST.length];
   }
   function currentBossType(){
+    if(state.battle.sideMode){
+      const boss = SIDE_BOSS_DEFS[state.battle.sideBossIndex];
+      let hash = 0;
+      for(let i=0;i<boss.name.length;i++){ hash = (hash*31 + boss.name.charCodeAt(i)) >>> 0; }
+      return FOOD_TYPE_LIST[hash % FOOD_TYPE_LIST.length];
+    }
     const boss = BOSS_DEFS[state.battle.bossIndex];
     return bossFoodType(state.battle.bossIndex, boss.name);
   }
@@ -3442,9 +4042,11 @@
 
   function renderBattleStatic(){
     ensureHeroHp();
-    const boss = BOSS_DEFS[state.battle.bossIndex];
-    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
-    stageTag.textContent = "Cycle " + state.battle.cycle + " · Stage " + (state.battle.bossIndex+1) + " of " + BOSS_DEFS.length;
+    const boss = currentBoss();
+    const bStats = activeBossStats();
+    stageTag.textContent = state.battle.sideMode
+      ? "📜 Side Story: The Lost Recipe · " + (state.battle.sideBossIndex+1) + " of " + SIDE_BOSS_DEFS.length
+      : "Cycle " + state.battle.cycle + " · Stage " + (state.battle.bossIndex+1) + " of " + BOSS_DEFS.length;
     bossEmojiSpan.textContent = boss.icon;
     bossName.textContent = boss.name;
     const bType = currentBossType();
@@ -3492,7 +4094,7 @@
 
     // bench
     benchRow.innerHTML = "";
-    team.forEach(hero=>{
+    team.forEach((hero, idx)=>{
       const rec = state.heroes[hero.id];
       const hp = state.battle.heroHp[hero.id] || 0;
       const max = heroMaxHp(hero, rec);
@@ -3500,8 +4102,9 @@
       const chip = document.createElement("button");
       chip.className = "bench-chip " + hero.rarity + (hero.id===state.battle.activeHeroId? " active-chip":"") + (fainted? " fainted":"");
       chip.disabled = (phase !== "player") || fainted || hero.id===state.battle.activeHeroId;
+      chip.setAttribute("data-hero-id", hero.id);
       chip.innerHTML = `
-        <div class="chip-emoji">${hero.emoji}</div>
+        <div class="chip-emoji" style="animation-delay:${(idx%5)*0.18}s;">${hero.emoji}</div>
         <div class="chip-hp-outer"><div class="chip-hp-inner" style="width:${Math.max(0,(hp/max)*100)}%;"></div></div>`;
       chip.title = hero.name + (fainted? " (fainted)":"");
       chip.addEventListener("click", ()=>{
@@ -3517,7 +4120,7 @@
   }
 
   function renderBattleDynamic(){
-    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const bStats = activeBossStats();
     const bossPct = Math.max(0, Math.min(100, (state.battle.bossHp/bStats.hp)*100));
     bossHpInner.style.width = bossPct + "%";
     bossHpGhost.style.width = bossPct + "%";
@@ -3561,6 +4164,11 @@
     dmg:0, dmg2:2, dmg_debuff:2, dmg_stun:2, drain:2, burn:2,
     crit:3, multi3:3, buff:3, heal:2, shield:3,
   };
+  // Signature Moves and Domain Moves always get at least this much cooldown
+  // (same +1-offset convention as above), regardless of their base move kind —
+  // Domain Moves are the rarer, more dramatic tier, so they recharge slower.
+  const SIGNATURE_MOVE_COOLDOWN = 4; // skips 3 full turns
+  const DOMAIN_MOVE_COOLDOWN = 12;   // skips 11 full turns
   function moveCooldownKey(heroId, move){ return heroId + "|" + move.name; }
   function moveCooldownRemaining(heroId, move){
     return state.battle.moveCooldowns[moveCooldownKey(heroId, move)] || 0;
@@ -3580,7 +4188,7 @@
     if(moveCooldownRemaining(h.id, move) > 0) return;
     const rec = state.heroes[h.id];
     const atkStat = heroAtk(h, rec) * (heroBuff.turns>0 ? heroBuff.mult : 1);
-    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const bStats = activeBossStats();
     const isBigHit = (dmg)=> (dmg / bStats.hp) > 0.05;
     phase = "busy";
     renderBattleStatic();
@@ -3589,6 +4197,15 @@
     // damage, healing, status effects, and log messages still all apply normally —
     // only the windup, dash, projectile/beam, and impact VFX are skipped.
     const skipAnim = skipAnimFor(h.rarity);
+
+    // A curated few heroes get a full-screen cinematic beat before their signature
+    // move plays out, same as a rare Recipe Summon reveal — Domain Moves take
+    // priority since they're the highest tier, above a regular signature move.
+    if(!skipAnim){
+      const domProfile = domainMoveProfile(h, move);
+      const sigProfile = domProfile || signatureMoveProfile(h, move);
+      if(sigProfile) await playSignatureCutscene(h, move, sigProfile);
+    }
 
     if(!skipAnim){
       FX.castGlow(heroVisual, "rgba(255,255,255,0.6)");
@@ -3636,12 +4253,12 @@
       else if(typeEff < 1) addLog("💤 Not very effective...");
       if(move.kind === "dmg_debuff"){
         bossDebuff = {mult:0.7, turns:3};
-        addLog(BOSS_DEFS[state.battle.bossIndex].name + "'s ATK dropped!");
+        addLog(currentBoss().name + "'s ATK dropped!");
       }
       if(move.kind === "dmg_stun" && Math.random() < 0.5){
         bossStunTurns = 1;
         if(!skipAnim) bossVisual.classList.add("frozen");
-        addLog(BOSS_DEFS[state.battle.bossIndex].name + " is frozen solid!");
+        addLog(currentBoss().name + " is frozen solid!");
       }
     } else if(move.kind === "dmg2"){
       let total = 0;
@@ -3737,10 +4354,30 @@
       else if(typeEff < 1) addLog("💤 Not very effective...");
     }
 
-    // Put this move on cooldown for its next use
-    const cdLength = MOVE_COOLDOWN[move.kind] || 0;
+    // Put this move on cooldown for its next use — Signature and Domain Moves get
+    // a dedicated minimum cooldown on top of whatever their move kind normally
+    // gives, so an "ultimate" can't just be thrown out every single turn.
+    let cdLength = MOVE_COOLDOWN[move.kind] || 0;
+    const usedDomainProfile = domainMoveProfile(h, move);
+    const usedSigProfile = usedDomainProfile || signatureMoveProfile(h, move);
+    if(usedSigProfile){
+      cdLength = Math.max(cdLength, usedDomainProfile ? DOMAIN_MOVE_COOLDOWN : SIGNATURE_MOVE_COOLDOWN);
+    }
     if(cdLength > 0){
       state.battle.moveCooldowns[moveCooldownKey(h.id, move)] = cdLength;
+    }
+
+    // A Domain Expansion doesn't just land its own hit — being trapped inside it
+    // triggers that domain's own themed payoff (a buff, a shield, a burn, a heal,
+    // a debuff, or even a freeze), on top of whatever the move itself already did.
+    if(usedDomainProfile){
+      applyDomainEffect(usedDomainProfile, h, rec);
+      state.stats.domainMovesUsed++;
+      checkStoryProgression();
+      if(!skipAnim){
+        spawnShockwave(heroVisual, "rgba(140,70,230,0.75)");
+        spawnShockwave(bossVisual, "rgba(140,70,230,0.6)");
+      }
     }
 
     // Epic/Legendary/Secret heroes get extra flair on every move they use,
@@ -3751,6 +4388,7 @@
     }
 
     renderBattleStatic(); renderBattleDynamic();
+    if(!skipAnim) cheerBench();
 
     if(state.battle.bossHp <= 0){
       setTimeout(handleVictory, skipAnim ? 60 : 500);
@@ -3760,8 +4398,9 @@
   }
 
   async function bossTurn(){
-    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
-    const boss = BOSS_DEFS[state.battle.bossIndex];
+    const bStats = activeBossStats();
+    const boss = currentBoss();
+    let bossHitLanded = false;
 
     // Burn damage ticks before the boss acts
     if(bossBurn.turns > 0){
@@ -3795,6 +4434,7 @@
         FX.hitHero();
         showFloat(heroVisual, "-"+fmt(dmg), "hero");
         addLog(boss.name + " attacks " + h.name + "! -" + fmt(dmg) + " HP.");
+        bossHitLanded = true;
       }
     }
 
@@ -3815,6 +4455,7 @@
         phase = "player";
         battleMsg.textContent = "Choose an attack!";
         renderBattleStatic(); renderBattleDynamic();
+        if(bossHitLanded) flinchBench();
       } else {
         addLog("💀 All your burgers have been flattened!");
         phase = "defeated";
@@ -3828,6 +4469,7 @@
     phase = "player";
     battleMsg.textContent = "Choose an attack!";
     renderBattleStatic();
+    if(bossHitLanded) flinchBench();
   }
 
   function showDefeatOverlay(){
@@ -3839,46 +4481,108 @@
     defeatOverlay.style.display = "none";
     healTeamFully();
     ensureHeroHp();
-    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const bStats = activeBossStats();
     state.battle.bossHp = bStats.hp;
     heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
     heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
     state.battle.moveCooldowns = {};
     bossVisual.classList.remove("frozen");
-    addLog("🍔 Your burgers regroup and restart the fight against " + BOSS_DEFS[state.battle.bossIndex].name + "!");
+    addLog("🍔 Your burgers regroup and restart the fight against " + currentBoss().name + "!");
     phase = "player";
     battleMsg.textContent = "Choose an attack!";
     renderBattleStatic(); renderBattleDynamic();
   });
 
+  // ---------- SIDE STORY TOGGLE ----------
+  function updateSideQuestBtn(){
+    if(!sideStoryUnlocked() || state.stats.sideStoryComplete){
+      sideQuestBtn.style.display = "none";
+      return;
+    }
+    sideQuestBtn.style.display = "block";
+    sideQuestBtn.classList.toggle("active-side", state.battle.sideMode);
+    sideQuestBtn.textContent = state.battle.sideMode
+      ? "🏰 Return to Main Story"
+      : "📖 Enter Side Story: The Lost Recipe";
+  }
+  sideQuestBtn.addEventListener("click", ()=>{
+    if(phase !== "player") return;
+    state.battle.sideMode = !state.battle.sideMode;
+    if(state.battle.sideMode){
+      introduceSideBossIfNew(state.battle.sideBossIndex);
+      addLog("📖 You step off the main path, chasing rumors of a Lost Recipe...");
+    } else {
+      addLog("🏰 You return to the main arena.");
+    }
+    const stats = activeBossStats();
+    state.battle.bossHp = stats.hp;
+    healTeamFully();
+    heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
+    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    state.battle.moveCooldowns = {};
+    bossVisual.classList.remove("frozen");
+    updateSideQuestBtn();
+    renderBattleStatic(); renderBattleDynamic();
+  });
+
   function handleVictory(){
-    const boss = BOSS_DEFS[state.battle.bossIndex];
-    const bStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    const boss = currentBoss();
+    const bStats = activeBossStats();
     const rewardCoins = Math.ceil(bStats.hp*15);
     const rewardCrumbs = Math.ceil(bStats.hp*2);
-    const rewardSesame = Math.floor(state.battle.bossIndex/2) + state.battle.cycle;
+    const rewardSesame = state.battle.sideMode
+      ? (state.battle.sideBossIndex+1) * 8
+      : Math.floor(state.battle.bossIndex/2) + state.battle.cycle;
     state.coins += rewardCoins; state.totalEarned += rewardCoins;
     state.crumbs += rewardCrumbs; state.sesame += rewardSesame;
-    state.stats.bossesDefeated++;
     FX.victory();
     bossVisual.classList.remove("frozen");
     addLog("🏆 Defeated " + boss.name + "! +" + fmt(rewardCoins) + " 🍔 +" + fmt(rewardCrumbs) + " 🍞 +" + rewardSesame + " ✨");
 
-    state.battle.bossIndex++;
-    if(state.battle.bossIndex >= BOSS_DEFS.length){
-      state.battle.bossIndex = 0; state.battle.cycle++;
-      addLog("🌟 Cycle " + state.battle.cycle + " begins — bosses grow stronger!");
+    if(state.battle.sideMode){
+      state.stats.sideBossesDefeated++;
+      state.battle.sideBossIndex++;
+      if(state.battle.sideBossIndex >= SIDE_BOSS_DEFS.length){
+        // The Lost Recipe side story is complete — bonus payout, then return to the main arena.
+        state.stats.sideStoryComplete = true;
+        const bonusCoins = 50000000, bonusCrumbs = 8000000, bonusSesame = 300;
+        state.coins += bonusCoins; state.totalEarned += bonusCoins;
+        state.crumbs += bonusCrumbs; state.sesame += bonusSesame;
+        addLog("📖 The First Recipe dissolves into steam — you've tasted something impossible. The Lost Recipe was never a weapon. It was a promise, and you've kept it.");
+        addLog("🎁 Side story complete! +" + fmt(bonusCoins) + " 🍔 +" + fmt(bonusCrumbs) + " 🍞 +" + bonusSesame + " ✨");
+        state.battle.sideMode = false;
+        state.battle.sideBossIndex = 0;
+        const mainStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+        state.battle.bossHp = mainStats.hp;
+        battleMsg.textContent = "Back to the main arena! Choose an attack!";
+      } else {
+        introduceSideBossIfNew(state.battle.sideBossIndex);
+        const nextSideStats = sideBossStatsFor(state.battle.sideBossIndex);
+        state.battle.bossHp = nextSideStats.hp;
+        battleMsg.textContent = "The next guardian of the Lost Recipe appears!";
+      }
+    } else {
+      state.stats.bossesDefeated++;
+      state.battle.bossIndex++;
+      if(state.battle.bossIndex >= BOSS_DEFS.length){
+        state.battle.bossIndex = 0; state.battle.cycle++;
+        addLog("🌟 Cycle " + state.battle.cycle + " begins — bosses grow stronger!");
+      }
+      checkStoryProgression();
+      introduceBossIfNew(state.battle.bossIndex);
+      const nextStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+      state.battle.bossHp = nextStats.hp;
+      battleMsg.textContent = "A new challenger appears! Choose an attack!";
     }
-    const nextStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
-    state.battle.bossHp = nextStats.hp;
+
     healTeamFully();
     heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
     heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
     state.battle.moveCooldowns = {};
     phase = "player";
-    battleMsg.textContent = "A new challenger appears! Choose an attack!";
     ensureHeroHp();
     renderBattleStatic(); renderBattleDynamic(); renderTopStats(); renderQuests();
+    updateSideQuestBtn();
   }
 
   // ---------- SUMMON ----------
@@ -3984,10 +4688,11 @@
       rarityCutsceneTitle.textContent = profile.title;
       rarityCutsceneEmojiSpan.textContent = hero.emoji;
       rarityCutsceneName.textContent = hero.name;
+      rarityCutsceneLore.textContent = loreSnippet(hero, 90);
       rarityCutscene.style.display = "flex";
 
       // restart entrance animations in case the cutscene fires more than once
-      const els = [rarityCutsceneEmoji, rarityCutsceneName, rarityCutsceneTitle];
+      const els = [rarityCutsceneEmoji, rarityCutsceneName, rarityCutsceneTitle, rarityCutsceneLore];
       els.forEach(el=>{ el.style.animation = "none"; });
       void rarityCutscene.offsetWidth;
       els.forEach(el=>{ el.style.animation = ""; });
@@ -4048,6 +4753,7 @@
         <div class="reveal-emoji">${h.emoji}</div>
         <div class="reveal-name">${h.name}</div>
         <div style="font-size:9px;font-weight:800;color:var(--wood-dark);">${RARITY_LABEL[h.rarity]}</div>
+        <div class="reveal-lore">${loreSnippet(h, 42)}</div>
         ${res.dup? `<div class="reveal-dup">+${fmt(res.crumbsGained)} 🍞</div>` : `<div class="reveal-dup" style="color:var(--mint-dark);">NEW!</div>`}
       `;
       revealWrap.appendChild(card);
@@ -4103,6 +4809,7 @@
     renderBattleDynamic();
     renderQuests();
     updatePityNote();
+    updateSideQuestBtn();
   }
 
   // ---------- PRESTIGE ----------
@@ -4136,6 +4843,12 @@
   async function initGame(){
     const hadSave = await loadSave();
     ensureHeroHp();
+    checkStoryProgression();
+    if(state.battle.sideMode){
+      introduceSideBossIfNew(state.battle.sideBossIndex);
+    } else {
+      introduceBossIfNew(state.battle.bossIndex);
+    }
     if(hadSave){
       homeSubNote.textContent = "Continue your kingdom — last saved a moment ago.";
     } else {
@@ -4325,6 +5038,48 @@
   tutorialOpenBtn.addEventListener("click", openTutorial);
   homeTutorialBtn.addEventListener("click", openTutorial);
   tutorialClose.addEventListener("click", ()=>{ tutorialOverlay.style.display = "none"; });
+
+  // ---------- STORY MODAL ----------
+  const storyOpenBtn = document.getElementById("storyOpenBtn");
+  const storyOverlay = document.getElementById("storyOverlay");
+  const storyClose = document.getElementById("storyClose");
+  const storyBadge = document.getElementById("storyBadge");
+  const storyChapterList = document.getElementById("storyChapterList");
+
+  function renderStoryChapters(){
+    storyChapterList.innerHTML = STORY_CHAPTERS.map((ch, i)=>{
+      const unlocked = state.stats.storyChaptersUnlocked.includes(ch.id);
+      if(unlocked){
+        return `<div class="story-chapter"><div class="story-chapter-title">Chapter ${i+1}: ${ch.title}</div><div class="story-chapter-text">${ch.text}</div></div>`;
+      }
+      return `<div class="story-chapter locked"><div class="story-chapter-title">🔒 Chapter ${i+1}: ???</div><div class="story-chapter-text">Keep clearing guardians to uncover this chapter.</div></div>`;
+    }).join("");
+  }
+  function updateStoryBadge(){
+    const unread = state.stats.storyChaptersUnlocked.length - state.stats.storyChaptersRead;
+    storyBadge.style.display = unread > 0 ? "flex" : "none";
+  }
+  storyOpenBtn.addEventListener("click", ()=>{
+    renderStoryChapters();
+    state.stats.storyChaptersRead = state.stats.storyChaptersUnlocked.length;
+    updateStoryBadge();
+    storyOverlay.style.display = "flex";
+  });
+  storyClose.addEventListener("click", ()=>{ storyOverlay.style.display = "none"; });
+
+  // ---------- HERO LORE MODAL ----------
+  const heroLoreOverlay = document.getElementById("heroLoreOverlay");
+  const heroLoreTitle = document.getElementById("heroLoreTitle");
+  const heroLoreEmoji = document.getElementById("heroLoreEmoji");
+  const heroLoreText = document.getElementById("heroLoreText");
+  const heroLoreClose = document.getElementById("heroLoreClose");
+  function openHeroLore(hero){
+    heroLoreTitle.textContent = "📖 " + hero.name;
+    heroLoreEmoji.textContent = hero.emoji;
+    heroLoreText.textContent = getHeroLore(hero);
+    heroLoreOverlay.style.display = "flex";
+  }
+  heroLoreClose.addEventListener("click", ()=>{ heroLoreOverlay.style.display = "none"; });
 
   // ---------- SETTINGS MODAL ----------
   const settingsOpenBtn = document.getElementById("settingsOpenBtn");
