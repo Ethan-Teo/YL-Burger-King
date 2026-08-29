@@ -508,6 +508,187 @@
     0%{transform:translate(calc(-50% + var(--vx)), calc(-50% + var(--vy))) scale(1) rotate(0deg); opacity:1;}
     100%{transform:translate(-50%,-50%) scale(0.1) rotate(720deg); opacity:0;}
   }
+
+  /* ---------- CUTSCENE-SCALE BLACK HOLE (same 3-layer ring+disk+core design,
+     just a much bigger wrapper — the ring/disk/core CSS is percentage-sized
+     so it scales automatically). Sits behind the hero portrait as a backdrop
+     rather than a quick battle flash, and actually lingers on screen. ---------- */
+  .cutscene-black-hole{
+    position:absolute; top:50%; left:50%; width:min(60vw,220px); height:min(60vw,220px);
+    pointer-events:none; z-index:0;
+    transform:translate(-50%,-50%) scale(0.08); opacity:0;
+  }
+  .cutscene-black-hole.growing{animation:cutsceneBhGrow 0.9s cubic-bezier(.2,.8,.3,1) forwards;}
+  @keyframes cutsceneBhGrow{
+    0%{transform:translate(-50%,-50%) scale(0.08); opacity:0;}
+    35%{opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1); opacity:1;}
+  }
+  .cutscene-black-hole.fading{animation:cutsceneBhFade 0.5s ease-in forwards;}
+  @keyframes cutsceneBhFade{
+    0%{transform:translate(-50%,-50%) scale(1); opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1.35); opacity:0;}
+  }
+  .cutscene-bh-spin{position:absolute; inset:0;}
+
+  /* ---------- ROYAL CROWN CENTERPIECE (Sovereign Slam) — a real 5-point crown
+     silhouette that drops from above and settles, instead of just gold sparks. --- */
+  .cutscene-crown{
+    position:absolute; top:38%; left:50%; width:min(48vw,160px); height:min(34vw,112px);
+    pointer-events:none; z-index:0;
+    transform:translate(-50%,-50%) translateY(-160px) scale(0.3); opacity:0;
+  }
+  .cutscene-crown.dropping{animation:crownCenterpieceDrop 0.85s cubic-bezier(.3,.65,.35,1) forwards;}
+  @keyframes crownCenterpieceDrop{
+    0%{transform:translate(-50%,-50%) translateY(-160px) scale(0.3); opacity:0;}
+    55%{opacity:1;}
+    78%{transform:translate(-50%,-50%) translateY(6px) scale(1.08); opacity:1;}
+    100%{transform:translate(-50%,-50%) translateY(0) scale(1); opacity:1;}
+  }
+  .cutscene-crown.fading{animation:cutsceneBhFade 0.5s ease-in forwards;}
+  .crown-shape{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, #fff4c2 0%, #f6c445 45%, #b8860b 100%);
+    clip-path:polygon(0% 100%, 0% 42%, 12% 58%, 20% 12%, 32% 52%, 42% 0%, 50% 46%,
+                       58% 0%, 68% 52%, 80% 12%, 88% 58%, 100% 42%, 100% 100%);
+    box-shadow:0 0 34px rgba(246,196,69,0.9);
+    filter:drop-shadow(0 5px 10px rgba(0,0,0,0.45));
+  }
+  .crown-jewel{
+    position:absolute; top:56%; width:9%; height:16%; border-radius:50%;
+    background:radial-gradient(circle at 35% 35%, #ff8a8a, #c0203a);
+    box-shadow:0 0 8px rgba(230,57,70,0.9);
+  }
+
+  /* ---------- VOID-SKULL CENTERPIECE (Death) — a genuine dark portal with a
+     looming glowing skull, not just a small emoji flash. ---------------------- */
+  .cutscene-reaper{
+    position:absolute; top:50%; left:50%; width:min(56vw,190px); height:min(56vw,190px);
+    pointer-events:none; z-index:0;
+    transform:translate(-50%,-50%) scale(0.08); opacity:0;
+  }
+  .cutscene-reaper.growing{animation:cutsceneBhGrow 0.9s cubic-bezier(.2,.8,.3,1) forwards;}
+  .cutscene-reaper.fading{animation:cutsceneBhFade 0.5s ease-in forwards;}
+  .reaper-void{
+    position:absolute; inset:0; border-radius:50%;
+    background:radial-gradient(circle, rgba(15,15,15,0.97), rgba(3,3,3,0.99) 55%, transparent 82%);
+    box-shadow:0 0 60px 24px rgba(0,0,0,0.65);
+  }
+  .reaper-skull{
+    position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+    font-size:min(28vw,96px); filter:grayscale(1) brightness(1.4) drop-shadow(0 0 22px rgba(255,255,255,0.55));
+  }
+  .reaper-eye{
+    position:absolute; top:44%; width:8%; height:8%; border-radius:50%;
+    background:radial-gradient(circle, #fff, #ff2d2d 70%); box-shadow:0 0 12px 4px rgba(255,40,40,0.9);
+  }
+
+  /* ---------- INFERNO PILLAR CENTERPIECE (Scoville Overload) — a real jagged
+     flame silhouette rising floor to ceiling instead of scattered embers. ----- */
+  .cutscene-inferno-pillar{
+    position:absolute; bottom:6%; left:50%; width:min(40vw,140px); height:62%;
+    pointer-events:none; z-index:0; transform-origin:bottom center;
+    transform:translate(-50%,0) scaleY(0.05); opacity:0;
+    background:linear-gradient(0deg, #fff4c2 0%, #ffb347 20%, #e4572e 52%, #7a1f0a 85%, transparent 100%);
+    clip-path:polygon(50% 0%, 68% 14%, 60% 32%, 84% 50%, 66% 66%, 88% 100%, 12% 100%, 34% 66%, 16% 50%, 40% 32%, 32% 14%);
+    filter:blur(1.5px) drop-shadow(0 0 28px rgba(255,110,20,0.85));
+  }
+  .cutscene-inferno-pillar.rising{animation:infernoPillarRise 0.85s cubic-bezier(.2,.75,.3,1) forwards;}
+  @keyframes infernoPillarRise{
+    0%{transform:translate(-50%,0) scaleY(0.05); opacity:0;}
+    30%{opacity:1;}
+    100%{transform:translate(-50%,0) scaleY(1); opacity:0.92;}
+  }
+  .cutscene-inferno-pillar.fading{animation:infernoPillarFade 0.5s ease-in forwards;}
+  @keyframes infernoPillarFade{ 0%{opacity:0.92;} 100%{opacity:0; transform:translate(-50%,0) scaleY(1.15);} }
+
+  /* ---------- MICHELIN STAR BADGE (Michelin Star Cut) — an actual medallion
+     stamps onto the screen, since the move is named after one. -------------- */
+  .cutscene-star-badge{
+    position:absolute; top:50%; left:50%; width:min(46vw,155px); height:min(46vw,155px);
+    pointer-events:none; z-index:0; overflow:visible;
+    transform:translate(-50%,-50%) scale(2.6) rotate(-20deg); opacity:0;
+  }
+  .cutscene-star-badge.stamping{animation:starBadgeStamp 0.55s cubic-bezier(.2,.8,.3,1) forwards;}
+  @keyframes starBadgeStamp{
+    0%{transform:translate(-50%,-50%) scale(2.6) rotate(-20deg); opacity:0;}
+    45%{opacity:1;}
+    72%{transform:translate(-50%,-50%) scale(0.9) rotate(4deg); opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1) rotate(0deg); opacity:1;}
+  }
+  .cutscene-star-badge.fading{animation:cutsceneBhFade 0.5s ease-in forwards;}
+  .badge-petal{
+    position:absolute; left:50%; top:50%; width:27%; height:60%;
+    transform-origin:50% 96%;
+    background:#fff;
+    border:solid #c8102e; border-width:clamp(3px, 0.9vw, 5.5px);
+    border-radius:50% 50% 50% 50% / 72% 72% 26% 26%;
+    outline:1.5px solid #5a0210; outline-offset:0px;
+  }
+  .badge-center-mask{
+    position:absolute; left:50%; top:50%; width:12%; height:12%;
+    background:#fff; border-radius:50%; transform:translate(-50%,-50%); z-index:1;
+  }
+
+  /* ---------- ICE CRYSTAL FORMATION (Shaved Truffle Frost) — six faceted
+     shards growing outward from center like a real frozen crystal. ---------- */
+  .cutscene-frost-crystal{
+    position:absolute; top:50%; left:50%; width:min(52vw,175px); height:min(52vw,175px);
+    pointer-events:none; z-index:0;
+    transform:translate(-50%,-50%) scale(0.05); opacity:0;
+  }
+  .cutscene-frost-crystal.growing{animation:cutsceneBhGrow 0.75s cubic-bezier(.2,.8,.3,1) forwards;}
+  .cutscene-frost-crystal.fading{animation:cutsceneBhFade 0.5s ease-in forwards;}
+  .crystal-facet{
+    position:absolute; left:50%; top:50%; width:13%; height:68%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.95), rgba(160,210,255,0.5));
+    clip-path:polygon(50% 0%, 100% 30%, 65% 100%, 35% 100%, 0% 30%);
+    transform-origin:50% 0%;
+    filter:drop-shadow(0 0 10px rgba(180,220,255,0.85));
+  }
+
+  /* ---------- BUTTER WHIRLPOOL (Butter Poach Siphon) — a golden spiral vortex,
+     the warm inverse of the Black Hole's cold void. ------------------------- */
+  .cutscene-whirlpool{
+    position:absolute; top:50%; left:50%; width:min(52vw,180px); height:min(52vw,180px);
+    pointer-events:none; z-index:0;
+    transform:translate(-50%,-50%) scale(0.08); opacity:0;
+  }
+  .cutscene-whirlpool.growing{animation:cutsceneBhGrow 0.85s cubic-bezier(.2,.8,.3,1) forwards;}
+  .cutscene-whirlpool.fading{animation:cutsceneBhFade 0.5s ease-in forwards;}
+  .whirlpool-swirl{
+    position:absolute; inset:0; border-radius:50%;
+    background:conic-gradient(from 0deg, #fff8e4, #f6c445, #b8860b, #fff8e4, #f6c445, #b8860b, #fff8e4);
+    box-shadow:0 0 40px rgba(246,196,69,0.7);
+    animation:whirlpoolSpin 2.2s linear infinite;
+  }
+  @keyframes whirlpoolSpin{ from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  .whirlpool-center{
+    position:absolute; left:50%; top:50%; width:32%; height:32%; border-radius:50%;
+    background:radial-gradient(circle, #3a2400, #6b4a10 70%, transparent 100%);
+    transform:translate(-50%,-50%);
+    box-shadow:inset 0 0 20px rgba(0,0,0,0.7);
+  }
+
+  /* ---------- CANYON SPLIT (Earthy Uppercut) — the ground actually cracks
+     open from the bottom of the screen. ------------------------------------ */
+  .cutscene-canyon{
+    position:absolute; bottom:0; left:50%; width:62%; height:48%;
+    pointer-events:none; z-index:0; transform:translate(-50%,0) scaleY(0.08); opacity:0;
+    transform-origin:bottom center;
+    background:linear-gradient(180deg, transparent 0%, #3a230f 25%, #0a0502 100%);
+    clip-path:polygon(45% 0%, 55% 0%, 66% 18%, 50% 32%, 72% 52%, 46% 68%, 64% 100%, 36% 100%, 54% 68%, 28% 52%, 50% 32%, 34% 18%);
+    filter:drop-shadow(0 0 18px rgba(0,0,0,0.6));
+  }
+  .cutscene-canyon.splitting{animation:canyonSplit 0.7s cubic-bezier(.3,.7,.4,1) forwards;}
+  @keyframes canyonSplit{
+    0%{transform:translate(-50%,0) scaleY(0.08); opacity:0;}
+    35%{opacity:0.9;}
+    100%{transform:translate(-50%,0) scaleY(1); opacity:0.85;}
+  }
+  .cutscene-canyon.fading{animation:canyonFade 0.5s ease-in forwards;}
+  @keyframes canyonFade{ 0%{opacity:0.85;} 100%{opacity:0;} }
+
   .boss-swirl{
     display:inline-block;
     animation:bossSwirlSuck 1.05s cubic-bezier(.4,0,.2,1);
@@ -886,6 +1067,24 @@
     align-items:center; justify-content:center; flex-direction:column;
     background:radial-gradient(circle at 50% 50%, rgba(70,45,10,0.94), rgba(8,5,2,0.98));
   }
+  .rarity-cutscene::after{
+    content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:radial-gradient(ellipse at 50% 50%, transparent 42%, rgba(0,0,0,0.55) 100%);
+  }
+  /* A slow, continuous push-in during the buildup — the frame itself has
+     quiet momentum instead of just static elements popping in and out.
+     Released right before the reveal's sharp camera-punch takes over. */
+  .rarity-cutscene.building{ animation:cameraPushIn 3.6s cubic-bezier(.3,0,.2,1) forwards; }
+  @keyframes cameraPushIn{ from{transform:scale(1);} to{transform:scale(1.035);} }
+  /* A color-temperature arc across the sequence: cool/neutral during the
+     diagnostic beat, warming through the power-up, full saturation at the
+     reveal — mood shifting with the rhythm instead of static color. */
+  .rarity-cutscene-tint{
+    position:absolute; inset:0; z-index:1; pointer-events:none; opacity:0;
+    transition:background 1s ease, opacity 1s ease;
+  }
+  .rarity-cutscene-tint.tint-cool{ opacity:1; background:radial-gradient(circle at 50% 50%, rgba(120,170,220,0.1), transparent 70%); }
+  .rarity-cutscene-tint.tint-warm{ opacity:1; background:radial-gradient(circle at 50% 50%, rgba(255,140,50,0.14), transparent 70%); }
   .rarity-cutscene.rc-epic{
     background:radial-gradient(circle at 50% 50%, rgba(42,26,58,0.94), rgba(7,4,10,0.98));
   }
@@ -917,40 +1116,57 @@
     position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:20px;
   }
   .rarity-cutscene-sub{
-    font-size:11px; color:var(--cheese); font-weight:800; letter-spacing:2px; opacity:0.9;
+    font-size:11px; color:var(--cheese); font-weight:700; letter-spacing:3.5px; opacity:0.85;
+    text-shadow:0 1px 3px rgba(0,0,0,0.6);
   }
   .rarity-cutscene.rc-epic .rarity-cutscene-sub{ color:#c9a8ec; }
   .rarity-cutscene.rc-ultra .rarity-cutscene-sub{ color:#ff8a8a; }
   .rarity-cutscene.rc-domain .rarity-cutscene-sub{ color:#b78cff; }
   .rarity-cutscene-title{
     font-family:'Baloo 2',cursive; font-size:clamp(19px,5.5vw,30px); color:var(--cheese);
-    text-shadow:0 0 18px rgba(246,196,69,0.85), 2px 2px 0 var(--ink);
-    animation:titlePulse 1s ease-in-out infinite; margin-bottom:6px;
+    letter-spacing:0.5px;
+    text-shadow:0 2px 4px rgba(0,0,0,0.55), 0 0 14px rgba(246,196,69,0.55), 0 0 34px rgba(246,196,69,0.35);
+    animation:titlePulse 1.3s ease-in-out infinite; margin-bottom:6px;
   }
   .rarity-cutscene.rc-epic .rarity-cutscene-title{
-    color:#c9a8ec; text-shadow:0 0 18px rgba(155,111,201,0.85), 2px 2px 0 var(--ink);
+    color:#c9a8ec; text-shadow:0 2px 4px rgba(0,0,0,0.55), 0 0 14px rgba(155,111,201,0.6), 0 0 34px rgba(155,111,201,0.35);
   }
   .rarity-cutscene.rc-ultra .rarity-cutscene-title{
-    color:#ff8a8a; text-shadow:0 0 22px rgba(230,57,70,0.9), 2px 2px 0 var(--ink);
+    color:#ff8a8a; text-shadow:0 2px 4px rgba(0,0,0,0.55), 0 0 16px rgba(230,57,70,0.65), 0 0 36px rgba(230,57,70,0.4);
   }
   .rarity-cutscene.rc-domain .rarity-cutscene-title{
     font-size:clamp(16px,4.6vw,24px); color:#c9a5ff;
-    text-shadow:0 0 26px rgba(140,70,230,0.95), 2px 2px 0 #000;
+    text-shadow:0 2px 4px rgba(0,0,0,0.6), 0 0 18px rgba(140,70,230,0.7), 0 0 40px rgba(140,70,230,0.45);
   }
-  @keyframes titlePulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.06);}}
+  @keyframes titlePulse{0%,100%{transform:scale(1);} 50%{transform:scale(1.025);}}
+  @keyframes titleEnter{
+    0%{transform:scale(0.72); opacity:0;}
+    55%{transform:scale(1.1); opacity:1;}
+    78%{transform:scale(0.97);}
+    100%{transform:scale(1);}
+  }
+  .rarity-cutscene-title.entering{animation:titleEnter 0.4s cubic-bezier(.2,.7,.3,1) forwards !important;}
   .rarity-cutscene-emoji{
     position:relative; font-size:min(26vw,110px);
     animation:lcEmojiEnter 0.6s cubic-bezier(.34,1.56,.64,1);
-    filter:drop-shadow(0 0 30px rgba(246,196,69,0.9));
+    filter:drop-shadow(-5px -6px 10px rgba(255,246,222,0.55))
+           drop-shadow(6px 10px 18px rgba(0,0,0,0.4))
+           drop-shadow(0 0 30px rgba(246,196,69,0.75));
   }
   .rarity-cutscene.rc-epic .rarity-cutscene-emoji{
-    filter:drop-shadow(0 0 26px rgba(155,111,201,0.85));
+    filter:drop-shadow(-5px -6px 10px rgba(240,224,255,0.5))
+           drop-shadow(6px 10px 18px rgba(0,0,0,0.42))
+           drop-shadow(0 0 26px rgba(155,111,201,0.7));
   }
   .rarity-cutscene.rc-ultra .rarity-cutscene-emoji{
-    filter:drop-shadow(0 0 34px rgba(230,57,70,0.95));
+    filter:drop-shadow(-5px -6px 10px rgba(255,220,220,0.5))
+           drop-shadow(6px 10px 18px rgba(0,0,0,0.45))
+           drop-shadow(0 0 34px rgba(230,57,70,0.8));
   }
   .rarity-cutscene.rc-domain .rarity-cutscene-emoji{
-    filter:drop-shadow(0 0 38px rgba(140,70,230,0.95));
+    filter:drop-shadow(-5px -6px 10px rgba(230,210,255,0.5))
+           drop-shadow(6px 10px 18px rgba(0,0,0,0.48))
+           drop-shadow(0 0 38px rgba(140,70,230,0.8));
   }
   .rarity-cutscene-emoji > *{position:relative; z-index:1;}
   @keyframes lcEmojiEnter{0%{transform:scale(0) rotate(-30deg); opacity:0;} 60%{transform:scale(1.2) rotate(8deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
@@ -983,7 +1199,8 @@
     100%{transform:scale(1);}
   }
   .rarity-cutscene-name{
-    font-family:'Baloo 2',cursive; font-size:20px; color:#fff; text-shadow:2px 2px 0 var(--ink);
+    font-family:'Baloo 2',cursive; font-size:20px; color:#fff; letter-spacing:0.3px;
+    text-shadow:0 2px 5px rgba(0,0,0,0.65), 0 0 12px rgba(0,0,0,0.4);
     opacity:0; animation:nameFadeIn 0.5s ease forwards; animation-delay:0.4s;
   }
   @keyframes nameFadeIn{ to{opacity:1;} }
@@ -995,12 +1212,19 @@
 
   /* ---------- OVERCOMPLICATED SIGNATURE-MOVE CUTSCENE EXTRAS ---------- */
   .cutscene-letterbox{
-    position:absolute; left:0; right:0; height:0; background:#000; z-index:5; pointer-events:none;
-    transition:height 0.35s cubic-bezier(.2,.8,.3,1);
+    position:absolute; left:0; right:0; height:0; z-index:5; pointer-events:none;
+    background:linear-gradient(0deg, #000 82%, rgba(0,0,0,0));
+    transition:height 0.45s cubic-bezier(.3,1.6,.4,1);
   }
-  .cutscene-letterbox.top{top:0;}
+  .cutscene-letterbox.top{top:0; background:linear-gradient(180deg, #000 82%, rgba(0,0,0,0));}
   .cutscene-letterbox.bottom{bottom:0;}
-  .cutscene-letterbox.bars-in{height:11%;}
+  .cutscene-letterbox.bars-in{height:11.5%;}
+  .cutscene-letterbox::after{
+    content:""; position:absolute; left:0; right:0; height:1px;
+    background:linear-gradient(90deg, transparent, rgba(246,196,69,0.55), transparent);
+  }
+  .cutscene-letterbox.top::after{ bottom:0; }
+  .cutscene-letterbox.bottom::after{ top:0; }
   .cutscene-power-meter{
     position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:6px;
     opacity:0; pointer-events:none;
@@ -1008,18 +1232,30 @@
   .cutscene-power-meter.showing{animation:powerMeterFade 0.35s ease forwards;}
   @keyframes powerMeterFade{ to{opacity:1;} }
   .cutscene-power-label{
-    font-family:'Baloo 2',cursive; font-size:13px; letter-spacing:1px; color:#ff8a8a;
-    text-shadow:1px 1px 0 rgba(0,0,0,0.6);
+    font-family:'Baloo 2',cursive; font-size:12px; letter-spacing:2.5px; color:#ff9a9a;
+    text-shadow:0 1px 3px rgba(0,0,0,0.6);
   }
   .cutscene-power-bar-outer{
-    width:220px; height:16px; border:2px solid #fff; border-radius:9px; overflow:hidden; background:rgba(255,255,255,0.15);
+    position:relative; width:220px; height:14px; border:1.5px solid rgba(255,255,255,0.75);
+    border-radius:8px; overflow:hidden; background:rgba(255,255,255,0.1);
+    box-shadow:0 2px 6px rgba(0,0,0,0.4), inset 0 1px 2px rgba(0,0,0,0.3);
   }
   .cutscene-power-bar-inner{
-    height:100%; width:0%; background:linear-gradient(90deg,#ffcf6b,#e63946);
+    position:relative; height:100%; width:0%;
+    background:linear-gradient(90deg,#ffe27a,#ffb347 45%,#e63946);
+    box-shadow:0 0 10px rgba(255,140,60,0.7);
     transition:width 0.6s cubic-bezier(.2,.7,.3,1);
+    overflow:hidden;
   }
+  .cutscene-power-bar-inner::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.55) 50%, transparent);
+    background-size:60px 100%; animation:powerBarShimmer 1s linear infinite;
+  }
+  @keyframes powerBarShimmer{ from{background-position:-60px 0;} to{background-position:220px 0;} }
   .cutscene-power-number{
-    font-family:'Baloo 2',cursive; font-size:26px; color:#fff; text-shadow:2px 2px 0 rgba(0,0,0,0.6);
+    font-family:'Baloo 2',cursive; font-size:25px; color:#fff; letter-spacing:0.5px;
+    text-shadow:0 2px 5px rgba(0,0,0,0.65), 0 0 10px rgba(255,180,80,0.5);
   }
   .cutscene-quote{
     position:relative; z-index:2; max-width:80%; text-align:center; font-style:italic; font-weight:700;
@@ -1031,24 +1267,31 @@
   /* ---------- OVERCOMPLICATED CUTSCENE EXTRAS: fake terminal scan, stat grid, rank stamp ---------- */
   .cutscene-terminal{
     display:none; position:relative; z-index:2; width:min(86vw,340px); min-height:70px;
-    background:rgba(6,14,6,0.88); border:2px solid #3fdc5a; border-radius:6px; padding:10px 12px;
-    font-family:'Courier New',monospace; font-size:11.5px; color:#4dff6f; line-height:1.6;
-    box-shadow:0 0 20px rgba(63,220,90,0.4), inset 0 0 12px rgba(0,0,0,0.6);
+    background:rgba(10,8,4,0.72); border:1px solid rgba(246,196,69,0.5); border-radius:4px; padding:11px 14px;
+    font-family:'Courier New',monospace; font-size:11px; color:rgba(255,232,180,0.92); line-height:1.7;
+    letter-spacing:0.3px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.45), inset 0 0 20px rgba(0,0,0,0.35);
     white-space:pre-wrap;
   }
   .cutscene-terminal.showing{display:block;}
-  .cutscene-terminal .term-cursor{display:inline-block; width:7px; height:12px; background:#4dff6f; animation:termBlink 0.5s steps(1) infinite; vertical-align:middle;}
+  .cutscene-terminal::before, .cutscene-terminal::after{
+    content:""; position:absolute; width:10px; height:10px; border:1.5px solid rgba(246,196,69,0.85);
+  }
+  .cutscene-terminal::before{ top:-1px; left:-1px; border-right:none; border-bottom:none; }
+  .cutscene-terminal::after{ bottom:-1px; right:-1px; border-left:none; border-top:none; }
+  .cutscene-terminal .term-cursor{display:inline-block; width:6px; height:11px; background:rgba(246,196,69,0.85); animation:termBlink 0.5s steps(1) infinite; vertical-align:middle;}
   @keyframes termBlink{0%,49%{opacity:1;} 50%,100%{opacity:0;}}
 
   .cutscene-stat-grid{
-    display:none; position:relative; z-index:2; flex-direction:column; gap:5px;
-    background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.3); border-radius:8px;
-    padding:9px 14px; font-family:'Courier New',monospace; font-size:11px;
+    display:none; position:relative; z-index:2; flex-direction:column; gap:6px;
+    background:rgba(10,8,4,0.72); border:1px solid rgba(255,255,255,0.22); border-radius:4px;
+    padding:10px 16px; font-family:'Courier New',monospace; font-size:11px;
+    box-shadow:0 4px 16px rgba(0,0,0,0.45);
   }
   .cutscene-stat-grid.showing{display:flex;}
-  .cutscene-stat-row{display:flex; justify-content:space-between; gap:18px; color:#fff;}
-  .cutscene-stat-row span{opacity:0.75; letter-spacing:0.5px;}
-  .cutscene-stat-row b{color:var(--cheese); font-weight:900;}
+  .cutscene-stat-row{display:flex; justify-content:space-between; gap:22px; color:rgba(255,255,255,0.92);}
+  .cutscene-stat-row span{opacity:0.7; letter-spacing:1px;}
+  .cutscene-stat-row b{color:var(--cheese); font-weight:700; letter-spacing:0.5px;}
 
   .cutscene-rank-stamp{
     position:absolute; top:50%; left:50%; z-index:9; pointer-events:none; opacity:0;
@@ -1812,6 +2055,7 @@
 
   <!-- ===== SIGNATURE ATTACK CUTSCENE (battle) ===== -->
   <div class="rarity-cutscene rc-ultra" id="battleCutscene">
+    <div class="rarity-cutscene-tint" id="battleCutsceneTint"></div>
     <div class="cutscene-letterbox top" id="cutsceneLetterboxTop"></div>
     <div class="cutscene-letterbox bottom" id="cutsceneLetterboxBottom"></div>
     <div class="cutscene-terminal" id="cutsceneTerminal"></div>
@@ -3489,6 +3733,7 @@
   const cutscenePowerNumber = document.getElementById("cutscenePowerNumber");
   const cutsceneQuote = document.getElementById("cutsceneQuote");
   const cutsceneTerminal = document.getElementById("cutsceneTerminal");
+  const battleCutsceneTint = document.getElementById("battleCutsceneTint");
   const cutsceneStatGrid = document.getElementById("cutsceneStatGrid");
   const statCrit = document.getElementById("statCrit");
   const statFlavor = document.getElementById("statFlavor");
@@ -4347,6 +4592,43 @@
       shakeScreen();
     }, angles.length*90 + 140);
     shakeScreen();
+    // the Michelin rosette stamps down right after the cross-cut lands — the
+    // "verdict" arriving after the knife work. Six loop-petal shapes rotated
+    // radially around the center, matching the real Michelin Guide macaron —
+    // it's a flower, not a star.
+    setTimeout(()=>{
+      const badge = document.createElement("div");
+      badge.className = "cutscene-star-badge stamping";
+      for(let i=0;i<6;i++){
+        const petal = document.createElement("div");
+        petal.className = "badge-petal";
+        petal.style.transform = `translate(-50%,-100%) rotate(${i*60}deg)`;
+        badge.appendChild(petal);
+      }
+      // covers the messy overlap where all 6 petal outlines converge, leaving
+      // a clean gap in the center like the real mark has
+      const centerMask = document.createElement("div");
+      centerMask.className = "badge-center-mask";
+      badge.appendChild(centerMask);
+      container.appendChild(badge);
+
+      // a quick impact bloom right as the badge lands
+      setTimeout(()=>{
+        const ring = document.createElement("div");
+        ring.className = "cs-ring firing";
+        ring.style.setProperty("--cs-color", "#c8102e");
+        container.appendChild(ring);
+        setTimeout(()=>ring.remove(), 750);
+        shakeScreen();
+      }, 400);
+
+      setTimeout(()=>{
+        badge.classList.remove("stamping");
+        badge.classList.add("fading");
+        setTimeout(()=>badge.remove(), 520);
+      }, 1150);
+      spawnImpactFrame(container, 90);
+    }, angles.length*90 + 260);
   }
   function spawnCutsceneFire(container){
     // a match-strike glint before the whoosh, then a real impact-frame heat-flash
@@ -4392,6 +4674,23 @@
     container.appendChild(flash);
     setTimeout(()=>flash.remove(), 650);
     spawnImpactFrame(container, 130); // the world genuinely holds still as everything freezes
+
+    // a real 6-faceted ice crystal grows from center and holds
+    const crystal = document.createElement("div");
+    crystal.className = "cutscene-frost-crystal growing";
+    for(let i=0;i<6;i++){
+      const facet = document.createElement("div");
+      facet.className = "crystal-facet";
+      facet.style.transform = `translate(-50%,0) rotate(${i*60}deg)`;
+      crystal.appendChild(facet);
+    }
+    container.appendChild(crystal);
+    setTimeout(()=>{
+      crystal.classList.remove("growing");
+      crystal.classList.add("fading");
+      setTimeout(()=>crystal.remove(), 520);
+    }, 1350);
+
     // angular ice shards instead of a snowflake-emoji flurry
     for(let i=0;i<14;i++){
       setTimeout(()=>{
@@ -4527,6 +4826,44 @@
       }, i*90);
     }
   }
+  // The actual Black Hole cutscene visual — a full accretion-disk rendering
+  // (the same 3-layer ring+disk+core used for the in-battle hit, just scaled
+  // way up) sitting behind the hero as a backdrop, slowly rotating, with
+  // stars and light genuinely swirling inward toward the void for as long as
+  // it's on screen — not a quick flash, a real held shot of the thing itself.
+  function spawnCutsceneBlackHoleVisual(container){
+    const wrap = document.createElement("div");
+    wrap.className = "cutscene-black-hole growing";
+    const spin = document.createElement("div");
+    spin.className = "cutscene-bh-spin";
+    const ring = document.createElement("div"); ring.className = "bh-ring";
+    const disk = document.createElement("div"); disk.className = "bh-disk";
+    spin.appendChild(ring); spin.appendChild(disk);
+    const core = document.createElement("div"); core.className = "bh-core";
+    wrap.appendChild(spin); wrap.appendChild(core);
+    container.appendChild(wrap);
+
+    const emojis = ["✨","💫","⭐"];
+    const swirlTimer = setInterval(()=>{
+      const p = document.createElement("span");
+      p.className = "vortex-particle";
+      p.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      const angle = Math.random()*Math.PI*2;
+      const dist = 150 + Math.random()*70;
+      p.style.setProperty("--vx", Math.cos(angle)*dist + "px");
+      p.style.setProperty("--vy", Math.sin(angle)*dist + "px");
+      p.style.animationDuration = (700 + Math.random()*300) + "ms";
+      wrap.appendChild(p);
+      setTimeout(()=>p.remove(), 1100);
+    }, 90);
+
+    setTimeout(()=>{
+      clearInterval(swirlTimer);
+      wrap.classList.remove("growing");
+      wrap.classList.add("fading");
+      setTimeout(()=>wrap.remove(), 520);
+    }, 1450);
+  }
   // Anime-style "power surging" visuals for the charge-up phase: lines radiating
   // outward from center, and crackling energy arcs snapping around the portrait.
   function spawnSpeedLines(container, count){
@@ -4653,8 +4990,27 @@
   // Siphon, Reduction Strike, and Death — so none of the 13 signature/domain
   // moves shares its finishing visual with any other.
   function spawnCutsceneRoyal(container){
-    // a crown of gold light descends and radiating gold spikes burst outward
+    // a REAL crown silhouette drops and settles, plus a flash of light and
+    // radiating gold spikes for the initial impact
     spawnImpactFrame(container, 110);
+    const crownWrap = document.createElement("div");
+    crownWrap.className = "cutscene-crown dropping";
+    const shape = document.createElement("div");
+    shape.className = "crown-shape";
+    crownWrap.appendChild(shape);
+    [16, 45, 74].forEach(leftPct=>{
+      const jewel = document.createElement("div");
+      jewel.className = "crown-jewel";
+      jewel.style.left = leftPct + "%";
+      crownWrap.appendChild(jewel);
+    });
+    container.appendChild(crownWrap);
+    setTimeout(()=>{
+      crownWrap.classList.remove("dropping");
+      crownWrap.classList.add("fading");
+      setTimeout(()=>crownWrap.remove(), 520);
+    }, 1450);
+
     const crown = document.createElement("div");
     crown.className = "cs-glint firing";
     crown.style.top = "38%";
@@ -4708,8 +5064,18 @@
     setTimeout(()=>shakeScreen(), 320);
   }
   function spawnCutsceneQuake(container){
-    // the ground itself splits open from below, dust and rock flung upward
+    // a real canyon actually splits open from the bottom of the screen,
+    // plus dust and rock flung upward from the initial impact
     spawnImpactFrame(container, 110);
+    const canyon = document.createElement("div");
+    canyon.className = "cutscene-canyon splitting";
+    container.appendChild(canyon);
+    setTimeout(()=>{
+      canyon.classList.remove("splitting");
+      canyon.classList.add("fading");
+      setTimeout(()=>canyon.remove(), 520);
+    }, 1300);
+
     [250,290,330,10,50].forEach((angle,i)=>{
       setTimeout(()=>{
         const crack = document.createElement("div");
@@ -4737,9 +5103,18 @@
     shakeScreen();
   }
   function spawnCutsceneInferno(container){
-    // one massive column of heat instead of scattered flames — the whole
-    // screen washes red before it clears
+    // a REAL jagged flame pillar rises floor to ceiling and holds, plus a
+    // heat wash and rising tendrils for the initial ignition
     spawnImpactFrame(container, 130);
+    const pillar = document.createElement("div");
+    pillar.className = "cutscene-inferno-pillar rising";
+    container.appendChild(pillar);
+    setTimeout(()=>{
+      pillar.classList.remove("rising");
+      pillar.classList.add("fading");
+      setTimeout(()=>pillar.remove(), 520);
+    }, 1350);
+
     const wash = document.createElement("div");
     wash.className = "cs-frost-flash firing";
     wash.style.background = "radial-gradient(circle at 50% 60%, rgba(255,90,20,0.6), transparent 75%)";
@@ -4783,8 +5158,21 @@
     setTimeout(()=>{ spawnImpactFrame(container, 90); shakeScreen(); }, 500);
   }
   function spawnCutsceneSiphon(container){
-    // a golden vortex draining inward, the opposite pull of the void tendrils
+    // a real golden whirlpool holds behind the hero, plus vortex particles
+    // draining inward toward it — the warm opposite of Black Hole's void
     spawnImpactFrame(container, 100);
+    const wrap = document.createElement("div");
+    wrap.className = "cutscene-whirlpool growing";
+    const swirl = document.createElement("div"); swirl.className = "whirlpool-swirl";
+    const center = document.createElement("div"); center.className = "whirlpool-center";
+    wrap.appendChild(swirl); wrap.appendChild(center);
+    container.appendChild(wrap);
+    setTimeout(()=>{
+      wrap.classList.remove("growing");
+      wrap.classList.add("fading");
+      setTimeout(()=>wrap.remove(), 520);
+    }, 1400);
+
     for(let i=0;i<12;i++){
       const el = document.createElement("div");
       el.className = "vortex-particle";
@@ -4829,15 +5217,31 @@
     setTimeout(()=> spawnImpactFrame(container, 90), 200);
   }
   function spawnCutsceneReaper(container){
-    // a looming dark shape and reaching black tendrils — stark black & white,
-    // no color at all, distinct from Black Hole's purple void
+    // a real dark portal with a looming skull that actually holds on screen,
+    // plus reaching black tendrils — stark black & white, no color at all,
+    // distinct from Black Hole's purple/orange void
     spawnImpactFrame(container, 140);
+    const wrap = document.createElement("div");
+    wrap.className = "cutscene-reaper growing";
+    const void_ = document.createElement("div");
+    void_.className = "reaper-void";
     const skull = document.createElement("div");
-    skull.className = "skull-vfx";
+    skull.className = "reaper-skull";
     skull.textContent = "💀";
-    skull.style.position = "absolute"; skull.style.left = "50%"; skull.style.top = "50%";
-    container.appendChild(skull);
-    setTimeout(()=>skull.remove(), 700);
+    wrap.appendChild(void_); wrap.appendChild(skull);
+    [38, 56].forEach(leftPct=>{
+      const eye = document.createElement("div");
+      eye.className = "reaper-eye";
+      eye.style.left = leftPct + "%";
+      wrap.appendChild(eye);
+    });
+    container.appendChild(wrap);
+    setTimeout(()=>{
+      wrap.classList.remove("growing");
+      wrap.classList.add("fading");
+      setTimeout(()=>wrap.remove(), 520);
+    }, 1400);
+
     for(let i=0;i<8;i++){
       setTimeout(()=>{
         const el = document.createElement("div");
@@ -4866,7 +5270,7 @@
     else if(type === "frost") spawnCutsceneFrost(container);
     else if(type === "impact") spawnCutsceneImpact(container, color);
     else if(type === "drip") spawnCutsceneDrip(container, color);
-    else if(type === "void") spawnCutscenePuff(container);
+    else if(type === "void") spawnCutsceneBlackHoleVisual(container);
     else if(type === "royal") spawnCutsceneRoyal(container);
     else if(type === "sear") spawnCutsceneSear(container);
     else if(type === "quake") spawnCutsceneQuake(container);
@@ -4894,6 +5298,8 @@
     cutsceneStatGrid.classList.remove("showing");
     cutsceneRankStamp.classList.remove("firing");
     cutsceneRankStamp.style.opacity = "0";
+    battleCutscene.classList.remove("building");
+    battleCutsceneTint.classList.remove("tint-cool","tint-warm");
 
     // PHASE 1: cinematic bars slide in
     void battleCutscene.offsetWidth;
@@ -4901,12 +5307,19 @@
     cutsceneLetterboxBottom.classList.add("bars-in");
     await wait(350);
 
-    // PHASE 1.5: an utterly unnecessary fake diagnostic terminal scan
+    // PHASE 1.5: an utterly unnecessary fake diagnostic terminal scan —
+    // the camera begins a slow, quiet push-in here, and the color temperature
+    // starts cool/neutral, matching the clinical "diagnostic" mood
+    battleCutscene.classList.add("building");
+    battleCutsceneTint.classList.add("tint-cool");
     await playTerminalScan();
 
     // PHASE 2: a fake "power level" charges up with a rapidly ticking counter,
     // radiating speed lines and crackling energy arcs sell the "power surging" feel
-    // — a fake stat readout grid spins alongside it for good measure
+    // — a fake stat readout grid spins alongside it for good measure. Color
+    // temperature warms here as the energy builds toward the reveal.
+    battleCutsceneTint.classList.remove("tint-cool");
+    battleCutsceneTint.classList.add("tint-warm");
     cutscenePowerMeter.style.display = "flex";
     cutscenePowerMeter.classList.add("showing");
     await wait(80);
@@ -4963,7 +5376,11 @@
       battleCutsceneContent.style.display = "none";
     }
 
-    // PHASE 4: the actual hero + move reveal
+    // PHASE 4: the actual hero + move reveal — the push-in releases and the
+    // color runs to full saturation right here, so the reveal itself lands
+    // as the clear high point of the whole arc rather than more of the same
+    battleCutscene.classList.remove("building");
+    battleCutsceneTint.classList.remove("tint-cool","tint-warm");
     battleCutsceneSub.textContent = profile.sub;
     battleCutsceneTitle.textContent = isDomain
       ? "DOMAIN EXPANSION: " + profile.domain.toUpperCase()
@@ -4975,6 +5392,16 @@
     els.forEach(el=>{ el.style.animation = "none"; });
     void battleCutscene.offsetWidth;
     els.forEach(el=>{ el.style.animation = ""; });
+    // the title gets a one-shot weighted overshoot on arrival, then hands off
+    // to the gentle continuous pulse — anticipation and follow-through, not
+    // just a flat fade-in
+    battleCutsceneTitle.classList.add("entering");
+    setTimeout(()=>{
+      battleCutsceneTitle.classList.remove("entering");
+      battleCutsceneTitle.style.animation = "none";
+      void battleCutsceneTitle.offsetWidth;
+      battleCutsceneTitle.style.animation = "";
+    }, 400);
     battleCutsceneContent.classList.remove("cs-camera-punch");
     void battleCutsceneContent.offsetWidth;
     battleCutsceneContent.classList.add("cs-camera-punch");
@@ -5338,14 +5765,15 @@
   const FX = {
     hitBoss(move){
       spawnParticles(bossVisual, moveParticles(move, ["💥","⚡"]), 6, 34, 550); flashFx(bossVisual, "rgba(192,57,43,0.55)");
-      spawnImpactRing(bossVisual, "rgba(255,255,255,0.85)"); spawnHitCracks(bossVisual, 3, "rgba(255,255,255,0.9)", 55);
+      spawnImpactRing(bossVisual, "rgba(255,255,255,0.85)"); spawnThemedAccent(bossVisual, moveTheme(move), "rgba(230,57,70,0.8)", false);
       shakeVisual(bossVisual);
     },
     hitBossBig(move){
       spawnImpactFrame(battleArea, 80);
       spawnParticles(bossVisual, moveParticles(move, ["💥","💢"]), 9, 40, 620); flashFx(bossVisual, "rgba(192,57,43,0.6)");
       spawnImpactRing(bossVisual, "rgba(255,255,255,0.9)"); spawnImpactRing(bossVisual, "rgba(228,87,46,0.7)");
-      spawnHitCracks(bossVisual, 5, "rgba(255,255,255,0.95)", 72);
+      spawnThemedAccent(bossVisual, moveTheme(move), "rgba(230,57,70,0.85)", true);
+      setTimeout(()=> spawnThemedAccent(bossVisual, moveTheme(move), "rgba(228,87,46,0.85)", true), 90);
       shakeVisual(bossVisual); setTimeout(()=>shakeVisual(bossVisual), 160);
     },
     debuffBoss(move){
