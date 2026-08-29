@@ -954,6 +954,34 @@
   }
   .rarity-cutscene-emoji > *{position:relative; z-index:1;}
   @keyframes lcEmojiEnter{0%{transform:scale(0) rotate(-30deg); opacity:0;} 60%{transform:scale(1.2) rotate(8deg); opacity:1;} 100%{transform:scale(1) rotate(0);}}
+  .cs-speedline{
+    position:absolute; top:50%; left:50%; width:2.5px; height:46vmax; pointer-events:none; z-index:2;
+    background:linear-gradient(180deg, rgba(255,255,255,0.85), transparent 75%);
+    transform-origin:top center; transform:translate(-50%,0) rotate(var(--sl-angle,0deg)) scaleY(0); opacity:0;
+  }
+  .cs-speedline.firing{animation:speedlineShoot 0.55s ease-out forwards;}
+  @keyframes speedlineShoot{
+    0%{opacity:0; transform:translate(-50%,0) rotate(var(--sl-angle,0deg)) scaleY(0);}
+    25%{opacity:0.9;}
+    100%{opacity:0; transform:translate(-50%,0) rotate(var(--sl-angle,0deg)) scaleY(1);}
+  }
+  .cs-arc{
+    position:absolute; top:50%; left:50%; font-size:26px; pointer-events:none; z-index:3; opacity:0;
+    filter:drop-shadow(0 0 6px #fff);
+  }
+  .cs-arc.firing{animation:arcCrackle 0.4s steps(2,end) forwards;}
+  @keyframes arcCrackle{
+    0%{opacity:0; transform:translate(calc(-50% + var(--ax)), calc(-50% + var(--ay))) scale(0.6) rotate(var(--arot,0deg));}
+    35%{opacity:1;}
+    65%{opacity:0.3;}
+    100%{opacity:0; transform:translate(calc(-50% + var(--ax)), calc(-50% + var(--ay))) scale(1.15) rotate(var(--arot,0deg));}
+  }
+  .cs-camera-punch{animation:cameraPunch 0.45s cubic-bezier(.2,.8,.3,1);}
+  @keyframes cameraPunch{
+    0%{transform:scale(1);}
+    35%{transform:scale(1.1);}
+    100%{transform:scale(1);}
+  }
   .rarity-cutscene-name{
     font-family:'Baloo 2',cursive; font-size:20px; color:#fff; text-shadow:2px 2px 0 var(--ink);
     opacity:0; animation:nameFadeIn 0.5s ease forwards; animation-delay:0.4s;
@@ -1000,6 +1028,247 @@
   .cutscene-quote.showing{animation:quoteFade 0.5s ease forwards;}
   @keyframes quoteFade{ 0%{opacity:0; transform:translateY(8px);} 100%{opacity:1; transform:translateY(0);} }
 
+  /* ---------- OVERCOMPLICATED CUTSCENE EXTRAS: fake terminal scan, stat grid, rank stamp ---------- */
+  .cutscene-terminal{
+    display:none; position:relative; z-index:2; width:min(86vw,340px); min-height:70px;
+    background:rgba(6,14,6,0.88); border:2px solid #3fdc5a; border-radius:6px; padding:10px 12px;
+    font-family:'Courier New',monospace; font-size:11.5px; color:#4dff6f; line-height:1.6;
+    box-shadow:0 0 20px rgba(63,220,90,0.4), inset 0 0 12px rgba(0,0,0,0.6);
+    white-space:pre-wrap;
+  }
+  .cutscene-terminal.showing{display:block;}
+  .cutscene-terminal .term-cursor{display:inline-block; width:7px; height:12px; background:#4dff6f; animation:termBlink 0.5s steps(1) infinite; vertical-align:middle;}
+  @keyframes termBlink{0%,49%{opacity:1;} 50%,100%{opacity:0;}}
+
+  .cutscene-stat-grid{
+    display:none; position:relative; z-index:2; flex-direction:column; gap:5px;
+    background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.3); border-radius:8px;
+    padding:9px 14px; font-family:'Courier New',monospace; font-size:11px;
+  }
+  .cutscene-stat-grid.showing{display:flex;}
+  .cutscene-stat-row{display:flex; justify-content:space-between; gap:18px; color:#fff;}
+  .cutscene-stat-row span{opacity:0.75; letter-spacing:0.5px;}
+  .cutscene-stat-row b{color:var(--cheese); font-weight:900;}
+
+  .cutscene-rank-stamp{
+    position:absolute; top:50%; left:50%; z-index:9; pointer-events:none; opacity:0;
+    font-family:'Baloo 2',cursive; font-size:min(46vw,220px); font-weight:900; color:transparent;
+    -webkit-text-stroke:5px #fff; text-stroke:5px #fff;
+    filter:drop-shadow(0 0 30px rgba(255,60,60,0.9));
+    transform:translate(-50%,-50%) scale(3) rotate(-18deg);
+  }
+  .cutscene-rank-stamp.firing{animation:rankStampSlam 0.55s cubic-bezier(.2,.9,.25,1) forwards;}
+  @keyframes rankStampSlam{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(3) rotate(-18deg);}
+    55%{opacity:1; transform:translate(-50%,-50%) scale(0.92) rotate(-8deg);}
+    70%{transform:translate(-50%,-50%) scale(1.05) rotate(-10deg);}
+    100%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(-10deg);}
+  }
+  .cutscene-glitch{animation:cutsceneGlitchText 0.35s steps(4,end);}
+  @keyframes cutsceneGlitchText{
+    0%{text-shadow:-3px 0 #ff2d55, 3px 0 #2dd8ff, 2px 2px 0 var(--ink);}
+    25%{text-shadow:3px 1px #ff2d55, -3px -1px #2dd8ff, 2px 2px 0 var(--ink); transform:translateX(-2px);}
+    50%{text-shadow:-2px -1px #ff2d55, 2px 1px #2dd8ff, 2px 2px 0 var(--ink); transform:translateX(2px);}
+    75%{text-shadow:2px 0 #ff2d55, -2px 0 #2dd8ff, 2px 2px 0 var(--ink); transform:translateX(-1px);}
+    100%{text-shadow:0 0 18px rgba(246,196,69,0.85), 2px 2px 0 var(--ink); transform:translateX(0);}
+  }
+
+  /* ---------- MOVE-THEMED CUTSCENE OVERLAY FX (layered on top of the reveal) ---------- */
+  .cs-slash-wrap{
+    position:absolute; top:50%; left:50%; pointer-events:none; z-index:6;
+    transform-origin:center; transform:translate(-50%,-50%) rotate(var(--cs-angle,-30deg));
+  }
+  .cs-slash-layer{
+    position:absolute; top:50%; left:0; width:150vmax; margin-left:-75vmax; border-radius:8px;
+    transform:translateY(-50%) scaleX(0); opacity:0;
+  }
+  .cs-slash-layer.glow{ height:26px; filter:blur(9px); background:linear-gradient(90deg, transparent, var(--cs-color,#e63946) 30%, var(--cs-color,#e63946) 70%, transparent); }
+  .cs-slash-layer.mid{ height:10px; background:linear-gradient(90deg, transparent, var(--cs-color,#e63946) 18%, var(--cs-color,#e63946) 82%, transparent); box-shadow:0 0 22px var(--cs-color,#e63946); }
+  .cs-slash-layer.core{ height:3px; background:linear-gradient(90deg, transparent, #fff 10%, #fff 90%, transparent); box-shadow:0 0 12px #fff, 0 0 28px var(--cs-color,#e63946); }
+  .cs-slash-wrap.firing .cs-slash-layer{animation:csSlashSweep 0.42s cubic-bezier(.15,.75,.25,1) forwards;}
+  .cs-slash-wrap.firing .cs-slash-layer.glow{animation-duration:0.5s;}
+  @keyframes csSlashSweep{
+    0%{opacity:0; transform:translateY(-50%) scaleX(0);}
+    18%{opacity:1; transform:translateY(-50%) scaleX(1);}
+    100%{opacity:0; transform:translateY(-50%) scaleX(1);}
+  }
+  .cs-glint{
+    position:absolute; top:50%; left:50%; width:16px; height:16px; margin:-8px 0 0 -8px;
+    pointer-events:none; z-index:7; border-radius:50%; opacity:0;
+    background:radial-gradient(circle, #fff 0%, rgba(255,255,255,0.6) 40%, transparent 75%);
+  }
+  .cs-glint.firing{animation:csGlintPop 0.18s ease-out forwards;}
+  @keyframes csGlintPop{ 0%{opacity:0; transform:scale(0.3);} 50%{opacity:1; transform:scale(1.6);} 100%{opacity:0; transform:scale(2.2);} }
+  .cs-spark{
+    position:absolute; top:50%; left:50%; font-size:16px; pointer-events:none; z-index:6; opacity:0;
+  }
+  .cs-spark.firing{animation:csSparkBurst 0.4s ease-out forwards;}
+  @keyframes csSparkBurst{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(0.4);}
+    30%{opacity:1;}
+    100%{opacity:0; transform:translate(calc(-50% + var(--spx)), calc(-50% + var(--spy))) scale(1.1);}
+  }
+  .cs-fire{
+    position:absolute; bottom:-8%; font-size:44px; pointer-events:none; z-index:6; opacity:0;
+    filter:drop-shadow(0 0 10px rgba(255,120,20,0.8));
+  }
+  .cs-fire.firing{animation:csFireRise 1s ease-out forwards;}
+  @keyframes csFireRise{
+    0%{opacity:0; transform:translateY(0) scale(0.6) rotate(0deg);}
+    25%{opacity:1;}
+    100%{opacity:0; transform:translateY(-70vh) scale(1.5) rotate(14deg);}
+  }
+  .cs-frost-shard{
+    position:absolute; top:-8%; font-size:30px; pointer-events:none; z-index:6; opacity:0;
+    filter:drop-shadow(0 0 8px rgba(160,210,255,0.9));
+  }
+  .cs-frost-shard.firing{animation:csFrostFall 1.1s ease-in forwards;}
+  @keyframes csFrostFall{
+    0%{opacity:0; transform:translateY(0) rotate(0deg);}
+    20%{opacity:1;}
+    100%{opacity:0; transform:translateY(85vh) rotate(160deg);}
+  }
+  .cs-frost-flash{
+    position:absolute; inset:0; pointer-events:none; z-index:5; opacity:0;
+    background:radial-gradient(circle at 50% 50%, rgba(180,225,255,0.5), transparent 70%);
+  }
+  .cs-frost-flash.firing{animation:csFrostFlashPulse 0.6s ease-out forwards;}
+  @keyframes csFrostFlashPulse{ 0%{opacity:0;} 30%{opacity:1;} 100%{opacity:0;} }
+  .cs-ring{
+    position:absolute; top:50%; left:50%; border-radius:50%; pointer-events:none; z-index:6;
+    border:5px solid var(--cs-color,#fff); transform:translate(-50%,-50%) scale(0.15); opacity:0.9;
+  }
+  .cs-ring.firing{animation:csRingExpand 0.7s ease-out forwards;}
+  @keyframes csRingExpand{
+    0%{transform:translate(-50%,-50%) scale(0.1); opacity:0.9;}
+    100%{transform:translate(-50%,-50%) scale(6); opacity:0;}
+  }
+  .cs-drip{
+    position:absolute; top:-6%; width:8px; border-radius:0 0 6px 6px; pointer-events:none; z-index:6;
+    background:linear-gradient(180deg, var(--cs-color,#f6c445), transparent); opacity:0;
+  }
+  .cs-drip.firing{animation:csDripFall 1s ease-in forwards;}
+  @keyframes csDripFall{
+    0%{opacity:0; height:0;}
+    20%{opacity:0.95;}
+    100%{opacity:0; height:90vh;}
+  }
+  .cs-puff{
+    position:absolute; top:50%; left:50%; font-size:38px; pointer-events:none; z-index:6; opacity:0;
+  }
+  .cs-puff.firing{animation:csPuffPop 0.85s ease-out forwards;}
+  @keyframes csPuffPop{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(0.3);}
+    30%{opacity:0.95;}
+    100%{opacity:0; transform:translate(calc(-50% + var(--px)), calc(-50% + var(--py))) scale(1.6);}
+  }
+  .cs-flashbang{
+    position:absolute; inset:0; background:#fff; pointer-events:none; z-index:8; opacity:0;
+  }
+  .cs-flashbang.firing{animation:csFlashBang 0.28s ease-out forwards;}
+  @keyframes csFlashBang{ 0%{opacity:0;} 12%{opacity:0.95;} 100%{opacity:0;} }
+  .impact-frame{
+    position:absolute; inset:0; pointer-events:none; z-index:9; opacity:0;
+    background:rgba(255,255,255,0.3);
+    backdrop-filter:saturate(0) contrast(1.5) brightness(1.15);
+    -webkit-backdrop-filter:saturate(0) contrast(1.5) brightness(1.15);
+  }
+  .impact-frame.firing{animation:impactFrameHold var(--if-ms,90ms) linear forwards;}
+  @keyframes impactFrameHold{
+    0%{opacity:1;}
+    70%{opacity:1;}
+    100%{opacity:0;}
+  }
+  .cs-crack{
+    position:absolute; top:50%; left:50%; height:3px; width:60vmax; pointer-events:none; z-index:7;
+    background:linear-gradient(90deg, transparent, #fff 40%, #fff 60%, transparent);
+    box-shadow:0 0 8px #fff; opacity:0; transform-origin:0 50%;
+    transform:translate(0,-50%) rotate(var(--crack-angle,0deg)) scaleX(0);
+  }
+  .cs-crack.firing{animation:csCrackShoot 0.4s ease-out forwards;}
+  @keyframes csCrackShoot{
+    0%{opacity:0; transform:translate(0,-50%) rotate(var(--crack-angle,0deg)) scaleX(0);}
+    20%{opacity:1;}
+    100%{opacity:0; transform:translate(0,-50%) rotate(var(--crack-angle,0deg)) scaleX(1);}
+  }
+
+  /* ---------- JJK-style geometric "cursed energy" shapes (replace emoji spam) ---------- */
+  .cs-tendril{
+    position:absolute; top:50%; left:50%; width:90px; height:34px; pointer-events:none; z-index:5;
+    border-radius:50% 50% 50% 10%; opacity:0; filter:blur(2px);
+    background:radial-gradient(ellipse at 30% 50%, rgba(20,8,30,0.95), rgba(90,40,140,0.55) 55%, transparent 80%);
+  }
+  .cs-tendril.firing{animation:csTendrilSwirl 1s cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes csTendrilSwirl{
+    0%{opacity:0; transform:translate(-50%,-50%) rotate(var(--tr-rot0,0deg)) scale(0.3);}
+    20%{opacity:0.9;}
+    100%{opacity:0; transform:translate(calc(-50% + var(--tx,0px)), calc(-50% + var(--ty,0px))) rotate(var(--tr-rot1,180deg)) scale(1.6);}
+  }
+  .cs-shard{
+    position:absolute; top:50%; left:50%; width:16px; height:34px; pointer-events:none; z-index:6; opacity:0;
+    background:linear-gradient(160deg, rgba(255,255,255,0.95), rgba(170,210,255,0.55));
+    clip-path:polygon(50% 0%, 100% 35%, 70% 100%, 30% 100%, 0% 35%);
+    filter:drop-shadow(0 0 6px rgba(180,220,255,0.8));
+  }
+  .cs-shard.firing{animation:csShardFall 1s cubic-bezier(.4,0,.6,1) forwards;}
+  @keyframes csShardFall{
+    0%{opacity:0; transform:translate(-50%,-50%) rotate(0deg);}
+    15%{opacity:1;}
+    100%{opacity:0; transform:translate(calc(-50% + var(--shx,0px)), calc(-50% + var(--shy,80vh))) rotate(var(--shrot,200deg));}
+  }
+  .cs-ink{
+    position:absolute; top:50%; left:50%; width:46px; height:32px; pointer-events:none; z-index:6; opacity:0;
+    background:radial-gradient(ellipse at center, rgba(10,4,18,0.95), rgba(10,4,18,0.5) 60%, transparent 80%);
+    clip-path:polygon(20% 0%, 55% 10%, 80% 0%, 100% 30%, 90% 60%, 100% 90%, 65% 100%, 40% 85%, 10% 100%, 0% 60%, 15% 35%);
+  }
+  .cs-ink.firing{animation:csInkSplat 0.6s ease-out forwards;}
+  @keyframes csInkSplat{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(0.2);}
+    30%{opacity:0.85;}
+    100%{opacity:0; transform:translate(-50%,-50%) scale(1.5);}
+  }
+  .cs-barrier{
+    position:absolute; top:50%; left:50%; pointer-events:none; z-index:4; opacity:0;
+    width:60px; height:60px; margin:-30px 0 0 -30px;
+    clip-path:polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+    border:2px solid rgba(180,120,255,0.9);
+    box-shadow:0 0 24px rgba(140,70,230,0.8), inset 0 0 30px rgba(140,70,230,0.4);
+    background:repeating-conic-gradient(from 0deg, rgba(140,70,230,0.12) 0deg 15deg, transparent 15deg 30deg);
+  }
+  .cs-barrier.firing{animation:csBarrierExpand 0.9s cubic-bezier(.2,.75,.25,1) forwards;}
+  @keyframes csBarrierExpand{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(0.2) rotate(0deg);}
+    30%{opacity:1;}
+    100%{opacity:0; transform:translate(-50%,-50%) scale(13) rotate(35deg);}
+  }
+  .cs-smoke{
+    position:absolute; bottom:0; font-size:32px; pointer-events:none; z-index:5; opacity:0; filter:blur(1px);
+  }
+  .cs-smoke.firing{animation:csSmokeDrift 1.4s ease-out forwards;}
+  @keyframes csSmokeDrift{
+    0%{opacity:0; transform:translateY(0) scale(0.5);}
+    25%{opacity:0.5;}
+    100%{opacity:0; transform:translateY(-90vh) translateX(var(--sx,20px)) scale(2.2);}
+  }
+  .cs-zap{
+    position:absolute; top:50%; left:50%; font-size:34px; pointer-events:none; z-index:7; opacity:0;
+  }
+  .cs-zap.firing{animation:csZapFlicker 0.5s steps(2,end) forwards;}
+  @keyframes csZapFlicker{
+    0%{opacity:0; transform:translate(calc(-50% + var(--zx)), calc(-50% + var(--zy))) scale(0.6);}
+    15%{opacity:1;} 30%{opacity:0.2;} 45%{opacity:1;} 70%{opacity:0.3;}
+    100%{opacity:0; transform:translate(calc(-50% + var(--zx)), calc(-50% + var(--zy))) scale(1.3);}
+  }
+  .cs-splash{
+    position:absolute; bottom:0; font-size:20px; pointer-events:none; z-index:6; opacity:0;
+  }
+  .cs-splash.firing{animation:csSplashPop 0.5s ease-out forwards;}
+  @keyframes csSplashPop{
+    0%{opacity:0; transform:translate(-50%,0) scale(0.4);}
+    30%{opacity:1;}
+    100%{opacity:0; transform:translate(calc(-50% + var(--sx,0px)), -60px) scale(1.2);}
+  }
+
   footer{text-align:center; font-size:10.5px; color:var(--wood-dark); margin-top:26px; opacity:0.75;}
 
   /* ---------- SUMMON TAB ---------- */
@@ -1020,28 +1289,128 @@
   .odds-note{font-size:10.5px; color:var(--wood-dark); text-align:center; max-width:360px;}
   .pity-note{font-size:9.5px; color:var(--royal); font-weight:800; text-align:center; max-width:360px; margin-top:2px;}
 
-  /* ---------- COOKING SUMMON ANIMATION ---------- */
+  /* ---------- COOKING SUMMON ANIMATION (full-screen) ---------- */
   .cook-stage{
-    display:none; flex-direction:column; align-items:center; gap:10px; min-height:120px; justify-content:center;
+    display:none; position:fixed; inset:0; z-index:150; flex-direction:column;
+    align-items:center; justify-content:center; gap:22px; padding:20px;
+    background:radial-gradient(circle at 50% 50%, rgba(70,45,10,0.94), rgba(8,5,2,0.98));
   }
-  .cook-pot{
-    position:relative; font-size:64px; width:100px; height:100px;
+  .cook-scene{position:relative; width:150px; height:110px; transform:scale(2.3);}
+  .cook-scene > div{display:none;}
+  .cook-scene > div.showing{display:block;}
+
+  /* Common: Pan-Frying — a real pan over a stove, food sizzling, oil popping */
+  .cook-scene-fry{position:relative; width:100%; height:100%;}
+  .fry-stove-glow{
+    position:absolute; left:50%; bottom:14px; width:70px; height:14px; border-radius:50%;
+    background:radial-gradient(circle, rgba(230,120,40,0.75), transparent 70%);
+    transform:translateX(-50%); animation:stoveFlicker 0.5s ease-in-out infinite;
+  }
+  @keyframes stoveFlicker{0%,100%{opacity:0.7;} 50%{opacity:1;}}
+  .fry-pan{
+    position:absolute; left:50%; bottom:20px; width:88px; height:22px; border-radius:50%;
+    background:linear-gradient(180deg, #4a4a4a, #2a2a2a); border:2px solid #1a1a1a;
+    transform:translateX(-50%); animation:panShake 0.4s ease-in-out infinite;
+  }
+  @keyframes panShake{0%,100%{transform:translateX(-50%) rotate(0deg);} 50%{transform:translateX(-50%) rotate(1.5deg);}}
+  .fry-pan-handle{
+    position:absolute; right:-34px; top:6px; width:38px; height:7px; border-radius:4px;
+    background:linear-gradient(180deg, #5a4632, #3a2c1c);
+  }
+  .fry-food{
+    position:absolute; left:50%; top:-16px; font-size:26px; transform:translateX(-50%);
+    animation:frySizzle 0.35s ease-in-out infinite;
+  }
+  @keyframes frySizzle{0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-4px);}}
+
+  /* Rare: Grilling — grate with char marks, flames underneath, smoke */
+  .cook-scene-grill{position:relative; width:100%; height:100%;}
+  .grill-food{
+    position:absolute; left:50%; bottom:38px; font-size:30px; transform:translateX(-50%);
+    animation:grillSizzle 0.4s ease-in-out infinite; z-index:2;
+  }
+  @keyframes grillSizzle{0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(-3px);}}
+  .grill-grate{
+    position:absolute; left:50%; bottom:30px; width:92px; height:14px; transform:translateX(-50%);
+    background:repeating-linear-gradient(90deg, #2a2a2a 0 6px, transparent 6px 14px);
+    border-top:3px solid #1a1a1a; z-index:1;
+  }
+  .grill-flames{position:absolute; left:50%; bottom:2px; transform:translateX(-50%); display:flex; gap:10px;}
+  .grill-flames span{font-size:20px; animation:flameFlicker 0.3s ease-in-out infinite alternate;}
+  .grill-flames span:nth-child(2){animation-delay:0.1s;}
+  .grill-flames span:nth-child(3){animation-delay:0.2s;}
+  @keyframes flameFlicker{0%{transform:scaleY(1) translateY(0);} 100%{transform:scaleY(1.25) translateY(-3px);}}
+
+  /* Epic: Baking — an oven with a glowing window, heat shimmer rising */
+  .cook-scene-oven{position:relative; width:100%; height:100%;}
+  .oven-body{
+    position:absolute; left:50%; bottom:6px; width:96px; height:80px; border-radius:10px;
+    background:linear-gradient(180deg, #8a5a3b, #5f3c24); border:3px solid #3a230f; transform:translateX(-50%);
+  }
+  .oven-window{
+    position:relative; margin:14px auto 0; width:60px; height:44px; border-radius:8px;
+    background:#1a0f08; border:3px solid #2a1a0c; overflow:hidden;
     display:flex; align-items:center; justify-content:center;
   }
-  .cook-pot > *{position:relative; z-index:1;}
-  .cook-pot.cook-common{animation:cookBounceCommon 0.5s ease-in-out infinite;}
-  .cook-pot.cook-rare{animation:cookBounceRare 0.45s ease-in-out infinite; filter:drop-shadow(0 0 10px rgba(79,143,209,0.6));}
-  .cook-pot.cook-epic{animation:cookBounceEpic 0.4s ease-in-out infinite; filter:drop-shadow(0 0 14px rgba(155,111,201,0.65));}
-  .cook-pot.cook-legend{animation:cookBounceLegend 0.35s ease-in-out infinite; filter:drop-shadow(0 0 20px rgba(232,185,59,0.75));}
-  .cook-pot.cook-ultra{animation:cookBounceUltra 0.3s ease-in-out infinite; filter:drop-shadow(0 0 26px rgba(230,57,70,0.85));}
-  @keyframes cookBounceCommon{0%,100%{transform:translateY(0) rotate(0);} 50%{transform:translateY(-6px) rotate(-3deg);}}
-  @keyframes cookBounceRare{0%,100%{transform:translateY(0) rotate(0);} 50%{transform:translateY(-10px) rotate(4deg);}}
-  @keyframes cookBounceEpic{0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-14px) scale(1.08) rotate(-5deg);}}
-  @keyframes cookBounceLegend{0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-18px) scale(1.16) rotate(6deg);}}
-  @keyframes cookBounceUltra{0%,100%{transform:translateY(0) scale(1) rotate(0);} 50%{transform:translateY(-22px) scale(1.22) rotate(-8deg);}}
-  .cook-label{font-family:'Baloo 2',cursive; font-size:13px; color:var(--wood-dark);}
-  .cook-label.cook-legend-label{color:var(--cheese-dark);}
-  .cook-stage-name{font-family:'Baloo 2',cursive; font-size:12.5px; font-weight:700; color:var(--wood-dark); margin-bottom:2px;}
+  .oven-glow{
+    position:absolute; inset:0; background:radial-gradient(circle, rgba(255,150,40,0.9), rgba(200,60,20,0.5) 70%);
+    animation:ovenPulse 0.6s ease-in-out infinite;
+  }
+  @keyframes ovenPulse{0%,100%{opacity:0.7;} 50%{opacity:1;}}
+  .oven-food{position:relative; z-index:1; font-size:20px; filter:drop-shadow(0 0 4px rgba(255,200,100,0.9));}
+  .oven-knob{position:absolute; right:10px; bottom:8px; width:10px; height:10px; border-radius:50%; background:#2a1a0c;}
+  .oven-heat-lines{position:absolute; left:50%; top:-6px; transform:translateX(-50%); display:flex; gap:14px;}
+  .oven-heat-lines span{
+    display:block; width:3px; height:22px; border-radius:2px;
+    background:linear-gradient(180deg, transparent, rgba(255,170,90,0.8));
+    animation:heatRise 0.7s ease-in-out infinite;
+  }
+  .oven-heat-lines span:nth-child(2){animation-delay:0.15s;}
+  .oven-heat-lines span:nth-child(3){animation-delay:0.3s;}
+  @keyframes heatRise{0%,100%{transform:translateY(0) scaleY(1); opacity:0.4;} 50%{transform:translateY(-10px) scaleY(1.3); opacity:0.9;}}
+
+  /* Legendary: Royal Roasting — a spit turning over open flame */
+  .cook-scene-spit{position:relative; width:100%; height:100%;}
+  .spit-flames{position:absolute; left:50%; bottom:6px; transform:translateX(-50%); display:flex; gap:12px;}
+  .spit-flames span{font-size:24px; animation:flameFlicker 0.28s ease-in-out infinite alternate;}
+  .spit-flames span:nth-child(2){animation-delay:0.1s;}
+  .spit-flames span:nth-child(3){animation-delay:0.2s;}
+  .spit-rod{
+    position:absolute; left:12px; right:12px; top:38px; height:4px;
+    background:linear-gradient(90deg, #6a6a6a, #ccc, #6a6a6a); border-radius:2px;
+  }
+  .spit-roast{
+    position:absolute; left:50%; top:50%; font-size:34px; transform:translate(-50%,-50%);
+    animation:spitTurn 0.9s linear infinite; filter:drop-shadow(0 0 10px rgba(246,196,69,0.8));
+  }
+  @keyframes spitTurn{0%{transform:translate(-50%,-50%) rotateY(0deg);} 100%{transform:translate(-50%,-50%) rotateY(360deg);}}
+
+  /* Secret/Ultra: Flambéing — a dramatic flame whoosh over the pan */
+  .cook-scene-flambe{position:relative; width:100%; height:100%;}
+  .flambe-pan{
+    position:absolute; left:50%; bottom:14px; width:80px; height:20px; border-radius:50%;
+    background:linear-gradient(180deg, #4a4a4a, #2a2a2a); border:2px solid #1a1a1a; transform:translateX(-50%);
+  }
+  .flambe-food{
+    position:absolute; left:50%; bottom:34px; font-size:24px; transform:translateX(-50%); z-index:1;
+  }
+  .flambe-flame{
+    position:absolute; left:50%; bottom:26px; font-size:46px; transform:translateX(-50%) scale(0.7);
+    animation:flambeWhoosh 0.5s ease-in-out infinite; filter:drop-shadow(0 0 16px rgba(255,110,20,0.9));
+  }
+  @keyframes flambeWhoosh{
+    0%,100%{transform:translateX(-50%) scale(0.7) translateY(0); opacity:0.85;}
+    50%{transform:translateX(-50%) scale(1.25) translateY(-16px); opacity:1;}
+  }
+  .flambe-bottle{
+    position:absolute; right:6px; top:6px; font-size:22px; transform-origin:bottom left;
+    animation:bottleTilt 1.1s ease-in-out infinite;
+  }
+  @keyframes bottleTilt{0%,100%{transform:rotate(0deg);} 50%{transform:rotate(-35deg);}}
+
+  .cook-label{font-family:'Baloo 2',cursive; font-size:16px; color:#f0e4cc; text-align:center; max-width:80vw; text-shadow:1px 1px 0 rgba(0,0,0,0.5);}
+  .cook-label.cook-legend-label{color:var(--cheese);}
+  .cook-stage-name{font-family:'Baloo 2',cursive; font-size:18px; font-weight:700; color:#fff; margin-bottom:6px; text-shadow:1px 1px 0 rgba(0,0,0,0.6);}
 
   .reveal-wrap{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:6px;}
   .reveal-card{
@@ -1266,7 +1635,7 @@
   <!-- ===== BATTLE PANEL (turn-based) ===== -->
   <div class="panel" id="panel-battle">
     <div class="section-label">BOSS BATTLE</div>
-    <div class="battle-area">
+    <div class="battle-area" id="battleArea">
       <div class="battle-area-pulse" id="battleAreaPulse"></div>
       <div class="stage-tag" id="stageTag">Cycle 1 · Stage 1 of 8</div>
       <button class="team-select-btn" id="openTeamSelectBtn">🛡️ Select Team (<span id="teamCountLabel">0/15</span>)</button>
@@ -1334,7 +1703,45 @@
       <div class="pity-note" id="pityNote">Pity: Epic guaranteed in 15 pulls · Legendary guaranteed in 50 pulls</div>
       <div class="cook-stage" id="cookStage">
         <div class="cook-stage-name" id="cookStageName">🍳 Pan-Frying</div>
-        <div class="cook-pot" id="cookPot"><span id="cookPotEmoji">🍳</span></div>
+        <div class="cook-scene" id="cookScene">
+          <!-- Common: Pan-Frying -->
+          <div class="cook-scene-fry" id="cookSceneFry">
+            <div class="fry-stove-glow"></div>
+            <div class="fry-pan">
+              <div class="fry-pan-handle"></div>
+              <span class="fry-food" id="fryFoodEmoji">🥯</span>
+            </div>
+          </div>
+          <!-- Rare: Grilling -->
+          <div class="cook-scene-grill" id="cookSceneGrill">
+            <span class="grill-food" id="grillFoodEmoji">🍔</span>
+            <div class="grill-grate"></div>
+            <div class="grill-flames"><span>🔥</span><span>🔥</span><span>🔥</span></div>
+          </div>
+          <!-- Epic: Baking -->
+          <div class="cook-scene-oven" id="cookSceneOven">
+            <div class="oven-heat-lines"><span></span><span></span><span></span></div>
+            <div class="oven-body">
+              <div class="oven-window"><div class="oven-glow"></div><span class="oven-food" id="ovenFoodEmoji">🍞</span></div>
+              <div class="oven-knob"></div>
+            </div>
+          </div>
+          <!-- Legend: Royal Roasting -->
+          <div class="cook-scene-spit" id="cookSceneSpit">
+            <div class="spit-flames"><span>🔥</span><span>🔥</span><span>🔥</span></div>
+            <div class="spit-rod">
+              <span class="spit-roast" id="spitRoastEmoji">🍗</span>
+            </div>
+          </div>
+          <!-- Ultra/Secret: Flambéing -->
+          <div class="cook-scene-flambe" id="cookSceneFlambe">
+            <div class="flambe-flame">🔥</div>
+            <div class="flambe-pan">
+              <span class="flambe-food" id="flambeFoodEmoji">🥩</span>
+            </div>
+            <span class="flambe-bottle">🍾</span>
+          </div>
+        </div>
         <div class="cook-label" id="cookLabel">Grilling up something...</div>
       </div>
       <div class="reveal-wrap" id="revealWrap"></div>
@@ -1407,6 +1814,12 @@
   <div class="rarity-cutscene rc-ultra" id="battleCutscene">
     <div class="cutscene-letterbox top" id="cutsceneLetterboxTop"></div>
     <div class="cutscene-letterbox bottom" id="cutsceneLetterboxBottom"></div>
+    <div class="cutscene-terminal" id="cutsceneTerminal"></div>
+    <div class="cutscene-stat-grid" id="cutsceneStatGrid">
+      <div class="cutscene-stat-row"><span>CRIT CHANCE</span><b id="statCrit">0%</b></div>
+      <div class="cutscene-stat-row"><span>FLAVOR INTENSITY</span><b id="statFlavor">0%</b></div>
+      <div class="cutscene-stat-row"><span>THREAT MULTIPLIER</span><b id="statThreat">x0.0</b></div>
+    </div>
     <div class="cutscene-power-meter" id="cutscenePowerMeter">
       <div class="cutscene-power-label">POWER LEVEL RISING</div>
       <div class="cutscene-power-bar-outer"><div class="cutscene-power-bar-inner" id="cutscenePowerBarInner"></div></div>
@@ -1419,6 +1832,7 @@
       <div class="rarity-cutscene-emoji" id="battleCutsceneEmoji"><span id="battleCutsceneEmojiSpan">🥩</span></div>
       <div class="rarity-cutscene-name" id="battleCutsceneName">Beef Wellington</div>
     </div>
+    <div class="cutscene-rank-stamp" id="cutsceneRankStamp">S</div>
   </div>
 
   <!-- ===== RESET WARNING SCREEN ===== -->
@@ -1488,11 +1902,11 @@
 
   // Cooking summon animation profile per rarity
   const COOK_PROFILES = {
-    common: { icon:"🍳", label:"Frying up a quick bite...",        stage:"🍳 Pan-Frying",   duration:750,  particles:["💨","🧈"],           particleCount:3, spread:26, flashColor:"rgba(156,146,132,0.5)" },
-    rare:   { icon:"🥘", label:"Grilling a rare recipe...",        stage:"🔥 Grilling",     duration:1050, particles:["🔥","💨"],           particleCount:4, spread:32, flashColor:"rgba(79,143,209,0.55)" },
-    epic:   { icon:"🍞", label:"Baking an epic dish in the oven...", stage:"🍞 Baking",      duration:1350, particles:["🔥","✨","💜"],       particleCount:5, spread:38, flashColor:"rgba(155,111,201,0.6)" },
-    legend: { icon:"👑", label:"Roasting in the royal oven...",     stage:"👑 Royal Roasting", duration:1750, particles:["⭐","🎆","👑","✨"], particleCount:7, spread:46, flashColor:"rgba(232,185,59,0.7)" },
-    ultra:  { icon:"👨‍🍳", label:"A master chef flambés something extraordinary...", stage:"🔥 Flambéing", duration:2100, particles:["🔥","💎","✨","🥂"], particleCount:9, spread:52, flashColor:"rgba(228,87,46,0.75)" },
+    common: { scene:"cookSceneFry",    label:"Frying up a quick bite...",        stage:"🍳 Pan-Frying",   duration:750,  particles:["💨","🧈"],           particleCount:3, spread:26, flashColor:"rgba(156,146,132,0.5)" },
+    rare:   { scene:"cookSceneGrill",  label:"Grilling a rare recipe...",        stage:"🔥 Grilling",     duration:1050, particles:["🔥","💨"],           particleCount:4, spread:32, flashColor:"rgba(79,143,209,0.55)" },
+    epic:   { scene:"cookSceneOven",   label:"Baking an epic dish in the oven...", stage:"🍞 Baking",      duration:1350, particles:["🔥","✨","💜"],       particleCount:5, spread:38, flashColor:"rgba(155,111,201,0.6)" },
+    legend: { scene:"cookSceneSpit",   label:"Roasting in the royal oven...",     stage:"👑 Royal Roasting", duration:1750, particles:["⭐","🎆","👑","✨"], particleCount:7, spread:46, flashColor:"rgba(232,185,59,0.7)" },
+    ultra:  { scene:"cookSceneFlambe", label:"A master chef flambés something extraordinary...", stage:"🔥 Flambéing", duration:2100, particles:["🔥","💎","✨","🥂"], particleCount:9, spread:52, flashColor:"rgba(228,87,46,0.75)" },
   };
   function highestRarity(rarities){
     return rarities.reduce((best,r)=> RARITY_RANK[r]>RARITY_RANK[best] ? r : best, "common");
@@ -2649,43 +3063,151 @@
   const LORE_ORIGIN_BY_ROLE = {
     Tank:    ["once stood as a living wall between hungry crowds and the kitchen door",
               "was forged in a kitchen that never once ran out of orders",
-              "learned to take a hit before it ever learned to throw one"],
+              "learned to take a hit before it ever learned to throw one",
+              "spent its early days holding the line so slower dishes could finish cooking",
+              "was built low and heavy, the way nothing tips it over easily",
+              "guarded the pantry through three separate kitchen fires",
+              "never once flinched when the dinner rush hit all at once",
+              "was the last thing standing between the ovens and disaster more than once",
+              "learned patience from being the one everyone else hid behind",
+              "carries scorch marks it never bothered to explain",
+              "was taught that a kitchen only survives if someone volunteers to go first",
+              "held a collapsing shelf up with one arm during its very first shift",
+              "still remembers the exact weight of every tray it's ever blocked for someone"],
     Attack:  ["was sharpened on the griddle's hottest corner",
               "never met a fight it didn't charge headfirst into",
-              "trained by dodging flying spatulas in a kitchen twice its size"],
+              "trained by dodging flying spatulas in a kitchen twice its size",
+              "learned to move fast the day the fryer oil first caught",
+              "was clocked crossing the kitchen faster than any order ever came in",
+              "picked fights with dishes twice its size and mostly won",
+              "keeps a habit of finishing what slower hands started",
+              "was the first one through the door on every single delivery run",
+              "never learned to pace itself, and never needed to",
+              "counts its scars the way other heroes count trophies",
+              "was built for the first strike, not the long game",
+              "learned every shortcut through the kitchen by getting yelled at for using them",
+              "moves like it's still racing the timer on a dish gone wrong"],
     Heal:    ["spent years mending burnt edges and broken spirits alike",
               "kept a whole kitchen standing on nothing but patience and broth",
-              "believes no wound is beyond a little warmth and care"],
+              "believes no wound is beyond a little warmth and care",
+              "learned first aid the hard way, one kitchen accident at a time",
+              "never once left a shift until everyone else was steady on their feet",
+              "keeps a private stash of remedies nobody else knows the recipe for",
+              "was the one every line cook quietly trusted with the bad days",
+              "treats every burn like it's the only one that matters in that moment",
+              "learned that a warm meal fixes more than people give it credit for",
+              "has patched up more heroes than the infirmary ever logged",
+              "carries bandages the way others carry weapons",
+              "was taught to listen first and treat second, always in that order",
+              "never turned away a hero, however small the injury looked"],
     Support: ["learned to read a battle the way a chef reads a ticket rail",
               "rallies the whole line with nothing but presence and timing",
-              "has saved more fights with a well-timed word than a blade"],
+              "has saved more fights with a well-timed word than a blade",
+              "keeps the whole kitchen synced without ever raising its voice",
+              "learned to call out orders before the chaos even started",
+              "was the calm one in every kitchen that ever nearly caught fire",
+              "never fights alone if it can help it, and rarely needs to",
+              "reads a room the way most heroes read a recipe card",
+              "keeps count of every hero's strengths better than they do themselves",
+              "learned that timing a rally right matters more than being the loudest",
+              "was the quiet reason three different kitchens never fell apart",
+              "trades in favors, information, and exactly the right word at the right time",
+              "has never once needed to throw a punch to change a fight"],
   };
   const LORE_FLAVOR_BY_RARITY = {
     common: ["It's the kind of hero every kitchen needs, even if no one writes songs about it.",
              "Not the flashiest name on the menu, but always reliable.",
-             "You won't find it on a plaque, but you'll find it on the front line."],
+             "You won't find it on a plaque, but you'll find it on the front line.",
+             "Nobody remembers when it started, only that it's always been there.",
+             "It shows up on time, does the job, and never once complains.",
+             "There's nothing rare about it, and that's exactly the point.",
+             "It's been overlooked by every scout who ever passed through — their loss.",
+             "Ask anyone who's fought beside it and they'll vouch for it without hesitation."],
     rare:   ["Word of its skill has started to spread beyond its own kitchen.",
              "It's earned a reputation nobody's quite able to explain.",
-             "Regulars ask for it by name now."],
+             "Regulars ask for it by name now.",
+             "It's the kind of hero other heroes quietly study.",
+             "Somewhere along the way, it stopped being a rumor and started being a name.",
+             "It's better than it has any right to be for how little fuss it makes.",
+             "Other kitchens have started asking to borrow it for a shift.",
+             "It's the reason a few scouts keep coming back to the same arena."],
     epic:   ["Chefs three towns over have heard the stories.",
              "Its name shows up in kitchen legend more than kitchen rosters.",
-             "There's a waiting list just to fight alongside it."],
+             "There's a waiting list just to fight alongside it.",
+             "It's been the subject of more than one exaggerated tavern story.",
+             "Every kitchen it's passed through still talks about it.",
+             "It stopped being a secret a long time ago.",
+             "Even the guardians it's faced remember its name afterward.",
+             "It doesn't need an introduction anymore — it just needs an arena."],
     legend: ["Its name is etched somewhere in the old dining hall, if you know where to look.",
              "Some say the recipe books were rewritten because of it.",
-             "It didn't just join the fight for the throne — it became part of the reason it's still worth fighting."],
+             "It didn't just join the fight for the throne — it became part of the reason it's still worth fighting.",
+             "There are heroes who trained their whole lives just to fight beside it once.",
+             "It's less a hero at this point and more a piece of the kingdom's history.",
+             "The old cooks still argue about which of its battles was the greatest.",
+             "Its story gets told at the start of every new hero's first briefing.",
+             "It didn't just survive the old kingdom's fall. It's part of why anyone remembers it fondly."],
     ultra:  ["Few have tasted its work. Fewer still lived to describe it properly.",
              "It doesn't cook for a kitchen. Kitchens are built around it.",
-             "Some dishes are secret. This hero basically is one."],
+             "Some dishes are secret. This hero basically is one.",
+             "It answers to no menu, no ticket rail, and barely to the throne itself.",
+             "There's a reason its name isn't printed anywhere official.",
+             "Chefs who've seen it work stop talking about technique entirely.",
+             "It's less a hero and more a rumor that occasionally shows up to fight.",
+             "Nobody trained it. It simply arrived, fully finished, like it always existed."],
     admin:  ["This one shouldn't exist. And yet, somehow, it always has."],
   };
+  // A proper mulberry32 PRNG — the hand-rolled LCG this used to use had poor
+  // distribution when squeezed through a small modulus and produced far more
+  // duplicate lore than the phrase-pool size should have allowed. This one is
+  // well-tested and verified (empirically) to spread draws far more evenly.
+  function mulberry32(seed){
+    return function(){
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function fnv1aHash(str){
+    let h = 2166136261;
+    for(let i=0;i<str.length;i++){ h = ((h ^ str.charCodeAt(i)) * 16777619) >>> 0; }
+    return h;
+  }
+  // Built once, on first use: assigns every generated hero a (origin, flavor)
+  // combo, using the RNG as a starting point but walking forward to the next
+  // free slot within that hero's own role+rarity group on a collision — so no
+  // two heroes in the same group can ever end up with identical descriptive
+  // text, guaranteed, not just "probably" with a big enough phrase pool.
+  let heroLoreCache = null;
+  function buildHeroLoreCache(){
+    heroLoreCache = {};
+    const usedByGroup = {};
+    HERO_DEFS.forEach(hero=>{
+      if(HERO_LORE[hero.id]) return;
+      const origins = LORE_ORIGIN_BY_ROLE[hero.role] || LORE_ORIGIN_BY_ROLE.Attack;
+      const flavors = LORE_FLAVOR_BY_RARITY[hero.rarity] || LORE_FLAVOR_BY_RARITY.common;
+      const groupKey = hero.role + "|" + hero.rarity;
+      if(!usedByGroup[groupKey]) usedByGroup[groupKey] = new Set();
+      const used = usedByGroup[groupKey];
+      const rng = mulberry32(fnv1aHash(hero.id + "|" + hero.name));
+      let oi = Math.floor(rng() * origins.length);
+      let fi = Math.floor(rng() * flavors.length);
+      const totalCombos = origins.length * flavors.length;
+      let tries = 0;
+      while(used.has(oi + "-" + fi) && tries < totalCombos){
+        fi = (fi + 1) % flavors.length;
+        if(fi === 0) oi = (oi + 1) % origins.length;
+        tries++;
+      }
+      used.add(oi + "-" + fi);
+      heroLoreCache[hero.id] = hero.name + " " + origins[oi] + ". " + flavors[fi];
+    });
+  }
   function getHeroLore(hero){
     if(HERO_LORE[hero.id]) return HERO_LORE[hero.id];
-    let seed = 0;
-    for(let i=0;i<hero.id.length;i++){ seed = (seed*31 + hero.id.charCodeAt(i)) >>> 0; }
-    function pick(arr){ seed = (seed*1103515245 + 12345) >>> 0; return arr[seed % arr.length]; }
-    const origins = LORE_ORIGIN_BY_ROLE[hero.role] || LORE_ORIGIN_BY_ROLE.Attack;
-    const flavors = LORE_FLAVOR_BY_RARITY[hero.rarity] || LORE_FLAVOR_BY_RARITY.common;
-    return hero.name + " " + pick(origins) + ". " + pick(flavors);
+    if(!heroLoreCache) buildHeroLoreCache();
+    return heroLoreCache[hero.id];
   }
   // A short teaser cut from the hero's full lore — used in summon reveals where
   // there isn't room for the whole backstory. Breaks at a sentence or word
@@ -2942,8 +3464,7 @@
   const summon10Btn = document.getElementById("summon10Btn");
   const revealWrap = document.getElementById("revealWrap");
   const cookStage = document.getElementById("cookStage");
-  const cookPot = document.getElementById("cookPot");
-  const cookPotEmoji = document.getElementById("cookPotEmoji");
+  const cookScene = document.getElementById("cookScene");
   const cookLabel = document.getElementById("cookLabel");
   const cookStageName = document.getElementById("cookStageName");
   const pityNote = document.getElementById("pityNote");
@@ -2967,6 +3488,12 @@
   const cutscenePowerBarInner = document.getElementById("cutscenePowerBarInner");
   const cutscenePowerNumber = document.getElementById("cutscenePowerNumber");
   const cutsceneQuote = document.getElementById("cutsceneQuote");
+  const cutsceneTerminal = document.getElementById("cutsceneTerminal");
+  const cutsceneStatGrid = document.getElementById("cutsceneStatGrid");
+  const statCrit = document.getElementById("statCrit");
+  const statFlavor = document.getElementById("statFlavor");
+  const statThreat = document.getElementById("statThreat");
+  const cutsceneRankStamp = document.getElementById("cutsceneRankStamp");
   const saveBtn = document.getElementById("saveBtn");
   const saveStatus = document.getElementById("saveStatus");
   const resetBtn = document.getElementById("resetBtn");
@@ -2974,6 +3501,7 @@
   const stageTag = document.getElementById("stageTag");
   const combatRow = document.getElementById("combatRow");
   const battleAreaPulse = document.getElementById("battleAreaPulse");
+  const battleArea = document.getElementById("battleArea");
   const openTeamSelectBtn = document.getElementById("openTeamSelectBtn");
   const sideQuestBtn = document.getElementById("sideQuestBtn");
   const teamCountLabel = document.getElementById("teamCountLabel");
@@ -3351,6 +3879,23 @@
     container.appendChild(ring);
     setTimeout(()=>ring.remove(), 550);
   }
+  // A few sharp crack lines radiating from the hit point — sized down for the
+  // fighter portrait (not the full-screen cutscene version), giving even
+  // ordinary attacks a sharper "reality fracturing" edge instead of just
+  // round particles and a flash.
+  function spawnHitCracks(container, count, color, sizePx){
+    for(let i=0;i<count;i++){
+      const crack = document.createElement("div");
+      crack.className = "cs-crack firing";
+      crack.style.setProperty("--crack-angle", (i*(360/count) + Math.random()*18-9) + "deg");
+      crack.style.width = sizePx + "px";
+      crack.style.height = "2px";
+      crack.style.background = `linear-gradient(90deg, transparent, ${color} 40%, ${color} 60%, transparent)`;
+      crack.style.boxShadow = `0 0 6px ${color}`;
+      container.appendChild(crack);
+      setTimeout(()=>crack.remove(), 400);
+    }
+  }
   function spawnTrailDot(x, y, color){
     const dot = document.createElement("div");
     dot.className = "trail-dot";
@@ -3688,6 +4233,650 @@
   }
   function wait(ms){ return new Promise(r=>setTimeout(r, ms)); }
 
+  // ---------- MOVE-THEMED CUTSCENE OVERLAY FX ----------
+  // Layered on top of the Phase 4 reveal, matching what the move's own name
+  // actually describes — Michelin Star Cut gets real slashes crossing the
+  // screen, Brandy Flambé gets rising flame, Shaved Truffle Frost gets falling
+  // ice, etc. Detected the same way battle FX picks a theme: by keyword.
+  // Each of the 13 current signature/domain moves gets its OWN dedicated overlay
+  // type — an explicit lookup, not a shared keyword bucket, so no two of them
+  // ever render identically. Any future signature/domain move not in this table
+  // falls back to the keyword matcher below.
+  const CUTSCENE_OVERLAY_OVERRIDE = {
+    "Michelin Star Cut": "slash",
+    "Brandy Flambé": "fire",
+    "Shaved Truffle Frost": "frost",
+    "Black Hole": "void",
+    "Sovereign Slam": "royal",
+    "Triple Sear": "sear",
+    "Earthy Uppercut": "quake",
+    "Scoville Overload": "inferno",
+    "Tangy Squeeze": "drip",
+    "Duxelles Barrage": "barrage",
+    "Butter Poach Siphon": "siphon",
+    "Reduction Strike": "wine",
+    "Death": "reaper",
+  };
+  function cutsceneOverlayType(move){
+    if(CUTSCENE_OVERLAY_OVERRIDE[move.name]) return CUTSCENE_OVERLAY_OVERRIDE[move.name];
+    const n = (move.name || "").toLowerCase();
+    if(/cut|slash|claw/.test(n)) return "slash";
+    if(/flamb|blaze/.test(n)) return "fire";
+    if(/frost|freez|chill|freezer/.test(n)) return "frost";
+    if(/slam|uppercut|strike|barrage/.test(n) && !/frost/.test(n)) return "impact";
+    if(/siphon|reduction|squeeze|drizzle/.test(n)) return "drip";
+    if(/hole|void|death/.test(n)) return "void";
+    return null;
+  }
+  function spawnFlashBang(container){
+    const el = document.createElement("div");
+    el.className = "cs-flashbang firing";
+    container.appendChild(el);
+    setTimeout(()=>el.remove(), 300);
+  }
+  // A single genuinely layered blade slash: a glint of light catches first,
+  // then the blade itself sweeps through as glow+mid+core layers (same
+  // technique as the battle beams), leaving sparks at both ends and a
+  // fading afterimage duplicate trailing a beat behind for motion blur.
+  function fireCutsceneSlash(container, angleDeg, offsetTopPct, color, big){
+    const glint = document.createElement("div");
+    glint.className = "cs-glint firing";
+    glint.style.top = offsetTopPct + "%";
+    container.appendChild(glint);
+    setTimeout(()=>glint.remove(), 220);
+
+    setTimeout(()=>{
+      const scale = big ? 1.5 : 1;
+      const makeWrap = (opacity, delayExtra)=>{
+        const wrap = document.createElement("div");
+        wrap.className = "cs-slash-wrap firing";
+        wrap.style.setProperty("--cs-angle", angleDeg + "deg");
+        wrap.style.top = offsetTopPct + "%";
+        wrap.style.opacity = opacity;
+        wrap.style.transform = `translate(-50%,-50%) rotate(${angleDeg}deg) scale(${scale})`;
+        ["glow","mid","core"].forEach(cls=>{
+          const layer = document.createElement("div");
+          layer.className = "cs-slash-layer " + cls;
+          layer.style.setProperty("--cs-color", color);
+          wrap.appendChild(layer);
+        });
+        container.appendChild(wrap);
+        setTimeout(()=>wrap.remove(), 520);
+      };
+      // faint afterimage fires first (already fading as the real blade lands)
+      makeWrap(0.35, 0);
+      setTimeout(()=> makeWrap(1, 0), 40);
+
+      // impact sparks at both ends of the blade line
+      setTimeout(()=>{
+        const rad = angleDeg * Math.PI / 180;
+        [1,-1].forEach(dir=>{
+          const spark = document.createElement("div");
+          spark.className = "cs-spark firing";
+          spark.textContent = "✨";
+          spark.style.top = offsetTopPct + "%";
+          const dist = 130 * dir * scale;
+          spark.style.setProperty("--spx", Math.cos(rad)*dist + "px");
+          spark.style.setProperty("--spy", Math.sin(rad)*dist + "px");
+          container.appendChild(spark);
+          setTimeout(()=>spark.remove(), 420);
+        });
+      }, 60);
+    }, 90);
+  }
+  function spawnCutsceneSlashes(container, color){
+    const angles = [-32, 14, -6, 24, -18];
+    angles.forEach((angle, i)=>{
+      setTimeout(()=>{
+        fireCutsceneSlash(container, angle, 50 + (i-2)*9, color, false);
+        setTimeout(()=>{
+          const crack = document.createElement("div");
+          crack.className = "cs-crack firing";
+          crack.style.setProperty("--crack-angle", (angle + (Math.random()*40-20)) + "deg");
+          crack.style.top = (50 + (i-2)*9) + "%";
+          container.appendChild(crack);
+          setTimeout(()=>crack.remove(), 450);
+        }, 150);
+      }, i*90);
+    });
+    // a bigger finishing X-cross slash caps the sequence for a proper finisher beat
+    setTimeout(()=>{
+      fireCutsceneSlash(container, -42, 50, "#fff", true);
+      fireCutsceneSlash(container, 42, 50, "#fff", true);
+      spawnImpactFrame(container, 90);
+      shakeScreen();
+    }, angles.length*90 + 140);
+    shakeScreen();
+  }
+  function spawnCutsceneFire(container){
+    // a match-strike glint before the whoosh, then a real impact-frame heat-flash
+    const glint = document.createElement("div");
+    glint.className = "cs-glint firing";
+    glint.style.top = "62%";
+    container.appendChild(glint);
+    setTimeout(()=>glint.remove(), 220);
+    setTimeout(()=> spawnImpactFrame(container, 90), 120);
+    // dark energy tendrils carry the heat instead of a wall of fire emoji
+    for(let i=0;i<9;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-tendril firing";
+        el.style.background = "radial-gradient(ellipse at 30% 50%, rgba(60,10,4,0.95), rgba(230,90,20,0.55) 55%, transparent 80%)";
+        el.style.left = (10 + Math.random()*80) + "%";
+        el.style.top = "70%";
+        const rot = Math.random()*60-30;
+        el.style.setProperty("--tr-rot0", rot + "deg");
+        el.style.setProperty("--tr-rot1", (rot+140) + "deg");
+        el.style.setProperty("--tx", (Math.random()*40-20) + "px");
+        el.style.setProperty("--ty", (-160-Math.random()*80) + "px");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 1050);
+      }, i*70);
+    }
+    // just a couple of literal flame accents for instant readability
+    ["🔥","🔥"].forEach((e,i)=>{
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-fire firing";
+        el.textContent = e;
+        el.style.left = (25 + i*45) + "%";
+        el.style.fontSize = "36px";
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 1100);
+      }, i*160);
+    });
+  }
+  function spawnCutsceneFrost(container){
+    const flash = document.createElement("div");
+    flash.className = "cs-frost-flash firing";
+    container.appendChild(flash);
+    setTimeout(()=>flash.remove(), 650);
+    spawnImpactFrame(container, 130); // the world genuinely holds still as everything freezes
+    // angular ice shards instead of a snowflake-emoji flurry
+    for(let i=0;i<14;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-shard firing";
+        el.style.left = (2 + Math.random()*96) + "%";
+        el.style.top = "-6%";
+        const scale = 0.7 + Math.random()*0.9;
+        el.style.setProperty("--shx", (Math.random()*40-20) + "px");
+        el.style.setProperty("--shy", (75 + Math.random()*15) + "vh");
+        el.style.setProperty("--shrot", (140 + Math.random()*160) + "deg");
+        el.style.transform = `translate(-50%,-50%) scale(${scale})`;
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 1150);
+      }, i*40);
+    }
+    // radiating ice cracks from the center, matching a shattering-glass look
+    [0, 45, 90, 135, 180, 225, 270, 315].forEach((angle, i)=>{
+      setTimeout(()=>{
+        const crack = document.createElement("div");
+        crack.className = "cs-crack firing";
+        crack.style.setProperty("--crack-angle", angle + "deg");
+        crack.style.top = "50%";
+        crack.style.width = "42vmax";
+        container.appendChild(crack);
+        setTimeout(()=>crack.remove(), 450);
+      }, 120 + i*30);
+    });
+  }
+  function spawnCutsceneImpact(container, color){
+    spawnImpactFrame(container, 100);
+    [0, 110, 220, 330, 440].forEach((delay, i)=>{
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-ring firing";
+        el.style.setProperty("--cs-color", i%2===0 ? color : "#fff");
+        el.style.width = "18px"; el.style.height = "18px";
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 750);
+      }, delay);
+    });
+    // angular debris shards flying outward instead of emoji rubble
+    for(let i=0;i<10;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-shard firing";
+        el.style.background = "linear-gradient(160deg, rgba(200,200,200,0.95), rgba(90,90,90,0.6))";
+        el.style.width = "10px"; el.style.height = "18px";
+        const angle = Math.random()*Math.PI*2;
+        const dist = 90 + Math.random()*130;
+        el.style.setProperty("--shx", Math.cos(angle)*dist + "px");
+        el.style.setProperty("--shy", Math.sin(angle)*dist + "px");
+        el.style.setProperty("--shrot", (Math.random()*360) + "deg");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 500);
+      }, 100 + i*30);
+    }
+    [0, 51, 102, 154, 205, 257, 308].forEach((angle, i)=>{
+      setTimeout(()=>{
+        const crack = document.createElement("div");
+        crack.className = "cs-crack firing";
+        crack.style.setProperty("--crack-angle", angle + "deg");
+        crack.style.top = "50%";
+        crack.style.width = "48vmax";
+        container.appendChild(crack);
+        setTimeout(()=>crack.remove(), 450);
+      }, 140 + i*20);
+    });
+    shakeScreen();
+  }
+  function spawnCutsceneDrip(container, color){
+    for(let i=0;i<12;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-drip firing";
+        const leftPct = 4 + Math.random()*92;
+        el.style.left = leftPct + "%";
+        el.style.width = (5 + Math.random()*6) + "px";
+        el.style.setProperty("--cs-color", color);
+        container.appendChild(el);
+        setTimeout(()=>{
+          el.remove();
+          // an ink-blot splatter instead of a water-droplet emoji
+          const splat = document.createElement("div");
+          splat.className = "cs-ink firing";
+          splat.style.background = `radial-gradient(ellipse at center, ${color}, transparent 75%)`;
+          splat.style.left = leftPct + "%";
+          splat.style.top = "94%";
+          container.appendChild(splat);
+          setTimeout(()=>splat.remove(), 600);
+          // a small ripple ring at each landing point
+          const ring = document.createElement("div");
+          ring.className = "cs-ring firing";
+          ring.style.setProperty("--cs-color", color);
+          ring.style.top = "94%"; ring.style.left = leftPct + "%";
+          ring.style.width = "10px"; ring.style.height = "10px";
+          container.appendChild(ring);
+          setTimeout(()=>ring.remove(), 500);
+        }, 950);
+      }, i*85);
+    }
+  }
+  function spawnCutscenePuff(container){
+    spawnImpactFrame(container, 100);
+    // dark swirling cursed-energy tendrils spiraling outward from center —
+    // the signature JJK "void" look — instead of a burst of playful emoji
+    for(let i=0;i<12;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-tendril firing";
+        const angle = (i/12)*Math.PI*2;
+        const dist = 90 + Math.random()*110;
+        const rot0 = (angle*180/Math.PI);
+        el.style.setProperty("--tr-rot0", rot0 + "deg");
+        el.style.setProperty("--tr-rot1", (rot0+220) + "deg");
+        el.style.setProperty("--tx", Math.cos(angle)*dist + "px");
+        el.style.setProperty("--ty", Math.sin(angle)*dist + "px");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 1050);
+      }, i*40);
+    }
+    for(let i=0;i<5;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-zap firing";
+        el.textContent = "⚡";
+        const angle = Math.random()*Math.PI*2;
+        const dist = 60 + Math.random()*160;
+        el.style.setProperty("--zx", Math.cos(angle)*dist + "px");
+        el.style.setProperty("--zy", Math.sin(angle)*dist + "px");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 550);
+      }, i*90);
+    }
+  }
+  // Anime-style "power surging" visuals for the charge-up phase: lines radiating
+  // outward from center, and crackling energy arcs snapping around the portrait.
+  function spawnSpeedLines(container, count){
+    for(let i=0;i<count;i++){
+      const el = document.createElement("div");
+      el.className = "cs-speedline firing";
+      el.style.setProperty("--sl-angle", (i * (360/count) + Math.random()*10) + "deg");
+      container.appendChild(el);
+      setTimeout(()=>el.remove(), 600);
+    }
+  }
+  function spawnEnergyArcs(container, count){
+    for(let i=0;i<count;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-arc firing";
+        el.textContent = "⚡";
+        const angle = Math.random()*Math.PI*2;
+        const dist = 60 + Math.random()*50;
+        el.style.setProperty("--ax", Math.cos(angle)*dist + "px");
+        el.style.setProperty("--ay", Math.sin(angle)*dist + "px");
+        el.style.setProperty("--arot", (Math.random()*360-180) + "deg");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 450);
+      }, i*70);
+    }
+  }
+  // A completely unnecessary fake diagnostic terminal that types itself out
+  // letter by letter before every signature/domain move — pure theater.
+  const TERMINAL_LINES = [
+    "> SCANNING THREAT LEVEL...",
+    "> FLAVOR DATABASE ACCESSED",
+    "> WEAKNESS PROTOCOL ENGAGED",
+    "> CALIBRATING SPICE OUTPUT...",
+    "> THREAT NEUTRALIZATION: ARMED",
+  ];
+  async function playTerminalScan(){
+    cutsceneTerminal.textContent = "";
+    cutsceneTerminal.classList.add("showing");
+    const lines = TERMINAL_LINES.slice(0, 3 + Math.floor(Math.random()*2));
+    let built = "";
+    for(const line of lines){
+      for(let i=0;i<line.length;i++){
+        built += line[i];
+        cutsceneTerminal.innerHTML = built + '<span class="term-cursor"></span>';
+        await wait(9);
+      }
+      built += "\n";
+      await wait(70);
+    }
+    await wait(220);
+    cutsceneTerminal.classList.remove("showing");
+  }
+  // A fake stat readout that rapidly randomizes then locks onto an absurd
+  // final value, like a slot machine settling — zero mechanical meaning.
+  function playStatGridSpin(durationMs){
+    return new Promise(resolve=>{
+      cutsceneStatGrid.classList.add("showing");
+      const spin = setInterval(()=>{
+        statCrit.textContent = Math.floor(Math.random()*100) + "%";
+        statFlavor.textContent = Math.floor(Math.random()*100) + "%";
+        statThreat.textContent = "x" + (Math.random()*20).toFixed(1);
+      }, 45);
+      setTimeout(()=>{
+        clearInterval(spin);
+        statCrit.textContent = (92 + Math.floor(Math.random()*8)) + "%";
+        statFlavor.textContent = "MAX";
+        statThreat.textContent = "x" + (9 + Math.random()*8).toFixed(1);
+        setTimeout(()=>{
+          cutsceneStatGrid.classList.remove("showing");
+          resolve();
+        }, 350);
+      }, durationMs);
+    });
+  }
+  // A full screen-shatter — many more crack lines than a normal impact, radiating
+  // irregularly like the whole screen is a pane of glass about to give way.
+  function spawnScreenShatter(container){
+    const angles = [12,38,71,95,124,151,183,207,234,261,289,312,338,5];
+    angles.forEach((angle, i)=>{
+      setTimeout(()=>{
+        const crack = document.createElement("div");
+        crack.className = "cs-crack firing";
+        crack.style.setProperty("--crack-angle", angle + "deg");
+        crack.style.top = (48 + Math.random()*4) + "%";
+        crack.style.width = (55 + Math.random()*20) + "vmax";
+        container.appendChild(crack);
+        setTimeout(()=>crack.remove(), 450);
+      }, i*18);
+    });
+  }
+  // A rank grade slams onto the screen like an action-game score stamp —
+  // S for a Signature Move, SSS for a Domain Expansion, because of course.
+  function playRankStamp(grade){
+    return new Promise(resolve=>{
+      cutsceneRankStamp.textContent = grade;
+      cutsceneRankStamp.classList.remove("firing");
+      void cutsceneRankStamp.offsetWidth;
+      cutsceneRankStamp.classList.add("firing");
+      shakeScreen();
+      setTimeout(()=>{
+        cutsceneRankStamp.classList.remove("firing");
+        cutsceneRankStamp.style.opacity = "0";
+        resolve();
+      }, 550);
+    });
+  }
+  // The Domain Expansion barrier — a hexagonal ward expanding outward from the
+  // hero to consume the whole screen, with two more rings following a beat
+  // behind. This is THE genre-defining visual, so it gets real weight.
+  function spawnDomainBarrier(container){
+    [0, 90, 180].forEach((delay, i)=>{
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-barrier firing";
+        if(i>0) el.style.filter = "hue-rotate(" + (i*20) + "deg)";
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 950);
+      }, delay);
+    });
+  }
+  // ---- 8 more dedicated overlay types, one each for Sovereign Slam, Triple
+  // Sear, Earthy Uppercut, Scoville Overload, Duxelles Barrage, Butter Poach
+  // Siphon, Reduction Strike, and Death — so none of the 13 signature/domain
+  // moves shares its finishing visual with any other.
+  function spawnCutsceneRoyal(container){
+    // a crown of gold light descends and radiating gold spikes burst outward
+    spawnImpactFrame(container, 110);
+    const crown = document.createElement("div");
+    crown.className = "cs-glint firing";
+    crown.style.top = "38%";
+    crown.style.background = "radial-gradient(circle, #fff 0%, #f6c445 45%, transparent 75%)";
+    container.appendChild(crown);
+    setTimeout(()=>crown.remove(), 260);
+    [0,45,90,135,180,225,270,315].forEach((angle,i)=>{
+      setTimeout(()=>{
+        const crack = document.createElement("div");
+        crack.className = "cs-crack firing";
+        crack.style.setProperty("--crack-angle", angle + "deg");
+        crack.style.background = "linear-gradient(90deg, transparent, #f6c445 40%, #fff 60%, transparent)";
+        crack.style.boxShadow = "0 0 10px #f6c445";
+        crack.style.top = "50%"; crack.style.width = "50vmax";
+        container.appendChild(crack);
+        setTimeout(()=>crack.remove(), 450);
+      }, i*22);
+    });
+    [0,150,300].forEach(delay=> setTimeout(()=>{
+      const ring = document.createElement("div");
+      ring.className = "cs-ring firing";
+      ring.style.setProperty("--cs-color", "#f6c445");
+      container.appendChild(ring);
+      setTimeout(()=>ring.remove(), 750);
+    }, delay));
+    shakeScreen();
+  }
+  function spawnCutsceneSear(container){
+    // three quick searing streaks land in sequence, each hissing with steam
+    for(let i=0;i<3;i++){
+      setTimeout(()=>{
+        const crack = document.createElement("div");
+        crack.className = "cs-crack firing";
+        crack.style.setProperty("--crack-angle", (-20+i*20) + "deg");
+        crack.style.background = "linear-gradient(90deg, transparent, #e4572e 40%, #fff 60%, transparent)";
+        crack.style.boxShadow = "0 0 10px #e4572e";
+        crack.style.top = (40+i*10) + "%"; crack.style.width = "70vmax"; crack.style.height = "4px";
+        container.appendChild(crack);
+        setTimeout(()=>crack.remove(), 400);
+        const steam = document.createElement("div");
+        steam.className = "cs-tendril firing";
+        steam.style.background = "radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.9), rgba(230,150,120,0.4) 55%, transparent 80%)";
+        steam.style.left = (30+i*20) + "%"; steam.style.top = (40+i*10) + "%";
+        steam.style.setProperty("--tr-rot0","0deg"); steam.style.setProperty("--tr-rot1","60deg");
+        steam.style.setProperty("--tx","10px"); steam.style.setProperty("--ty","-90px");
+        container.appendChild(steam);
+        setTimeout(()=>steam.remove(), 1000);
+        spawnImpactFrame(container, 70);
+      }, i*160);
+    }
+    setTimeout(()=>shakeScreen(), 320);
+  }
+  function spawnCutsceneQuake(container){
+    // the ground itself splits open from below, dust and rock flung upward
+    spawnImpactFrame(container, 110);
+    [250,290,330,10,50].forEach((angle,i)=>{
+      setTimeout(()=>{
+        const crack = document.createElement("div");
+        crack.className = "cs-crack firing";
+        crack.style.setProperty("--crack-angle", angle + "deg");
+        crack.style.background = "linear-gradient(90deg, transparent, #8a5a3b 40%, #fff 60%, transparent)";
+        crack.style.top = "88%"; crack.style.width = "55vmax";
+        container.appendChild(crack);
+        setTimeout(()=>crack.remove(), 450);
+      }, i*30);
+    });
+    for(let i=0;i<9;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-shard firing";
+        el.style.background = "linear-gradient(160deg, rgba(160,120,80,0.95), rgba(90,60,30,0.7))";
+        el.style.left = (20+Math.random()*60) + "%"; el.style.top = "85%";
+        el.style.setProperty("--shx", (Math.random()*60-30) + "px");
+        el.style.setProperty("--shy", (-60-Math.random()*60) + "px");
+        el.style.setProperty("--shrot", (Math.random()*360) + "deg");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 700);
+      }, 80+i*35);
+    }
+    shakeScreen();
+  }
+  function spawnCutsceneInferno(container){
+    // one massive column of heat instead of scattered flames — the whole
+    // screen washes red before it clears
+    spawnImpactFrame(container, 130);
+    const wash = document.createElement("div");
+    wash.className = "cs-frost-flash firing";
+    wash.style.background = "radial-gradient(circle at 50% 60%, rgba(255,90,20,0.6), transparent 75%)";
+    container.appendChild(wash);
+    setTimeout(()=>wash.remove(), 700);
+    for(let i=0;i<10;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-tendril firing";
+        el.style.background = "radial-gradient(ellipse at 30% 50%, rgba(80,10,4,0.95), rgba(255,140,20,0.6) 55%, transparent 80%)";
+        el.style.left = (35+Math.random()*30) + "%"; el.style.top = "80%";
+        const rot = -20+Math.random()*40;
+        el.style.setProperty("--tr-rot0", rot+"deg"); el.style.setProperty("--tr-rot1", (rot+40)+"deg");
+        el.style.setProperty("--tx", (Math.random()*30-15)+"px"); el.style.setProperty("--ty", (-200-Math.random()*100)+"px");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 1050);
+      }, i*45);
+    }
+    setTimeout(()=>shakeScreen(), 100);
+  }
+  function spawnCutsceneBarrage(container){
+    // a rapid scatter of small impacts, not one big hit
+    for(let i=0;i<9;i++){
+      setTimeout(()=>{
+        const ring = document.createElement("div");
+        ring.className = "cs-ring firing";
+        ring.style.setProperty("--cs-color", i%2===0 ? "#8a5a3b" : "#fff");
+        ring.style.left = (20+Math.random()*60) + "%"; ring.style.top = (30+Math.random()*40) + "%";
+        ring.style.width = "10px"; ring.style.height = "10px";
+        container.appendChild(ring);
+        setTimeout(()=>ring.remove(), 500);
+        const dot = document.createElement("div");
+        dot.className = "cs-ink firing";
+        dot.style.background = "radial-gradient(ellipse at center, rgba(60,40,20,0.9), transparent 75%)";
+        dot.style.width = "18px"; dot.style.height = "14px";
+        dot.style.left = ring.style.left; dot.style.top = ring.style.top;
+        container.appendChild(dot);
+        setTimeout(()=>dot.remove(), 450);
+      }, i*55);
+    }
+    setTimeout(()=>{ spawnImpactFrame(container, 90); shakeScreen(); }, 500);
+  }
+  function spawnCutsceneSiphon(container){
+    // a golden vortex draining inward, the opposite pull of the void tendrils
+    spawnImpactFrame(container, 100);
+    for(let i=0;i<12;i++){
+      const el = document.createElement("div");
+      el.className = "vortex-particle";
+      el.textContent = "✨";
+      const angle = Math.random()*Math.PI*2;
+      const dist = 90 + Math.random()*70;
+      el.style.setProperty("--vx", Math.cos(angle)*dist + "px");
+      el.style.setProperty("--vy", Math.sin(angle)*dist + "px");
+      el.style.animationDuration = (500+Math.random()*250) + "ms";
+      el.style.animationDelay = (i*30) + "ms";
+      el.style.color = "#f6c445";
+      container.appendChild(el);
+      setTimeout(()=>el.remove(), 900);
+    }
+    const glow = document.createElement("div");
+    glow.className = "cs-ring firing";
+    glow.style.setProperty("--cs-color", "#f6c445");
+    container.appendChild(glow);
+    setTimeout(()=>glow.remove(), 750);
+    shakeScreen();
+  }
+  function spawnCutsceneWine(container){
+    // dark burgundy ink cascading down instead of a neutral splash
+    for(let i=0;i<8;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-drip firing";
+        el.style.left = (8+Math.random()*84) + "%";
+        el.style.setProperty("--cs-color", "#6b1420");
+        container.appendChild(el);
+        setTimeout(()=>{
+          el.remove();
+          const splat = document.createElement("div");
+          splat.className = "cs-ink firing";
+          splat.style.background = "radial-gradient(ellipse at center, #6b1420, transparent 75%)";
+          splat.style.left = el.style.left; splat.style.top = "90%";
+          container.appendChild(splat);
+          setTimeout(()=>splat.remove(), 600);
+        }, 900);
+      }, i*90);
+    }
+    setTimeout(()=> spawnImpactFrame(container, 90), 200);
+  }
+  function spawnCutsceneReaper(container){
+    // a looming dark shape and reaching black tendrils — stark black & white,
+    // no color at all, distinct from Black Hole's purple void
+    spawnImpactFrame(container, 140);
+    const skull = document.createElement("div");
+    skull.className = "skull-vfx";
+    skull.textContent = "💀";
+    skull.style.position = "absolute"; skull.style.left = "50%"; skull.style.top = "50%";
+    container.appendChild(skull);
+    setTimeout(()=>skull.remove(), 700);
+    for(let i=0;i<8;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-tendril firing";
+        el.style.background = "radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0.98), rgba(20,20,20,0.6) 55%, transparent 80%)";
+        el.style.filter = "none";
+        const angle = (i/8)*Math.PI*2;
+        const dist = 100+Math.random()*90;
+        el.style.setProperty("--tr-rot0", (angle*180/Math.PI)+"deg");
+        el.style.setProperty("--tr-rot1", (angle*180/Math.PI+160)+"deg");
+        el.style.setProperty("--tx", Math.cos(angle)*dist + "px");
+        el.style.setProperty("--ty", Math.sin(angle)*dist + "px");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 1050);
+      }, i*45);
+    }
+    setTimeout(()=>shakeScreen(), 200);
+  }
+  function playCutsceneOverlayFx(move, container, color){
+    const type = cutsceneOverlayType(move);
+    if(!type) return;
+    spawnImpactFrame(container, 110);
+    spawnFlashBang(container);
+    if(type === "slash") spawnCutsceneSlashes(container, color);
+    else if(type === "fire") spawnCutsceneFire(container);
+    else if(type === "frost") spawnCutsceneFrost(container);
+    else if(type === "impact") spawnCutsceneImpact(container, color);
+    else if(type === "drip") spawnCutsceneDrip(container, color);
+    else if(type === "void") spawnCutscenePuff(container);
+    else if(type === "royal") spawnCutsceneRoyal(container);
+    else if(type === "sear") spawnCutsceneSear(container);
+    else if(type === "quake") spawnCutsceneQuake(container);
+    else if(type === "inferno") spawnCutsceneInferno(container);
+    else if(type === "barrage") spawnCutsceneBarrage(container);
+    else if(type === "siphon") spawnCutsceneSiphon(container);
+    else if(type === "wine") spawnCutsceneWine(container);
+    else if(type === "reaper") spawnCutsceneReaper(container);
+  }
+
   async function playSignatureCutscene(hero, move, profile){
     const isDomain = !!profile.domain;
     battleCutscene.className = "rarity-cutscene rc-ultra" + (isDomain ? " rc-domain" : "");
@@ -3701,6 +4890,10 @@
     cutscenePowerNumber.textContent = "0";
     cutsceneLetterboxTop.classList.remove("bars-in");
     cutsceneLetterboxBottom.classList.remove("bars-in");
+    cutsceneTerminal.classList.remove("showing");
+    cutsceneStatGrid.classList.remove("showing");
+    cutsceneRankStamp.classList.remove("firing");
+    cutsceneRankStamp.style.opacity = "0";
 
     // PHASE 1: cinematic bars slide in
     void battleCutscene.offsetWidth;
@@ -3708,7 +4901,12 @@
     cutsceneLetterboxBottom.classList.add("bars-in");
     await wait(350);
 
-    // PHASE 2: a fake "power level" charges up with a rapidly ticking counter
+    // PHASE 1.5: an utterly unnecessary fake diagnostic terminal scan
+    await playTerminalScan();
+
+    // PHASE 2: a fake "power level" charges up with a rapidly ticking counter,
+    // radiating speed lines and crackling energy arcs sell the "power surging" feel
+    // — a fake stat readout grid spins alongside it for good measure
     cutscenePowerMeter.style.display = "flex";
     cutscenePowerMeter.classList.add("showing");
     await wait(80);
@@ -3716,6 +4914,10 @@
     const target = profile.power;
     const tickStart = Date.now();
     const tickDuration = 650;
+    spawnSpeedLines(battleCutscene, 14);
+    spawnEnergyArcs(battleCutscene, 6);
+    const statGridPromise = playStatGridSpin(tickDuration + 100);
+    const speedLineTimer = setInterval(()=> spawnSpeedLines(battleCutscene, 10), 220);
     await new Promise(resolve=>{
       const tick = ()=>{
         const t = Math.min(1, (Date.now()-tickStart)/tickDuration);
@@ -3724,6 +4926,9 @@
       };
       requestAnimationFrame(tick);
     });
+    clearInterval(speedLineTimer);
+    spawnEnergyArcs(battleCutscene, 8);
+    spawnImpactFrame(battleCutscene, 110);
     shakeScreen();
     await wait(450);
     cutscenePowerMeter.classList.remove("showing");
@@ -3737,8 +4942,12 @@
     cutsceneQuote.classList.remove("showing");
     cutsceneQuote.style.display = "none";
 
-    // PHASE 3.5 (domain moves only): the "DOMAIN EXPANSION" announcement card
+    // PHASE 3.5 (domain moves only): the "DOMAIN EXPANSION" announcement card,
+    // with an actual hexagonal barrier expanding across the whole screen —
+    // the signature "reality is being overwritten" visual from the genre
     if(isDomain){
+      spawnImpactFrame(battleCutscene, 120);
+      spawnDomainBarrier(battleCutscene);
       battleCutsceneSub.textContent = profile.sub;
       battleCutsceneTitle.textContent = "DOMAIN EXPANSION:";
       battleCutsceneEmojiSpan.textContent = hero.emoji;
@@ -3766,9 +4975,44 @@
     els.forEach(el=>{ el.style.animation = "none"; });
     void battleCutscene.offsetWidth;
     els.forEach(el=>{ el.style.animation = ""; });
-    spawnParticles(battleCutsceneEmoji, isDomain ? ["🌀","💜","✨","🔮","⭐"] : ["🔥","💎","✨","🎆","⭐"], 26, 110, 1000);
+    battleCutsceneContent.classList.remove("cs-camera-punch");
+    void battleCutsceneContent.offsetWidth;
+    battleCutsceneContent.classList.add("cs-camera-punch");
+    battleCutsceneTitle.classList.remove("cutscene-glitch");
+    void battleCutsceneTitle.offsetWidth;
+    battleCutsceneTitle.classList.add("cutscene-glitch");
+    spawnParticles(battleCutsceneEmoji, isDomain ? ["✨"] : ["✨"], 10, 100, 900);
+    for(let i=0;i<10;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-tendril firing";
+        el.style.left = "50%"; el.style.top = "50%";
+        if(!isDomain) el.style.background = "radial-gradient(ellipse at 30% 50%, rgba(60,10,4,0.95), rgba(230,90,20,0.55) 55%, transparent 80%)";
+        const angle = (i/10)*Math.PI*2;
+        const dist = 90 + Math.random()*110;
+        el.style.setProperty("--tr-rot0", (angle*180/Math.PI) + "deg");
+        el.style.setProperty("--tr-rot1", (angle*180/Math.PI+200) + "deg");
+        el.style.setProperty("--tx", Math.cos(angle)*dist + "px");
+        el.style.setProperty("--ty", Math.sin(angle)*dist + "px");
+        battleCutsceneEmoji.appendChild(el);
+        setTimeout(()=>el.remove(), 1050);
+      }, i*35);
+    }
     flashFx(battleCutsceneEmoji, isDomain ? "rgba(140,70,230,0.85)" : "rgba(230,57,70,0.85)");
-    await wait(1650);
+    playCutsceneOverlayFx(move, battleCutscene, isDomain ? "rgba(140,70,230,0.85)" : "rgba(230,57,70,0.85)");
+    spawnScreenShatter(battleCutscene);
+    // a second, harder freeze right on the follow-through — the one-two punch
+    // that sells this as the peak moment of the whole sequence
+    setTimeout(()=>{
+      spawnImpactFrame(battleCutscene, 140);
+      shakeScreen();
+    }, 260);
+    await wait(1000);
+
+    // an entirely unnecessary rank-grade stamp slams onto the screen —
+    // S for a Signature Move, SSS for the rarer Domain Expansion
+    await playRankStamp(isDomain ? "SSS" : "S");
+    await wait(400);
 
     // PHASE 5: bars slide back out
     cutsceneLetterboxTop.classList.remove("bars-in");
@@ -3875,6 +5119,15 @@
     battleAreaPulse.style.setProperty("--pulse-color", color);
     battleAreaPulse.classList.add(kind || "firing");
   }
+  // A brief hit-stop "freeze frame" — the world desaturates and holds still for
+  // a beat right before a big hit's payoff lands, classic fighting-game weight.
+  function spawnImpactFrame(container, ms){
+    const el = document.createElement("div");
+    el.className = "impact-frame firing";
+    el.style.setProperty("--if-ms", (ms || 90) + "ms");
+    container.appendChild(el);
+    setTimeout(()=>el.remove(), ms || 90);
+  }
   // The whole bench reacts together — cheering when the active hero lands a hit,
   // flinching when the boss strikes back — so the team feels present in the fight,
   // not just whoever's currently up front.
@@ -3916,23 +5169,110 @@
   }
   // Maps each move's icon to particles that actually match what the move depicts,
   // so "Bagel Bash" throws bagels, "Scoville Shot" throws pepper heat, etc.
+  // Every move icon still gets one flavor-matched accent emoji, but the
+  // OTHER visual element is now a geometric shape (a crack, shard, tendril,
+  // or ink splat) picked by theme — not a second emoji. This also drops the
+  // old redundancy where the flying projectile icon (e.g. 🔥) was ALSO
+  // thrown back at you as a particle a moment later.
   const ICON_FX = {
-    "⚡":["⚡","💫"], "⛰️":["🪨","💥"], "❄️":["❄️","🥶"], "⭐":["⭐","✨"],
-    "🌭":["🌭","💥"], "🌰":["🌰","💥"], "🌱":["🌱","💚"], "🌶️":["🌶️","🔥"],
-    "🌿":["🌿","🍃"], "🍄":["🍄","💨"], "🍅":["🍅","💦"], "🍔":["🍔","💥"],
-    "🍢":["🍢","💥"], "🍦":["🍦","❄️"], "🍯":["🍯","✨"], "🍷":["🍷","💦"],
-    "🎆":["🎆","✨"], "🎯":["🎯","💥"], "🎺":["🎺","⬆️"], "🏰":["🏰","💥"],
-    "🐝":["🐝","💥"], "👊":["👊","💥"], "👑":["👑","✨"], "💀":["💀","☠️"],
-    "💥":["💥","💢"], "💨":["💨","💥"], "💫":["💫","✨"], "📯":["📯","⬆️"],
-    "🔥":["🔥","💢"], "🔪":["🔪","💢"], "🔫":["🔫","💥"], "🗡️":["🗡️","💢"],
-    "🛡️":["🛡️","✨"], "🥐":["🥐","✨"], "🥒":["🥒","💦"], "🥖":["🥖","💨"],
-    "🥗":["🥗","💨"], "🥩":["🥩","💥"], "🥬":["🥬","💨"], "🥯":["🥯","💥"],
-    "🥵":["🥵","🔥"], "🦞":["🦞","💦"], "🧀":["🧀","💥"], "🧅":["🧅","💨"],
-    "🧈":["🧈","💛"], "🧊":["🧊","❄️"], "🧱":["🧱","💥"], "🩸":["🩸","💢"],
-    "🩹":["🩹","💚"], "🪨":["🪨","💥"], "🫕":["🫕","🔥"],
+    "⚡":["💫"], "⛰️":["💥"], "❄️":["🥶"], "⭐":["✨"],
+    "🌭":["💥"], "🌰":["💥"], "🌱":["💚"], "🌶️":["🔥"],
+    "🌿":["🍃"], "🍄":["💨"], "🍅":["💦"], "🍔":["💥"],
+    "🍢":["💥"], "🍦":["❄️"], "🍯":["✨"], "🍷":["💦"],
+    "🎆":["✨"], "🎯":["💥"], "🎺":["⬆️"], "🏰":["💥"],
+    "🐝":["💥"], "👊":["💥"], "👑":["✨"], "💀":["☠️"],
+    "💥":["💢"], "💨":["💥"], "💫":["✨"], "📯":["⬆️"],
+    "🔥":["💢"], "🔪":["💢"], "🔫":["💥"], "🗡️":["💢"],
+    "🛡️":["✨"], "🥐":["✨"], "🥒":["💦"], "🥖":["💨"],
+    "🥗":["💨"], "🥩":["💥"], "🥬":["💨"], "🥯":["💥"],
+    "🥵":["🔥"], "🦞":["💦"], "🧀":["💥"], "🧅":["💨"],
+    "🧈":["💛"], "🧊":["❄️"], "🧱":["💥"], "🩸":["💢"],
+    "🩹":["💚"], "🪨":["💥"], "🫕":["🔥"],
   };
   function moveParticles(move, fallback){
     return (move && ICON_FX[move.icon]) || fallback;
+  }
+  // Groups all 51 move icons into 6 visual themes, each with its own signature
+  // geometric accent shape — cutting moves crack the air, fire moves trail
+  // embers, ice moves shatter, blunt/impact moves fracture the ground, liquid
+  // moves splash ink, and nature/shine moves swirl with soft light.
+  const ICON_THEME = {
+    "🔪":"cut", "🗡️":"cut", "🍢":"cut", "🥩":"cut", "🧅":"cut",
+    "🔥":"fire", "🌶️":"fire", "🥵":"fire", "🫕":"fire",
+    "❄️":"ice", "🍦":"ice", "🧊":"ice",
+    "⚡":"impact", "⛰️":"impact", "🌭":"impact", "🌰":"impact", "🍔":"impact",
+    "🎯":"impact", "🏰":"impact", "👊":"impact", "💀":"impact", "💥":"impact",
+    "🔫":"impact", "🛡️":"impact", "🥐":"impact", "🥖":"impact", "🥯":"impact",
+    "🧀":"impact", "🧱":"impact", "🪨":"impact",
+    "🍅":"drip", "🍯":"drip", "🍷":"drip", "🥒":"drip", "🦞":"drip",
+    "🧈":"drip", "🩸":"drip",
+    "🌱":"nature", "🌿":"nature", "🍄":"nature", "🐝":"nature", "🥗":"nature",
+    "🥬":"nature", "🩹":"nature", "💨":"nature",
+    "⭐":"shine", "🎆":"shine", "🎺":"shine", "👑":"shine", "💫":"shine", "📯":"shine",
+  };
+  function moveTheme(move){ return (move && ICON_THEME[move.icon]) || "impact"; }
+  // One geometric accent per theme, reusing the shapes already built for the
+  // cutscenes — sized down for the small fighter portraits.
+  function spawnThemedAccent(container, theme, color, big){
+    const n = big ? 1.5 : 1;
+    if(theme === "cut"){
+      const crack = document.createElement("div");
+      crack.className = "cs-crack firing";
+      crack.style.setProperty("--crack-angle", (Math.random()*60-30) + "deg");
+      crack.style.background = `linear-gradient(90deg, transparent, ${color} 40%, #fff 60%, transparent)`;
+      crack.style.boxShadow = `0 0 6px ${color}`;
+      crack.style.width = (60*n) + "px"; crack.style.height = "2px";
+      container.appendChild(crack);
+      setTimeout(()=>crack.remove(), 400);
+    } else if(theme === "fire"){
+      const el = document.createElement("div");
+      el.className = "cs-tendril firing";
+      el.style.width = (60*n)+"px"; el.style.height = (24*n)+"px";
+      el.style.background = "radial-gradient(ellipse at 30% 50%, rgba(80,10,4,0.9), rgba(255,140,20,0.55) 55%, transparent 80%)";
+      el.style.setProperty("--tr-rot0", "-10deg"); el.style.setProperty("--tr-rot1", "50deg");
+      el.style.setProperty("--tx", "8px"); el.style.setProperty("--ty", (-50*n)+"px");
+      container.appendChild(el);
+      setTimeout(()=>el.remove(), 700);
+    } else if(theme === "ice"){
+      const el = document.createElement("div");
+      el.className = "cs-shard firing";
+      el.style.transform = `translate(-50%,-50%) scale(${n})`;
+      el.style.setProperty("--shx", (Math.random()*20-10)+"px");
+      el.style.setProperty("--shy", (30*n)+"px");
+      el.style.setProperty("--shrot", "120deg");
+      container.appendChild(el);
+      setTimeout(()=>el.remove(), 550);
+    } else if(theme === "drip"){
+      const el = document.createElement("div");
+      el.className = "cs-ink firing";
+      el.style.width = (26*n)+"px"; el.style.height = (18*n)+"px";
+      el.style.background = `radial-gradient(ellipse at center, ${color}, transparent 75%)`;
+      container.appendChild(el);
+      setTimeout(()=>el.remove(), 450);
+    } else if(theme === "nature"){
+      const el = document.createElement("div");
+      el.className = "cs-tendril firing";
+      el.style.width = (46*n)+"px"; el.style.height = (18*n)+"px"; el.style.filter = "blur(0.5px)";
+      el.style.background = "radial-gradient(ellipse at 30% 50%, rgba(30,60,20,0.75), rgba(90,160,60,0.4) 55%, transparent 80%)";
+      el.style.setProperty("--tr-rot0", "0deg"); el.style.setProperty("--tr-rot1", "90deg");
+      el.style.setProperty("--tx", (Math.random()*20-10)+"px"); el.style.setProperty("--ty", (-30*n)+"px");
+      container.appendChild(el);
+      setTimeout(()=>el.remove(), 650);
+    } else if(theme === "shine"){
+      const el = document.createElement("div");
+      el.className = "cs-glint firing";
+      el.style.width = (14*n)+"px"; el.style.height = (14*n)+"px";
+      container.appendChild(el);
+      setTimeout(()=>el.remove(), 220);
+    } else { // impact (fallback)
+      const crack = document.createElement("div");
+      crack.className = "cs-crack firing";
+      crack.style.setProperty("--crack-angle", (Math.random()*40-20) + "deg");
+      crack.style.background = `linear-gradient(90deg, transparent, #fff 40%, ${color} 60%, transparent)`;
+      crack.style.width = (50*n) + "px"; crack.style.height = "2px";
+      container.appendChild(crack);
+      setTimeout(()=>crack.remove(), 400);
+    }
   }
 
   // ---------- FOOD TYPING SYSTEM ----------
@@ -3998,11 +5338,14 @@
   const FX = {
     hitBoss(move){
       spawnParticles(bossVisual, moveParticles(move, ["💥","⚡"]), 6, 34, 550); flashFx(bossVisual, "rgba(192,57,43,0.55)");
-      spawnImpactRing(bossVisual, "rgba(255,255,255,0.85)"); shakeVisual(bossVisual);
+      spawnImpactRing(bossVisual, "rgba(255,255,255,0.85)"); spawnHitCracks(bossVisual, 3, "rgba(255,255,255,0.9)", 55);
+      shakeVisual(bossVisual);
     },
     hitBossBig(move){
+      spawnImpactFrame(battleArea, 80);
       spawnParticles(bossVisual, moveParticles(move, ["💥","💢"]), 9, 40, 620); flashFx(bossVisual, "rgba(192,57,43,0.6)");
       spawnImpactRing(bossVisual, "rgba(255,255,255,0.9)"); spawnImpactRing(bossVisual, "rgba(228,87,46,0.7)");
+      spawnHitCracks(bossVisual, 5, "rgba(255,255,255,0.95)", 72);
       shakeVisual(bossVisual); setTimeout(()=>shakeVisual(bossVisual), 160);
     },
     debuffBoss(move){
@@ -4015,7 +5358,11 @@
     },
     buffHero(move){ spawnParticles(heroVisual, moveParticles(move, ["⭐","⬆️"]), 6, 30, 600); flashFx(heroVisual, "rgba(246,196,69,0.55)"); spawnImpactRing(heroVisual, "rgba(246,196,69,0.7)"); },
     healHero(move){ spawnParticles(heroVisual, moveParticles(move, ["✨","💚"]), 6, 30, 600); flashFx(heroVisual, "rgba(143,191,159,0.55)"); spawnImpactRing(heroVisual, "rgba(143,191,159,0.7)"); },
-    hitHero(){ spawnParticles(heroVisual, ["💢","💥"], 5, 28, 500); flashFx(heroVisual, "rgba(192,57,43,0.5)"); spawnImpactRing(heroVisual, "rgba(192,57,43,0.75)"); shakeVisual(heroVisual); },
+    hitHero(){
+      spawnParticles(heroVisual, ["💢","💥"], 5, 28, 500); flashFx(heroVisual, "rgba(192,57,43,0.5)");
+      spawnImpactRing(heroVisual, "rgba(192,57,43,0.75)"); spawnHitCracks(heroVisual, 3, "rgba(255,255,255,0.85)", 50);
+      shakeVisual(heroVisual);
+    },
     burnBoss(move){
       spawnParticles(bossVisual, moveParticles(move, ["🔥","💥"]), 7, 34, 650); flashFx(bossVisual, "rgba(228,87,46,0.55)");
       spawnImpactRing(bossVisual, "rgba(228,87,46,0.85)"); shakeVisual(bossVisual);
@@ -4189,7 +5536,14 @@
     const rec = state.heroes[h.id];
     const atkStat = heroAtk(h, rec) * (heroBuff.turns>0 ? heroBuff.mult : 1);
     const bStats = activeBossStats();
-    const isBigHit = (dmg)=> (dmg / bStats.hp) > 0.05;
+    // A Signature or Domain Move ALWAYS lands with full power-fantasy weight —
+    // impact frame, big damage number, screen shake — regardless of what its
+    // raw damage roll works out to be. These are meant to feel devastating
+    // every single time, not just when the number happens to be big enough.
+    const usedDomainProfileEarly = domainMoveProfile(h, move);
+    const usedSigProfileEarly = usedDomainProfileEarly || signatureMoveProfile(h, move);
+    const isSpecialMove = !!usedSigProfileEarly;
+    const isBigHit = (dmg)=> isSpecialMove || (dmg / bStats.hp) > 0.05;
     phase = "busy";
     renderBattleStatic();
 
@@ -4201,14 +5555,18 @@
     // A curated few heroes get a full-screen cinematic beat before their signature
     // move plays out, same as a rare Recipe Summon reveal — Domain Moves take
     // priority since they're the highest tier, above a regular signature move.
-    if(!skipAnim){
-      const domProfile = domainMoveProfile(h, move);
-      const sigProfile = domProfile || signatureMoveProfile(h, move);
-      if(sigProfile) await playSignatureCutscene(h, move, sigProfile);
+    if(!skipAnim && usedSigProfileEarly){
+      await playSignatureCutscene(h, move, usedSigProfileEarly);
     }
 
     if(!skipAnim){
       FX.castGlow(heroVisual, "rgba(255,255,255,0.6)");
+      // The real attack that follows the cutscene gets its own power-surge —
+      // the hero visibly channels that same energy into the actual hit landing.
+      if(isSpecialMove){
+        spawnParticles(heroVisual, isSpecialMove && usedDomainProfileEarly ? ["🌀","💜","⭐"] : ["🔥","⭐","✨"], 8, 34, 500);
+        flashFx(heroVisual, usedDomainProfileEarly ? "rgba(140,70,230,0.7)" : "rgba(230,57,70,0.6)");
+      }
     }
 
     if(OFFENSIVE_KINDS.includes(move.kind)){
@@ -4235,6 +5593,7 @@
       const big = isBigHit(dmg);
       state.battle.bossHp -= dmg;
       if(!skipAnim){
+        if(big){ spawnImpactFrame(battleArea, 80); await wait(75); }
         const special = specialMoveEffect(move);
         if(special === "blackhole"){ spawnBlackHole(bossVisual); }
         else if(special === "skull"){ spawnSkullOverlay(bossVisual); shakeVisual(bossVisual); }
@@ -4309,6 +5668,7 @@
       const max = heroMaxHp(h, rec);
       state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
       if(!skipAnim){
+        if(big){ spawnImpactFrame(battleArea, 80); await wait(75); }
         if(specialMoveEffect(move) === "vinewrap"){ spawnVineWrap(bossVisual); shakeVisual(bossVisual); }
         else FX.drain(move);
         if(big) shakeScreen();
@@ -4323,7 +5683,10 @@
       const big = isBigHit(dmg);
       state.battle.bossHp -= dmg;
       bossBurn = {dmgPerTurn: Math.max(1, Math.round(atkStat*0.3)), turns:3};
-      if(!skipAnim){ FX.burnBoss(move); if(big) shakeScreen(); }
+      if(!skipAnim){
+        if(big){ spawnImpactFrame(battleArea, 80); await wait(75); }
+        FX.burnBoss(move); if(big) shakeScreen();
+      }
       showFloat(bossVisual, "-"+fmt(dmg), "boss", big);
       addLog(h.name + " used " + move.name + "! -" + fmt(dmg) + " HP and set the foe ablaze!");
       if(typeEff > 1) addLog("🔥 Super effective!");
@@ -4358,8 +5721,8 @@
     // a dedicated minimum cooldown on top of whatever their move kind normally
     // gives, so an "ultimate" can't just be thrown out every single turn.
     let cdLength = MOVE_COOLDOWN[move.kind] || 0;
-    const usedDomainProfile = domainMoveProfile(h, move);
-    const usedSigProfile = usedDomainProfile || signatureMoveProfile(h, move);
+    const usedDomainProfile = usedDomainProfileEarly;
+    const usedSigProfile = usedSigProfileEarly;
     if(usedSigProfile){
       cdLength = Math.max(cdLength, usedDomainProfile ? DOMAIN_MOVE_COOLDOWN : SIGNATURE_MOVE_COOLDOWN);
     }
@@ -4631,21 +5994,26 @@
       revealWrap.innerHTML = "";
       cookStage.style.display = "flex";
       cookStageName.textContent = profile.stage;
-      cookPotEmoji.textContent = profile.icon;
-      cookPot.className = "cook-pot cook-" + rarity;
       cookLabel.className = "cook-label" + (rarity==="legend" || rarity==="ultra" ? " cook-legend-label":"");
       cookLabel.textContent = profile.label;
 
+      // Show the real cooking scene matching this rarity's method (frying,
+      // grilling, baking, roasting, or flambéing) and hide the other four.
+      cookScene.querySelectorAll(":scope > div").forEach(el=> el.classList.remove("showing"));
+      const sceneEl = document.getElementById(profile.scene);
+      sceneEl.classList.add("showing");
+
       const particleTimer = setInterval(()=>{
-        spawnParticles(cookPot, profile.particles, profile.particleCount, profile.spread, 500);
+        spawnParticles(sceneEl, profile.particles, profile.particleCount, profile.spread, 500);
       }, 220);
 
       setTimeout(()=>{
         clearInterval(particleTimer);
-        spawnParticles(cookPot, profile.particles, profile.particleCount*2, profile.spread*1.3, 600);
-        flashFx(cookPot, profile.flashColor);
+        spawnParticles(sceneEl, profile.particles, profile.particleCount*2, profile.spread*1.3, 600);
+        flashFx(sceneEl, profile.flashColor);
         setTimeout(()=>{
           cookStage.style.display = "none";
+          sceneEl.classList.remove("showing");
           resolve();
         }, 380);
       }, profile.duration);
