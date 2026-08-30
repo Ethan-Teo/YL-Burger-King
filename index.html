@@ -288,6 +288,14 @@
   .hero-card.legend .hero-rarity-tag{background:var(--c-legend); color:var(--ink);}
   .hero-card.ultra .hero-rarity-tag{background:var(--c-ultra); color:#fff;}
   .hero-card.admin .hero-rarity-tag{background:#8a1620; color:#fff;}
+  .hero-faction-tag{
+    position:absolute; top:6px; left:6px; font-size:11px; width:18px; height:18px;
+    border-radius:50%; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 1px 3px rgba(0,0,0,0.35);
+  }
+  .hero-faction-tag.ember{background:rgba(192,57,43,0.85);}
+  .hero-faction-tag.hearth{background:rgba(184,134,11,0.85);}
+  .hero-faction-tag.frost{background:rgba(79,143,209,0.85);}
   .hero-lore-btn{
     position:absolute; top:5px; left:5px; width:20px; height:20px; border-radius:50%;
     border:1.5px solid var(--ink); background:var(--parchment-card); font-size:10px; cursor:pointer;
@@ -689,6 +697,311 @@
   .cutscene-canyon.fading{animation:canyonFade 0.5s ease-in forwards;}
   @keyframes canyonFade{ 0%{opacity:0.85;} 100%{opacity:0;} }
 
+  /* ---------- FLAMBÉ PAN + WHOOSH (Brandy Flambé) — a real pan with a big
+     blue-tinted flame eruption, the classic "chef ignites the brandy" shot. -- */
+  .cutscene-flambe-pan{
+    position:absolute; bottom:14%; left:50%; width:min(46vw,155px); height:min(15vw,52px);
+    transform:translateX(-50%); border-radius:50%;
+    background:linear-gradient(180deg, #4a4a4a, #202020); border:3px solid #141414;
+    opacity:0; transition:opacity 0.3s ease;
+  }
+  .cutscene-flambe-pan.showing{opacity:1;}
+  .cutscene-flambe-flame{
+    position:absolute; bottom:20%; left:50%; width:min(36vw,120px); height:58%;
+    transform:translate(-50%,0) scaleY(0.05); transform-origin:bottom center; opacity:0;
+    background:linear-gradient(0deg, #cfe8ff 0%, #fff4c2 14%, #ffb347 38%, #e4572e 68%, #7a1f0a 92%, transparent 100%);
+    clip-path:polygon(50% 0%, 66% 20%, 58% 38%, 80% 55%, 64% 72%, 86% 100%, 14% 100%, 36% 72%, 20% 55%, 42% 38%, 34% 20%);
+    filter:blur(1.2px) drop-shadow(0 0 22px rgba(140,190,255,0.55)) drop-shadow(0 0 26px rgba(255,110,20,0.65));
+  }
+  .cutscene-flambe-flame.whooshing{animation:flambeWhooshRise 0.5s cubic-bezier(.15,.9,.3,1) forwards;}
+  @keyframes flambeWhooshRise{
+    0%{transform:translate(-50%,0) scaleY(0.05); opacity:0;}
+    25%{opacity:1;}
+    100%{transform:translate(-50%,0) scaleY(1); opacity:0.95;}
+  }
+  .cutscene-flambe-flame.fading{animation:infernoPillarFade 0.45s ease-in forwards;}
+
+  /* ---------- SEAR GRATE + BRAND MARKS (Triple Sear) — a glowing hot grate
+     with three dark sear marks branding across it in sequence. -------------- */
+  .cutscene-sear-grate{
+    position:absolute; top:50%; left:50%; width:min(56vw,195px); height:min(38vw,128px);
+    transform:translate(-50%,-50%) scale(0.3); opacity:0;
+    background:repeating-linear-gradient(90deg, rgba(255,120,30,0.55) 0 7px, transparent 7px 20px);
+    filter:blur(0.5px) drop-shadow(0 0 18px rgba(255,110,20,0.55));
+  }
+  .cutscene-sear-grate.showing{animation:cutsceneBhGrow 0.6s ease-out forwards;}
+  .cutscene-sear-grate.fading{animation:cutsceneBhFade 0.45s ease-in forwards;}
+  .cutscene-sear-mark{
+    position:absolute; top:50%; left:50%; width:64%; height:9%;
+    background:linear-gradient(90deg, transparent, #2a1208 18%, #2a1208 82%, transparent);
+    transform-origin:center; opacity:0; box-shadow:0 0 10px rgba(0,0,0,0.6);
+  }
+  .cutscene-sear-mark.searing{animation:searMarkBrand 0.3s ease-out forwards;}
+  @keyframes searMarkBrand{
+    0%{opacity:0; transform:translate(-50%,-50%) rotate(var(--mark-angle,0deg)) scaleX(0);}
+    100%{opacity:0.92; transform:translate(-50%,-50%) rotate(var(--mark-angle,0deg)) scaleX(1);}
+  }
+
+  /* ---------- CITRUS SPLASH (Tangy Squeeze) — a big mustard-yellow splash
+     with radiating droplets, instead of a small ink dot. -------------------- */
+  .cutscene-citrus-splash{
+    position:absolute; top:50%; left:50%; width:min(42vw,140px); height:min(32vw,108px);
+    transform:translate(-50%,-50%) scale(0.1); opacity:0;
+    background:radial-gradient(ellipse at center, #f6dd45, #d4a017 70%, transparent 90%);
+    clip-path:polygon(18% 4%, 50% 0%, 82% 4%, 100% 32%, 92% 62%, 100% 88%, 68% 100%, 50% 86%, 32% 100%, 0% 88%, 8% 62%, 0% 32%);
+    filter:drop-shadow(0 0 16px rgba(246,221,69,0.6));
+  }
+  .cutscene-citrus-splash.splashing{animation:citrusSplashPop 0.5s cubic-bezier(.2,.85,.3,1) forwards;}
+  @keyframes citrusSplashPop{
+    0%{transform:translate(-50%,-50%) scale(0.1); opacity:0;}
+    45%{opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1); opacity:0.9;}
+  }
+  .cutscene-citrus-splash.fading{animation:cutsceneBhFade 0.45s ease-in forwards;}
+  .mustard-bottle{
+    position:absolute; top:12%; left:50%; width:min(11vw,38px); height:min(24vw,82px);
+    transform:translate(-50%,-100%) rotate(-38deg); transform-origin:80% 90%;
+    opacity:0; z-index:1;
+  }
+  .mustard-bottle.squeezing{animation:mustardBottleTilt 0.5s cubic-bezier(.25,.8,.3,1) forwards;}
+  @keyframes mustardBottleTilt{
+    0%{opacity:0; transform:translate(-50%,-100%) rotate(0deg);}
+    40%{opacity:1;}
+    100%{opacity:0.95; transform:translate(-50%,-100%) rotate(-38deg);}
+  }
+  .mustard-bottle-body{
+    position:absolute; inset:0; border-radius:8px 8px 3px 3px;
+    background:linear-gradient(180deg, #f6dd45, #d4a017);
+    border:2px solid #8a6a10;
+  }
+  .mustard-bottle-cap{
+    position:absolute; top:-14%; left:30%; width:40%; height:16%;
+    background:#e8842c; border-radius:2px 2px 0 0;
+  }
+  .mustard-stream{
+    position:absolute; top:12%; left:50%; width:4px; height:0;
+    background:linear-gradient(180deg, #f6dd45, #d4a017);
+    transform:translate(-50%,-100%) rotate(52deg); transform-origin:top center;
+    opacity:0; border-radius:2px;
+  }
+  .mustard-stream.streaming{animation:mustardStreamShoot 0.35s ease-out 0.35s forwards;}
+  @keyframes mustardStreamShoot{
+    0%{height:0; opacity:0;}
+    20%{opacity:0.9;}
+    100%{height:min(20vw,68px); opacity:0.85;}
+  }
+
+  /* ---------- BARRAGE TARGET (Duxelles Barrage) — a target-ring pattern that
+     rapid-fire hits land across, selling "many quick strikes" not one big hit. */
+  .cutscene-barrage-target{
+    position:absolute; top:50%; left:50%; width:min(50vw,170px); height:min(50vw,170px);
+    transform:translate(-50%,-50%) scale(0.15); opacity:0; border-radius:50%;
+    background:repeating-radial-gradient(circle, rgba(138,90,59,0.5) 0 9%, transparent 9% 18%);
+    border:2px solid rgba(138,90,59,0.6);
+  }
+  .cutscene-barrage-target.showing{animation:cutsceneBhGrow 0.55s ease-out forwards;}
+  .cutscene-barrage-target.fading{animation:cutsceneBhFade 0.45s ease-in forwards;}
+  .duxelles-cap{
+    position:absolute; top:50%; left:50%; width:20px; height:20px; opacity:0;
+    transform:translate(-50%,-50%) scale(0.3);
+  }
+  .duxelles-cap.popping{animation:duxellesCapPop 0.45s cubic-bezier(.25,.85,.3,1) forwards;}
+  @keyframes duxellesCapPop{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(0.3);}
+    45%{opacity:1;}
+    100%{opacity:0.92; transform:translate(-50%,-50%) scale(1);}
+  }
+  .duxelles-cap-top{
+    position:absolute; top:0; left:0; width:20px; height:13px; border-radius:50% 50% 0 0;
+    background:linear-gradient(180deg, #a0724a, #6b4a2c);
+  }
+  .duxelles-cap-stem{
+    position:absolute; top:11px; left:7px; width:6px; height:9px; border-radius:0 0 2px 2px;
+    background:linear-gradient(180deg, #f0e2c8, #d8c8a4);
+  }
+
+  /* ---------- WINE WAVE (Reduction Strike) — a dramatic arc of dark burgundy
+     liquid instead of a small splash dot. ------------------------------------ */
+  .cutscene-wine-wave{
+    position:absolute; bottom:12%; left:50%; width:min(64vw,220px); height:min(26vw,88px);
+    transform:translateX(-50%) scaleX(0.05); opacity:0; transform-origin:center;
+    background:radial-gradient(ellipse at 50% 100%, #8a0f24, #4a0512 75%);
+    border-radius:50% 50% 8% 8%;
+    filter:blur(1px) drop-shadow(0 0 22px rgba(138,15,36,0.55));
+  }
+  .cutscene-wine-wave.rising{animation:wineWaveRise 0.55s cubic-bezier(.2,.85,.3,1) forwards;}
+  @keyframes wineWaveRise{
+    0%{transform:translateX(-50%) scaleX(0.05); opacity:0;}
+    40%{opacity:0.95;}
+    100%{transform:translateX(-50%) scaleX(1); opacity:0.9;}
+  }
+  .cutscene-wine-wave.fading{animation:cutsceneBhFade 0.45s ease-in forwards;}
+
+  /* ---------- DIAMOND CRYSTAL (Diamond Edge) — a real faceted gem that
+     rotates and catches light, distinct from Frost's ice-crystal snowflake. */
+  .cutscene-diamond{
+    position:absolute; top:50%; left:50%; width:min(34vw,115px); height:min(46vw,155px);
+    transform:translate(-50%,-50%) scale(0.1) rotate(-25deg); opacity:0;
+  }
+  .cutscene-diamond.growing{animation:diamondSpin 0.75s cubic-bezier(.2,.8,.3,1) forwards;}
+  @keyframes diamondSpin{
+    0%{transform:translate(-50%,-50%) scale(0.1) rotate(-25deg); opacity:0;}
+    50%{opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1) rotate(8deg); opacity:0.95;}
+  }
+  .cutscene-diamond.fading{animation:cutsceneBhFade 0.4s ease-in forwards;}
+  .diamond-top{
+    position:absolute; top:0; left:0; right:0; height:38%;
+    background:linear-gradient(160deg, #fff, #cdeeff 45%, #7ec8e3);
+    clip-path:polygon(50% 0%, 100% 100%, 0% 100%);
+  }
+  .diamond-bottom{
+    position:absolute; bottom:0; left:0; right:0; height:62%;
+    background:linear-gradient(200deg, #a8ddf0, #4a90a4 55%, #245a68);
+    clip-path:polygon(6% 0%, 94% 0%, 50% 100%);
+  }
+  .diamond-facet-line{
+    position:absolute; top:38%; left:6%; right:6%; height:2px; background:rgba(255,255,255,0.75);
+  }
+
+  /* ---------- IMPERIAL SEAL (Imperial Verdict) — a wax seal slamming down,
+     distinct from Sovereign Slam's crown-drop. --------------------------- */
+  .cutscene-seal{
+    position:absolute; top:50%; left:50%; width:min(38vw,130px); height:min(38vw,130px);
+    transform:translate(-50%,-50%) scale(2.2); opacity:0; border-radius:50%;
+  }
+  .cutscene-seal.stamping{animation:sealStamp 0.4s cubic-bezier(.3,.7,.3,1) forwards;}
+  @keyframes sealStamp{
+    0%{transform:translate(-50%,-50%) scale(2.2); opacity:0;}
+    40%{opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1); opacity:0.95;}
+  }
+  .cutscene-seal.fading{animation:cutsceneBhFade 0.4s ease-in forwards;}
+  .seal-wax{
+    position:absolute; inset:0; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #b8860b, #7a1f0a 75%);
+    box-shadow:0 0 24px rgba(184,134,11,0.7), inset 0 0 20px rgba(0,0,0,0.4);
+  }
+  .seal-emblem{
+    position:absolute; left:50%; top:50%; width:50%; height:50%; transform:translate(-50%,-50%);
+    border:3px solid rgba(255,244,200,0.85); border-radius:50%;
+  }
+
+  /* ---------- SHADOW DRAIN (Silent Siphon) — dark tendrils creeping INWARD
+     toward a shrinking point, the stealthy inverse of a normal void burst. -- */
+  .cutscene-shadow-pool{
+    position:absolute; top:50%; left:50%; width:min(44vw,150px); height:min(44vw,150px);
+    transform:translate(-50%,-50%) scale(0.2); opacity:0; border-radius:50%;
+    background:radial-gradient(circle, rgba(10,4,14,0.9), transparent 75%);
+  }
+  .cutscene-shadow-pool.pooling{animation:shadowPoolSpread 0.7s ease-out forwards;}
+  @keyframes shadowPoolSpread{
+    0%{transform:translate(-50%,-50%) scale(0.2); opacity:0;}
+    50%{opacity:0.85;}
+    100%{transform:translate(-50%,-50%) scale(1); opacity:0.55;}
+  }
+  .cutscene-shadow-pool.fading{animation:cutsceneBhFade 0.4s ease-in forwards;}
+
+  /* ---------- VICTORY PODIUM (Podium Strike) — a real 3-tier podium with a
+     medal descending onto the top step. ----------------------------------- */
+  .cutscene-podium{
+    position:absolute; bottom:10%; left:50%; width:min(52vw,175px); height:min(24vw,80px);
+    transform:translateX(-50%) scaleY(0.1); opacity:0; transform-origin:bottom center;
+  }
+  .cutscene-podium.rising{animation:podiumRise 0.55s cubic-bezier(.2,.85,.3,1) forwards;}
+  @keyframes podiumRise{
+    0%{transform:translateX(-50%) scaleY(0.1); opacity:0;}
+    40%{opacity:1;}
+    100%{transform:translateX(-50%) scaleY(1); opacity:0.95;}
+  }
+  .cutscene-podium.fading{animation:cutsceneBhFade 0.4s ease-in forwards;}
+  .podium-step{position:absolute; bottom:0; background:linear-gradient(180deg, #f6c445, #b8860b);}
+  .podium-step.center{left:38%; width:24%; height:100%;}
+  .podium-step.left{left:8%; width:26%; height:68%;}
+  .podium-step.right{left:66%; width:26%; height:50%;}
+  .podium-medal{
+    position:absolute; top:-30px; left:50%; width:26px; height:26px; margin-left:-13px;
+    border-radius:50%; background:radial-gradient(circle at 35% 30%, #fff4c2, #f6c445 60%, #b8860b);
+    opacity:0;
+  }
+  .cutscene-podium.rising .podium-medal{animation:medalDrop 0.5s cubic-bezier(.3,.7,.3,1) 0.25s forwards;}
+  @keyframes medalDrop{
+    0%{opacity:0; transform:translateY(-40px);}
+    50%{opacity:1;}
+    100%{opacity:1; transform:translateY(0);}
+  }
+
+  /* ---------- CHAMPAGNE POP (Uncorked Fanfare) — a real cork launches and
+     bubbles rise, matching what "uncorked" actually depicts. -------------- */
+  .champagne-cork{
+    position:absolute; bottom:22%; left:50%; width:14px; height:20px; margin-left:-7px;
+    background:linear-gradient(180deg, #d4a017, #8a6a10); border-radius:3px 3px 6px 6px;
+    opacity:0;
+  }
+  .champagne-cork.popping{animation:corkFly 0.5s cubic-bezier(.2,.6,.3,1) forwards;}
+  @keyframes corkFly{
+    0%{opacity:0; transform:translateY(0) rotate(0deg);}
+    15%{opacity:1;}
+    100%{opacity:0.9; transform:translateY(-140px) rotate(280deg);}
+  }
+  .champagne-bubble{
+    position:absolute; bottom:20%; width:8px; height:8px; border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #fff, rgba(246,221,69,0.7));
+    opacity:0;
+  }
+  .champagne-bubble.rising{animation:bubbleRise 1.1s ease-out forwards;}
+  @keyframes bubbleRise{
+    0%{opacity:0; transform:translateY(0) scale(0.6);}
+    20%{opacity:0.9;}
+    100%{opacity:0; transform:translateY(-160px) scale(1.1);}
+  }
+
+  /* ---------- TROPHY GLOW (Victory Lap) — a real trophy cup with a laurel
+     glow, distinct from a generic sparkle burst. --------------------------- */
+  .cutscene-trophy{
+    position:absolute; top:50%; left:50%; width:min(32vw,108px); height:min(42vw,142px);
+    transform:translate(-50%,-50%) scale(0.1); opacity:0;
+  }
+  .cutscene-trophy.rising{animation:trophyRise 0.6s cubic-bezier(.25,.85,.3,1) forwards;}
+  @keyframes trophyRise{
+    0%{transform:translate(-50%,-50%) scale(0.1); opacity:0;}
+    45%{opacity:1;}
+    100%{transform:translate(-50%,-50%) scale(1); opacity:0.95;}
+  }
+  .cutscene-trophy.fading{animation:cutsceneBhFade 0.4s ease-in forwards;}
+  .trophy-cup{
+    position:absolute; top:0; left:20%; width:60%; height:52%; border-radius:0 0 50% 50%;
+    background:linear-gradient(180deg, #fff4c2, #f6c445 60%, #b8860b);
+    box-shadow:0 0 20px rgba(246,196,69,0.7);
+  }
+  .trophy-handle{
+    position:absolute; top:8%; width:18%; height:26%; border:4px solid #f6c445; border-radius:50%;
+    background:transparent;
+  }
+  .trophy-handle.left{left:2%; border-right:none; border-top-right-radius:0; border-bottom-right-radius:0;}
+  .trophy-handle.right{right:2%; border-left:none; border-top-left-radius:0; border-bottom-left-radius:0;}
+  .trophy-base{
+    position:absolute; bottom:0; left:30%; width:40%; height:20%;
+    background:linear-gradient(180deg, #d4a017, #8a6a10); border-radius:2px;
+  }
+  .trophy-stem{position:absolute; bottom:18%; left:44%; width:12%; height:14%; background:#d4a017;}
+
+  /* ---------- METEOR STREAKS (Meteor Cascade) — real falling comets with
+     glowing heads and trails, not a generic starburst. --------------------- */
+  .cutscene-meteor{
+    position:absolute; top:-8%; width:5px; height:70px; pointer-events:none; opacity:0;
+    background:linear-gradient(200deg, #fff, rgba(255,180,80,0.7) 40%, transparent);
+    transform:rotate(35deg); transform-origin:top center;
+    border-radius:3px;
+    filter:drop-shadow(0 0 8px rgba(255,200,100,0.8));
+  }
+  .cutscene-meteor.falling{animation:meteorFall 0.7s cubic-bezier(.3,0,.4,1) forwards;}
+  @keyframes meteorFall{
+    0%{opacity:0; transform:rotate(35deg) translateY(-20px) scale(0.6);}
+    20%{opacity:1;}
+    100%{opacity:0; transform:rotate(35deg) translateY(120vh) scale(1.1);}
+  }
+
   .boss-swirl{
     display:inline-block;
     animation:bossSwirlSuck 1.05s cubic-bezier(.4,0,.2,1);
@@ -705,6 +1018,39 @@
     90%{transform:translate(0,0) scale(0.05) rotate(1260deg); opacity:0.02;}
     100%{transform:translate(0,0) scale(1) rotate(1440deg); opacity:1;}
   }
+
+  /* ---------- BOSS DEFEAT: a real dissolve on the boss itself, on every
+     single kill — not just confetti happening around a static sprite. ------- */
+  .boss-defeated{
+    animation:bossDefeatDissolve 0.85s cubic-bezier(.4,0,.3,1) forwards;
+  }
+  @keyframes bossDefeatDissolve{
+    0%{transform:scale(1) rotate(0deg); opacity:1; filter:brightness(1) saturate(1);}
+    12%{transform:scale(1.12) rotate(-4deg); filter:brightness(2.4) saturate(0);}
+    30%{transform:scale(0.94) rotate(3deg); filter:brightness(1.6) saturate(0.3);}
+    100%{transform:scale(0.15) rotate(50deg) translateY(10px); opacity:0; filter:brightness(2) saturate(0);}
+  }
+  .victory-banner{
+    position:absolute; top:50%; left:50%; z-index:20; pointer-events:none; opacity:0;
+    font-family:'Baloo 2',cursive; font-weight:900; font-size:clamp(28px,9vw,46px);
+    color:#fff; letter-spacing:2px; white-space:nowrap;
+    -webkit-text-stroke:2px #b8860b;
+    text-shadow:0 0 24px rgba(246,196,69,0.9), 0 0 44px rgba(246,196,69,0.55), 0 4px 6px rgba(0,0,0,0.5);
+    transform:translate(-50%,-50%) scale(2.4) rotate(-10deg);
+  }
+  .victory-banner.slamming{animation:victoryBannerSlam 0.6s cubic-bezier(.2,.85,.25,1) forwards;}
+  @keyframes victoryBannerSlam{
+    0%{opacity:0; transform:translate(-50%,-50%) scale(2.4) rotate(-10deg);}
+    45%{opacity:1;}
+    70%{transform:translate(-50%,-50%) scale(0.92) rotate(3deg);}
+    100%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg);}
+  }
+  .victory-banner.gone{animation:victoryBannerOut 0.4s ease-in forwards;}
+  @keyframes victoryBannerOut{
+    0%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg);}
+    100%{opacity:0; transform:translate(-50%,-50%) scale(1.3) rotate(4deg);}
+  }
+
   .crown-descend{
     position:absolute; left:50%; top:-40px; font-size:30px; pointer-events:none; z-index:6;
     animation:crownDrop 0.75s cubic-bezier(.3,.7,.4,1) forwards;
@@ -880,6 +1226,13 @@
   .move-eff-chip.super{color:#fff; background:var(--mint-dark);}
   .move-eff-chip.weak{color:#fff; background:var(--wood);}
   .move-btn.on-cooldown{opacity:0.55; filter:grayscale(0.3);}
+  .move-tier-tag{
+    display:inline-block; font-size:8px; font-weight:900; letter-spacing:1px;
+    border-radius:5px; padding:1.5px 6px; margin-bottom:3px;
+    text-shadow:0 1px 1px rgba(0,0,0,0.25);
+  }
+  .move-tier-tag.signature{color:#fff; background:linear-gradient(135deg, #e4572e, #c0203a);}
+  .move-tier-tag.domain{color:#fff; background:linear-gradient(135deg, #a86bf0, #6a2fc9);}
   .move-cd-chip{font-size:8.5px; font-weight:900; color:#fff; background:var(--wood-dark); border-radius:6px; padding:1px 5px;}
 
   .bench-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:2px;}
@@ -1029,6 +1382,176 @@
   }
   .side-quest-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #2e1c0c;}
   .side-quest-btn.active-side{background:linear-gradient(180deg, var(--ketchup), var(--ketchup-dark)); box-shadow:0 3px 0 var(--ketchup-dark);}
+
+  /* ---------- ROGUE TOWER ---------- */
+  .tower-quest-btn{
+    font-family:'Baloo 2',cursive; font-size:11.5px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, #6a4fc9, #4a2fa0); border:none;
+    border-radius:10px; padding:7px 14px; cursor:pointer; box-shadow:0 3px 0 #2e1a6b; margin-top:6px;
+  }
+  .tower-quest-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #2e1a6b;}
+  .tower-quest-btn.active-tower{background:linear-gradient(180deg, var(--ketchup), var(--ketchup-dark)); box-shadow:0 3px 0 var(--ketchup-dark);}
+  .tower-floor-hud{
+    display:flex; align-items:center; gap:8px; justify-content:center; margin-top:6px;
+    font-family:'Baloo 2',cursive; font-size:12px; font-weight:700; color:#6a4fc9;
+  }
+  .tower-blessing-icons{display:flex; gap:3px;}
+  .tower-blessing-icons span{font-size:13px;}
+  .tower-blessing-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.82); z-index:210;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .tower-blessing-card{
+    background:var(--parchment-card); border:3px solid #6a4fc9; border-radius:18px;
+    padding:22px 20px; max-width:380px; width:100%; text-align:center; box-shadow:0 10px 0 #4a2fa0;
+  }
+  .tower-blessing-title{font-family:'Baloo 2',cursive; font-size:19px; color:#4a2fa0; margin-bottom:4px;}
+  .tower-blessing-sub{font-size:12px; color:var(--wood-dark); font-weight:700; margin-bottom:16px; line-height:1.4;}
+  .tower-blessing-options{display:flex; flex-direction:column; gap:10px;}
+  .tower-blessing-option{
+    display:flex; align-items:center; gap:10px; text-align:left;
+    background:var(--parchment); border:2px solid #6a4fc9; border-radius:12px; padding:10px 12px;
+    cursor:pointer; transition:transform 0.12s ease;
+  }
+  .tower-blessing-option:active{transform:scale(0.97);}
+  .tower-blessing-option .opt-icon{font-size:22px;}
+  .tower-blessing-option .opt-name{font-family:'Baloo 2',cursive; font-size:13.5px; color:var(--ink); font-weight:700;}
+  .tower-blessing-option .opt-desc{font-size:10.5px; color:var(--wood-dark); font-weight:600; line-height:1.3; margin-top:1px;}
+  .tower-defeat-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:210;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .tower-defeat-card{
+    background:var(--parchment-card); border:3px solid #6a4fc9; border-radius:18px;
+    padding:26px 24px; max-width:320px; width:100%; text-align:center; box-shadow:0 10px 0 #4a2fa0;
+  }
+  .tower-defeat-emoji{font-size:40px;}
+  .tower-defeat-title{font-family:'Baloo 2',cursive; font-size:16px; color:#4a2fa0; margin:8px 0 6px;}
+  .tower-defeat-sub{font-size:12px; color:var(--wood-dark); font-weight:700; margin-bottom:18px; line-height:1.4;}
+
+  /* ---------- DUNGEON ---------- */
+  .dungeon-quest-btn{
+    font-family:'Baloo 2',cursive; font-size:11.5px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, #3a8a5c, #276041); border:none;
+    border-radius:10px; padding:7px 14px; cursor:pointer; box-shadow:0 3px 0 #16402a; margin-top:6px;
+  }
+  .dungeon-quest-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #16402a;}
+  .dungeon-select-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:190;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .dungeon-map-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.82); z-index:190;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .dungeon-map-card{
+    background:var(--parchment-card); border:3px solid #3a8a5c; border-radius:18px;
+    padding:20px; max-width:380px; width:100%; text-align:center; box-shadow:0 10px 0 #276041;
+  }
+  .dungeon-map-title{font-family:'Baloo 2',cursive; font-size:18px; color:#276041; margin-bottom:4px;}
+  .dungeon-map-sub{font-size:11px; color:var(--wood-dark); font-weight:700; margin-bottom:12px; line-height:1.4;}
+  .dungeon-grid{
+    display:grid; grid-template-columns:repeat(5,1fr); gap:4px; max-width:280px; margin:0 auto 14px;
+  }
+  .dungeon-tile{
+    aspect-ratio:1; border-radius:8px; display:flex; align-items:center; justify-content:center;
+    font-size:20px; background:var(--parchment); border:2px solid #c8bca4; position:relative;
+  }
+  .dungeon-tile.boss{background:#f5dede; border-color:var(--c-ultra);}
+  .dungeon-tile.boss.defeated{background:var(--parchment); border-color:#c8bca4; opacity:0.55;}
+  .dungeon-tile.treasure{background:#fdf3d0; border-color:var(--c-legend);}
+  .dungeon-tile.treasure.claimed{background:var(--parchment); border-color:#c8bca4; opacity:0.55;}
+  .dungeon-tile.current::after{
+    content:""; position:absolute; inset:-3px; border-radius:10px; border:3px solid #276041;
+    animation:dungeonCurrentPulse 1s ease-in-out infinite;
+  }
+  @keyframes dungeonCurrentPulse{0%,100%{opacity:0.6;} 50%{opacity:1;}}
+  .dungeon-controls{
+    display:grid; grid-template-columns:repeat(3,48px); grid-template-rows:repeat(2,44px);
+    gap:4px; justify-content:center; margin-bottom:14px;
+  }
+  .dungeon-move-btn{
+    font-family:'Baloo 2',cursive; font-size:16px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, #3a8a5c, #276041); border:none;
+    border-radius:8px; cursor:pointer; box-shadow:0 3px 0 #16402a;
+  }
+  .dungeon-move-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #16402a;}
+
+  /* ---------- SURVIVOR MODE ---------- */
+  .survivor-quest-btn{
+    font-family:'Baloo 2',cursive; font-size:11.5px; font-weight:700; color:#fff;
+    background:linear-gradient(180deg, #7a1f2e, #4a0f18); border:none;
+    border-radius:10px; padding:7px 14px; cursor:pointer; box-shadow:0 3px 0 #2e0810; margin-top:6px;
+  }
+  .survivor-quest-btn:active{transform:translateY(2px); box-shadow:0 1px 0 #2e0810;}
+  .survivor-arena-overlay{
+    display:none; position:fixed; inset:0; background:rgba(10,4,6,0.88); z-index:195;
+    align-items:center; justify-content:center; padding:16px;
+  }
+  .survivor-arena-card{
+    background:var(--parchment-card); border:3px solid #7a1f2e; border-radius:18px;
+    padding:14px; max-width:340px; width:100%; text-align:center; box-shadow:0 10px 0 #4a0f18;
+  }
+  .survivor-hud{display:flex; align-items:center; gap:8px; margin-bottom:4px;}
+  .survivor-hp-bar{
+    flex:1; height:12px; border:2px solid var(--ink); border-radius:7px; overflow:hidden;
+    background:rgba(0,0,0,0.15);
+  }
+  .survivor-hp-inner{height:100%; width:100%; background:linear-gradient(90deg,#e63946,#c0203a); transition:width 0.2s ease;}
+  .survivor-timer{font-family:'Baloo 2',cursive; font-size:12px; font-weight:800; color:var(--ink); white-space:nowrap;}
+  .survivor-xp-bar{
+    height:6px; border-radius:4px; overflow:hidden; background:rgba(0,0,0,0.15); margin-bottom:8px;
+  }
+  .survivor-xp-inner{height:100%; width:0%; background:linear-gradient(90deg,#f6c445,#e4572e); transition:width 0.2s ease;}
+  .survivor-field{
+    position:relative; width:100%; aspect-ratio:1; max-width:300px; margin:0 auto 8px;
+    background:radial-gradient(circle at 50% 50%, #eee0c4, #d8c8a0);
+    border:2px solid var(--ink); border-radius:10px; overflow:hidden;
+  }
+  .survivor-player{
+    position:absolute; width:24px; height:24px; margin:-12px 0 0 -12px; font-size:20px;
+    display:flex; align-items:center; justify-content:center; z-index:3;
+    filter:drop-shadow(0 2px 2px rgba(0,0,0,0.4));
+  }
+  .survivor-player.hit{animation:survivorHitFlash 0.2s ease;}
+  @keyframes survivorHitFlash{ 0%,100%{filter:drop-shadow(0 2px 2px rgba(0,0,0,0.4));} 50%{filter:brightness(2) drop-shadow(0 0 6px #fff);} }
+  .survivor-enemy{
+    position:absolute; width:20px; height:20px; margin:-10px 0 0 -10px; font-size:16px;
+    display:flex; align-items:center; justify-content:center; z-index:2;
+  }
+  .survivor-projectile{
+    position:absolute; width:10px; height:10px; margin:-5px 0 0 -5px; font-size:11px;
+    display:flex; align-items:center; justify-content:center; z-index:2;
+    filter:drop-shadow(0 0 4px rgba(255,220,120,0.85));
+  }
+  .survivor-orbit-weapon{
+    position:absolute; width:18px; height:18px; margin:-9px 0 0 -9px; font-size:16px;
+    display:flex; align-items:center; justify-content:center; z-index:3;
+    filter:drop-shadow(0 0 6px rgba(255,255,255,0.9));
+  }
+  .survivor-turret{
+    position:absolute; width:20px; height:20px; margin:-10px 0 0 -10px; font-size:18px;
+    display:flex; align-items:center; justify-content:center; z-index:2;
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,0.4));
+  }
+  .survivor-aura-ring{
+    position:absolute; border-radius:50%; z-index:1; pointer-events:none;
+    border:2px solid rgba(230,87,46,0.75);
+    background:radial-gradient(circle, rgba(230,87,46,0.16), rgba(230,87,46,0.05) 70%, transparent);
+    animation:survivorAuraPulse 1s ease-in-out infinite;
+  }
+  @keyframes survivorAuraPulse{ 0%,100%{opacity:0.65;} 50%{opacity:1;} }
+  .survivor-burst-particle{
+    position:absolute; font-size:11px; pointer-events:none; z-index:4;
+    transform:translate(-50%,-50%);
+    animation:survivorBurstFly 0.32s ease-out forwards;
+  }
+  @keyframes survivorBurstFly{
+    0%{ transform:translate(-50%,-50%) scale(1); opacity:1; }
+    100%{ transform:translate(calc(-50% + var(--bx)), calc(-50% + var(--by))) scale(0.3); opacity:0; }
+  }
+  .survivor-stats-row{font-size:11px; font-weight:800; color:var(--wood-dark); margin-bottom:6px;}
+
   .team-select-overlay{
     display:none; position:fixed; inset:0; background:rgba(20,12,8,0.78); z-index:180;
     align-items:center; justify-content:center; padding:20px;
@@ -1315,6 +1838,63 @@
     75%{text-shadow:2px 0 #ff2d55, -2px 0 #2dd8ff, 2px 2px 0 var(--ink); transform:translateX(-1px);}
     100%{text-shadow:0 0 18px rgba(246,196,69,0.85), 2px 2px 0 var(--ink); transform:translateX(0);}
   }
+
+  /* ---------- CRITICAL CUTSCENE (rare enhanced variant, ~1 in 10) ---------- */
+  .rarity-cutscene-critical-ring{
+    position:absolute; inset:0; z-index:6; pointer-events:none; opacity:0;
+    border:0 solid rgba(246,196,69,0.9); box-sizing:border-box;
+  }
+  .rarity-cutscene-critical-ring.showing{
+    opacity:1; border-width:5px;
+    box-shadow:inset 0 0 40px rgba(246,196,69,0.5), 0 0 30px rgba(246,196,69,0.5);
+    animation:criticalRingPulse 0.9s ease-in-out infinite;
+  }
+  @keyframes criticalRingPulse{
+    0%,100%{border-color:rgba(246,196,69,0.9);}
+    50%{border-color:rgba(255,255,255,0.95);}
+  }
+  .cutscene-critical-flash{
+    position:absolute; inset:0; z-index:8; pointer-events:none;
+    display:flex; align-items:center; justify-content:center; opacity:0;
+  }
+  .cutscene-critical-flash.firing{animation:criticalFlashPulse 0.75s cubic-bezier(.2,.8,.3,1) forwards;}
+  .cutscene-critical-text{
+    font-family:'Baloo 2',cursive; font-weight:900; font-size:clamp(24px,7.5vw,40px);
+    color:#fff; letter-spacing:2px;
+    text-shadow:0 0 20px rgba(246,196,69,0.95), 0 0 42px rgba(246,196,69,0.7), 0 3px 6px rgba(0,0,0,0.5);
+    transform:scale(0.4) rotate(-12deg);
+  }
+  @keyframes criticalFlashPulse{
+    0%{opacity:0;}
+    18%{opacity:1;}
+    100%{opacity:0;}
+  }
+  .cutscene-critical-flash.firing .cutscene-critical-text{
+    animation:criticalTextSlam 0.75s cubic-bezier(.2,.85,.25,1) forwards;
+  }
+  @keyframes criticalTextSlam{
+    0%{transform:scale(0.4) rotate(-12deg);}
+    55%{transform:scale(1.15) rotate(3deg);}
+    100%{transform:scale(1) rotate(0deg);}
+  }
+
+  /* ---------- MOVE-MASTERY MILESTONE BANNER ---------- */
+  .cutscene-milestone{
+    position:absolute; top:15%; left:50%; z-index:6; pointer-events:none; opacity:0;
+    transform:translateX(-50%) translateY(-16px);
+    background:linear-gradient(135deg, #f6c445, #e4572e);
+    padding:5px 16px; border-radius:20px; white-space:nowrap;
+    font-family:'Baloo 2',cursive; font-weight:800; font-size:12.5px; color:#fff;
+    box-shadow:0 4px 14px rgba(0,0,0,0.45);
+  }
+  .cutscene-milestone.showing{animation:milestoneSlideIn 0.45s cubic-bezier(.2,.8,.3,1) forwards;}
+  @keyframes milestoneSlideIn{
+    0%{opacity:0; transform:translateX(-50%) translateY(-16px);}
+    65%{opacity:1; transform:translateX(-50%) translateY(3px);}
+    100%{opacity:1; transform:translateX(-50%) translateY(0);}
+  }
+  .cutscene-milestone.fading{animation:milestoneFadeOut 0.35s ease-in forwards;}
+  @keyframes milestoneFadeOut{ to{opacity:0; transform:translateX(-50%) translateY(-10px);} }
 
   /* ---------- MOVE-THEMED CUTSCENE OVERLAY FX (layered on top of the reveal) ---------- */
   .cs-slash-wrap{
@@ -1880,9 +2460,17 @@
     <div class="section-label">BOSS BATTLE</div>
     <div class="battle-area" id="battleArea">
       <div class="battle-area-pulse" id="battleAreaPulse"></div>
+      <div class="victory-banner" id="victoryBanner">VICTORY!</div>
       <div class="stage-tag" id="stageTag">Cycle 1 · Stage 1 of 8</div>
       <button class="team-select-btn" id="openTeamSelectBtn">🛡️ Select Team (<span id="teamCountLabel">0/15</span>)</button>
       <button class="side-quest-btn" id="sideQuestBtn" style="display:none;">📖 Enter Side Story: The Lost Recipe</button>
+      <button class="tower-quest-btn" id="towerQuestBtn">🗼 Enter the Rogue Tower</button>
+      <div class="tower-floor-hud" id="towerFloorHud" style="display:none;">
+        <span id="towerFloorLabel">Floor 1</span>
+        <div class="tower-blessing-icons" id="towerBlessingIcons"></div>
+      </div>
+      <button class="dungeon-quest-btn" id="dungeonQuestBtn">🏃 Enter the Dungeon</button>
+      <button class="survivor-quest-btn" id="survivorQuestBtn">🧛 Survivor Mode</button>
 
       <div class="combat-row" id="combatRow">
         <div class="fighter-col">
@@ -2036,6 +2624,7 @@
         <button class="admin-btn" data-action="healTeam">Full Heal Team</button>
         <button class="admin-btn" data-action="killBoss">Instant-Kill Boss</button>
         <button class="admin-btn" data-action="claimQuests">Claim All Quests</button>
+        <button class="admin-btn" data-action="unlockAllStory">📜 Unlock All Story Chapters</button>
         <button class="admin-btn danger" data-action="resetGame">Reset Kingdom</button>
       </div>
       <button class="admin-close-btn" id="adminPanelClose">Close</button>
@@ -2056,8 +2645,10 @@
   <!-- ===== SIGNATURE ATTACK CUTSCENE (battle) ===== -->
   <div class="rarity-cutscene rc-ultra" id="battleCutscene">
     <div class="rarity-cutscene-tint" id="battleCutsceneTint"></div>
+    <div class="rarity-cutscene-critical-ring" id="cutsceneCriticalRing"></div>
     <div class="cutscene-letterbox top" id="cutsceneLetterboxTop"></div>
     <div class="cutscene-letterbox bottom" id="cutsceneLetterboxBottom"></div>
+    <div class="cutscene-critical-flash" id="cutsceneCriticalFlash"><div class="cutscene-critical-text">✨ CRITICAL CUTSCENE! ✨</div></div>
     <div class="cutscene-terminal" id="cutsceneTerminal"></div>
     <div class="cutscene-stat-grid" id="cutsceneStatGrid">
       <div class="cutscene-stat-row"><span>CRIT CHANCE</span><b id="statCrit">0%</b></div>
@@ -2070,6 +2661,7 @@
       <div class="cutscene-power-number" id="cutscenePowerNumber">0</div>
     </div>
     <div class="cutscene-quote" id="cutsceneQuote"></div>
+    <div class="cutscene-milestone" id="cutsceneMilestone"></div>
     <div class="rarity-cutscene-content" id="battleCutsceneContent">
       <div class="rarity-cutscene-sub" id="battleCutsceneSub">🥩 A SIGNATURE MOVE 🥩</div>
       <div class="rarity-cutscene-title" id="battleCutsceneTitle">MICHELIN STAR CUT!</div>
@@ -2089,6 +2681,106 @@
         <button class="reset-confirm-btn danger" id="resetConfirmYes">Yes, reset everything</button>
         <button class="reset-confirm-btn secondary" id="resetConfirmNo">Cancel</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== ROGUE TOWER: BLESSING DRAFT ===== -->
+  <div class="tower-blessing-overlay" id="towerBlessingOverlay">
+    <div class="tower-blessing-card">
+      <div class="tower-blessing-title">🗼 Choose a Blessing</div>
+      <div class="tower-blessing-sub" id="towerBlessingSub">Floor 1 cleared — pick one to carry for the rest of this run.</div>
+      <div class="tower-blessing-options" id="towerBlessingOptions"></div>
+    </div>
+  </div>
+
+  <!-- ===== ROGUE TOWER: RUN ENDED ===== -->
+  <div class="tower-defeat-overlay" id="towerDefeatOverlay">
+    <div class="tower-defeat-card">
+      <div class="tower-defeat-emoji">🗼💥</div>
+      <div class="tower-defeat-title" id="towerDefeatTitle">The tower claims another climb.</div>
+      <div class="tower-defeat-sub" id="towerDefeatSub">You reached Floor 1.</div>
+      <button class="reset-confirm-btn secondary" id="towerDefeatOk">Return to the arena</button>
+    </div>
+  </div>
+
+  <!-- ===== DUNGEON: HERO SELECT ===== -->
+  <div class="dungeon-select-overlay" id="dungeonSelectOverlay">
+    <div class="team-select-card">
+      <div class="admin-title">🏃 Choose Your Explorer</div>
+      <div class="team-select-sub">Pick a recruited hero to walk the dungeon. Beat any guardian with them for the first time to unlock their own Domain Move.</div>
+      <div class="team-select-grid" id="dungeonSelectGrid"></div>
+      <button class="admin-close-btn" id="dungeonSelectClose">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ===== DUNGEON: MAP VIEW ===== -->
+  <div class="dungeon-map-overlay" id="dungeonMapOverlay">
+    <div class="dungeon-map-card">
+      <div class="dungeon-map-title">🏃 The Dungeon</div>
+      <div class="dungeon-map-sub" id="dungeonMapSub">Walk onto a guardian to fight it. Walk onto a chest for a quick bonus.</div>
+      <div class="dungeon-grid" id="dungeonGrid"></div>
+      <div class="dungeon-controls">
+        <div></div>
+        <button class="dungeon-move-btn" id="dungeonMoveUp">▲</button>
+        <div></div>
+        <button class="dungeon-move-btn" id="dungeonMoveLeft">◀</button>
+        <button class="dungeon-move-btn" id="dungeonMoveDown">▼</button>
+        <button class="dungeon-move-btn" id="dungeonMoveRight">▶</button>
+      </div>
+      <button class="admin-close-btn" id="dungeonExitBtn">Leave the Dungeon</button>
+    </div>
+  </div>
+
+  <!-- ===== SURVIVOR MODE: HERO SELECT ===== -->
+  <div class="dungeon-select-overlay" id="survivorSelectOverlay">
+    <div class="team-select-card">
+      <div class="admin-title">🧛 Choose Your Survivor</div>
+      <div class="team-select-sub">Their basic move becomes your auto-firing weapon. Survive as long as you can — the swarm never stops!</div>
+      <div class="team-select-grid" id="survivorSelectGrid"></div>
+      <button class="admin-close-btn" id="survivorSelectClose">Cancel</button>
+    </div>
+  </div>
+
+  <!-- ===== SURVIVOR MODE: ARENA ===== -->
+  <div class="survivor-arena-overlay" id="survivorArenaOverlay">
+    <div class="survivor-arena-card">
+      <div class="survivor-hud">
+        <div class="survivor-hp-bar"><div class="survivor-hp-inner" id="survivorHpInner"></div></div>
+        <div class="survivor-timer" id="survivorTimer">⏱️ 0:00</div>
+      </div>
+      <div class="survivor-xp-bar"><div class="survivor-xp-inner" id="survivorXpInner"></div></div>
+      <div class="survivor-field" id="survivorField">
+        <div class="survivor-player" id="survivorPlayer"></div>
+      </div>
+      <div class="survivor-stats-row" id="survivorStatsRow">Lv.1 · 0 kills</div>
+      <div class="dungeon-controls">
+        <div></div>
+        <button class="dungeon-move-btn" id="survivorMoveUp">▲</button>
+        <div></div>
+        <button class="dungeon-move-btn" id="survivorMoveLeft">◀</button>
+        <button class="dungeon-move-btn" id="survivorMoveDown">▼</button>
+        <button class="dungeon-move-btn" id="survivorMoveRight">▶</button>
+      </div>
+      <button class="admin-close-btn" id="survivorFleeBtn">Flee the Swarm</button>
+    </div>
+  </div>
+
+  <!-- ===== SURVIVOR MODE: LEVEL-UP DRAFT ===== -->
+  <div class="tower-blessing-overlay" id="survivorLevelUpOverlay">
+    <div class="tower-blessing-card">
+      <div class="tower-blessing-title">⭐ Level Up!</div>
+      <div class="tower-blessing-sub" id="survivorLevelUpSub">Choose one upgrade.</div>
+      <div class="tower-blessing-options" id="survivorLevelUpOptions"></div>
+    </div>
+  </div>
+
+  <!-- ===== SURVIVOR MODE: RUN ENDED ===== -->
+  <div class="tower-defeat-overlay" id="survivorEndOverlay">
+    <div class="tower-defeat-card">
+      <div class="tower-defeat-emoji" id="survivorEndEmoji">🧛💥</div>
+      <div class="tower-defeat-title" id="survivorEndTitle">The swarm overwhelms you.</div>
+      <div class="tower-defeat-sub" id="survivorEndSub">You survived 0:45 with 12 kills.</div>
+      <button class="reset-confirm-btn secondary" id="survivorEndOk">Return to the arena</button>
     </div>
   </div>
 
@@ -2154,6 +2846,214 @@
   };
   function highestRarity(rarities){
     return rarities.reduce((best,r)=> RARITY_RANK[r]>RARITY_RANK[best] ? r : best, "common");
+  }
+
+  // ---------- CULINARY GUILDS (factions) ----------
+  const FACTION_DEFS = {
+    ember:  { name:"The Ember Guild",  emoji:"🔥", color:"#c0392b", tagline:"Fire answers to no one but us." },
+    hearth: { name:"The Hearth Guild", emoji:"🍞", color:"#b8860b", tagline:"Every great kitchen starts with patience." },
+    frost:  { name:"The Frost Guild",  emoji:"❄️", color:"#4f8fd1", tagline:"Precision is its own kind of warmth." },
+  };
+  // The most narratively significant heroes (Legendary and above) are hand-
+  // assigned by what their name and signature technique actually depict —
+  // grill/sear/spice reads Ember, bread/pastry/tradition reads Hearth,
+  // dessert/ice/precision reads Frost.
+  const HERO_FACTION_OVERRIDE = {
+    h13:"hearth", h14:"ember", h61:"ember", h74:"hearth", h116:"hearth",
+    h117:"frost", h118:"ember", h119:"hearth", h120:"frost", h121:"frost",
+    h122:"hearth", h123:"ember", h124:"frost", h15:"frost",
+  };
+  function getHeroFaction(hero){
+    if(HERO_FACTION_OVERRIDE[hero.id]) return HERO_FACTION_OVERRIDE[hero.id];
+    const rng = mulberry32(fnv1aHash(hero.id + "|" + hero.name + "|faction"));
+    const keys = Object.keys(FACTION_DEFS);
+    return keys[Math.floor(rng() * keys.length)];
+  }
+
+  // ---------- THE ROGUE TOWER ----------
+  // An endless floor-by-floor climb, separate from the main throne-reclaiming
+  // arc and the "Lost Recipe" side story — reuses the main boss roster
+  // (cycled with per-floor scaling) rather than needing its own content, and
+  // between floors the player drafts one of three faction-themed blessings
+  // that stack for the rest of the run. Losing ends the run and resets every
+  // blessing; permanent hero levels are untouched either way.
+  const TOWER_BLESSINGS = [
+    { id:"embers_might",  faction:"ember",  name:"Ember's Might",   icon:"🔥",
+      desc:"+15% team ATK for the rest of this run.",
+      apply:()=>{ state.tower.atkMult *= 1.15; } },
+    { id:"twin_flame",    faction:"ember",  name:"Twin Flame",      icon:"🔥",
+      desc:"+30% team ATK, −15% team Max HP for the rest of this run.",
+      apply:()=>{ state.tower.atkMult *= 1.30; state.tower.hpMult *= 0.85; } },
+    { id:"kindled_resolve", faction:"ember", name:"Kindled Resolve", icon:"🔥",
+      desc:"+10% team ATK for the rest of this run. Stacks every time it's drafted.",
+      apply:()=>{ state.tower.atkMult *= 1.10; } },
+    { id:"hearths_ward",  faction:"hearth", name:"Hearth's Ward",   icon:"🍞",
+      desc:"+20% team Max HP for the rest of this run.",
+      apply:()=>{ state.tower.hpMult *= 1.20; } },
+    { id:"bakers_reserve", faction:"hearth", name:"Baker's Reserve", icon:"🍞",
+      desc:"Fully heals the whole team at the start of every floor.",
+      apply:()=>{ state.tower.fullHealEachFloor = true; } },
+    { id:"sturdy_crust",  faction:"hearth", name:"Sturdy Crust",    icon:"🍞",
+      desc:"+12% team Max HP, +8% team ATK for the rest of this run.",
+      apply:()=>{ state.tower.hpMult *= 1.12; state.tower.atkMult *= 1.08; } },
+    { id:"frosts_focus",  faction:"frost",  name:"Frost's Focus",   icon:"❄️",
+      desc:"+15% team ATK, −10% team Max HP for the rest of this run.",
+      apply:()=>{ state.tower.atkMult *= 1.15; state.tower.hpMult *= 0.90; } },
+    { id:"cold_storage",  faction:"frost",  name:"Cold Storage",    icon:"❄️",
+      desc:"+30% coins and crumbs earned from tower floor rewards this run.",
+      apply:()=>{ state.tower.rewardMult *= 1.30; } },
+    { id:"absolute_zero", faction:"frost",  name:"Absolute Zero",   icon:"❄️",
+      desc:"Shields the active hero for 20% of their Max HP at the start of every floor.",
+      apply:()=>{ state.tower.shieldEachFloor = true; } },
+  ];
+  function rollTowerBlessingChoices(){
+    // 3 distinct random blessings, weighted toward ones not already drafted
+    // this run (repeatable ones like Kindled Resolve can still reappear)
+    const pool = TOWER_BLESSINGS.slice();
+    const choices = [];
+    for(let i=0;i<3 && pool.length;i++){
+      const idx = Math.floor(Math.random()*pool.length);
+      choices.push(pool[idx]);
+      pool.splice(idx,1);
+    }
+    return choices;
+  }
+
+  // ---------- THE DUNGEON (RPG exploration mode) ----------
+  // A single shared 5x5 grid the player walks a chosen, already-recruited
+  // hero around using directional controls. Four boss tiles sit one in each
+  // cardinal direction from the starting tile; beating any of them for the
+  // first time with a given hero permanently unlocks that hero's own secret
+  // 5th move, usable from then on in every other battle mode too.
+  const DUNGEON_SIZE = 5;
+  const DUNGEON_START = { x:2, y:2 };
+  const DUNGEON_BOSSES = [
+    { name:"Grid Sentinel",  icon:"🗿", hp:5000,  atk:120, x:2, y:0 },
+    { name:"Maze Wraith",    icon:"👻", hp:6500,  atk:150, x:0, y:2 },
+    { name:"Vault Keeper",   icon:"🔐", hp:8000,  atk:180, x:4, y:2 },
+    { name:"Depths Horror",  icon:"🐙", hp:10000, atk:220, x:2, y:4 },
+  ];
+  const DUNGEON_TREASURE_TILES = [ {x:1,y:1}, {x:3,y:1}, {x:1,y:3}, {x:3,y:3} ];
+  function dungeonTileAt(x,y){
+    if(x===DUNGEON_START.x && y===DUNGEON_START.y) return {type:"start"};
+    const bossIdx = DUNGEON_BOSSES.findIndex(b=>b.x===x && b.y===y);
+    if(bossIdx >= 0) return {type:"boss", bossIdx};
+    if(DUNGEON_TREASURE_TILES.some(t=>t.x===x && t.y===y)) return {type:"treasure"};
+    return {type:"floor"};
+  }
+  // Beating a dungeon guardian grants the hero their own Domain Move — the
+  // same top tier as the 9 hand-authored ones, complete with the full
+  // "DOMAIN EXPANSION" cutscene treatment, not a plain extra move. Two
+  // role-flavored options each, reusing applyDomainEffect's existing payoffs
+  // (wrap_shield, eternal_freeze, inferno, sear_burn, reduction_heal, purge,
+  // wither, siphon) so no new battle mechanics are needed, just new names.
+  const DOMAIN_MOVE_TEMPLATES = {
+    Tank: [
+      { name:"Unbreakable Bulwark", icon:"🛡️", power:1.2, kind:"dmg", desc:"A defensive strike that opens into something far greater.",
+        domain:"The Unbreakable Bulwark", sub:"🛡️ A DOMAIN OPENS 🛡️", quote:"\"Nothing gets through. Nothing gets past.\"", cutscenePower:16000, effect:"wrap_shield" },
+      { name:"Fortress Uppercut", icon:"⛰️", power:1.25, kind:"dmg", desc:"A rising blow that shatters more than just the foe's guard.",
+        domain:"The Frozen Fortress", sub:"⛰️ A DOMAIN OPENS ⛰️", quote:"\"You're not getting back up from this.\"", cutscenePower:15500, effect:"eternal_freeze" },
+    ],
+    Attack: [
+      { name:"Merciless Onslaught", icon:"🔥", power:1.3, kind:"dmg", desc:"A relentless assault that opens into an inferno.",
+        domain:"The Merciless Onslaught", sub:"🔥 A DOMAIN OPENS 🔥", quote:"\"There is no version of this where you win.\"", cutscenePower:17000, effect:"inferno" },
+      { name:"Executioner's Barrage", icon:"🗡️", power:1.28, kind:"dmg", desc:"A single decisive strike, backed by everything left to give.",
+        domain:"The Executioner's Verdict", sub:"🗡️ A DOMAIN OPENS 🗡️", quote:"\"One chance. That's all anyone gets.\"", cutscenePower:16500, effect:"sear_burn" },
+    ],
+    Heal: [
+      { name:"Eternal Renewal", icon:"✨", power:1.1, kind:"dmg", desc:"A restorative strike that opens into total renewal.",
+        domain:"The Eternal Renewal", sub:"✨ A DOMAIN OPENS ✨", quote:"\"As long as I'm standing, so is everyone else.\"", cutscenePower:14000, effect:"reduction_heal" },
+      { name:"Frostbound Mercy", icon:"❄️", power:1.15, kind:"dmg", desc:"A chilling strike wrapped in something gentler underneath.",
+        domain:"The Frostbound Mercy", sub:"❄️ A DOMAIN OPENS ❄️", quote:"\"Even mercy can be devastating.\"", cutscenePower:14500, effect:"purge" },
+    ],
+    Support: [
+      { name:"Grand Directive", icon:"📯", power:1.1, kind:"dmg", desc:"A commanding strike that opens into total battlefield control.",
+        domain:"The Grand Directive", sub:"📯 A DOMAIN OPENS 📯", quote:"\"Command isn't about strength. It's about knowing exactly when to use it.\"", cutscenePower:13500, effect:"wither" },
+      { name:"Siphoning Verdict", icon:"🩸", power:1.12, kind:"dmg", desc:"A draining strike that opens into something far hungrier.",
+        domain:"The Siphoning Verdict", sub:"🩸 A DOMAIN OPENS 🩸", quote:"\"Take everything. Leave nothing.\"", cutscenePower:14200, effect:"siphon" },
+    ],
+  };
+  function getDungeonDomainMove(hero){
+    const pool = DOMAIN_MOVE_TEMPLATES[hero.role] || DOMAIN_MOVE_TEMPLATES.Attack;
+    const rng = mulberry32(fnv1aHash(hero.id + "|" + hero.name + "|domainmove"));
+    return pool[Math.floor(rng() * pool.length)];
+  }
+
+  // ---------- SURVIVOR MODE (real-time, freely-movable — a genre shift from
+  // every other mode, which is turn-based). A chosen hero moves continuously
+  // around a bounded arena using held-direction controls while their weapon
+  // auto-fires at the nearest enemy; enemies swarm in and escalate over time
+  // AND with player level, without limit. There's no win — only how long you
+  // last, until you die or flee with whatever you've earned. ----------
+  const SURVIVOR_ARENA_SIZE = 300;      // px, square arena
+  const SURVIVOR_TICK_MS = 60;          // ~16-17 ticks/sec
+  const SURVIVOR_PLAYER_RADIUS = 12;
+  const SURVIVOR_ENEMY_RADIUS = 10;
+  const SURVIVOR_ENEMY_TYPES = [
+    { icon:"🧟", hp:3,  speed:0.55, dmg:6,  xp:1 },
+    { icon:"🦴", hp:6,  speed:0.45, dmg:9,  xp:2 },
+    { icon:"👻", hp:2,  speed:0.85, dmg:5,  xp:1 },
+  ];
+  // Every equipped weapon fires on its own independent cooldown, tuned by
+  // move kind so a hero's whole kit feels distinct in the arena, not just a
+  // single generic auto-shot — multi-hit/stronger kinds fire slower, passive
+  // support kinds (buff/heal/shield) fire on a slow self-effect pulse instead
+  // of a projectile at all.
+  const SURVIVOR_WEAPON_COOLDOWN = {
+    dmg:650, dmg_debuff:700, dmg_stun:800, drain:850, burn:900,
+    crit:1100, dmg2:950, multi3:1300,
+    buff:3200, heal:2600, shield:4200,
+  };
+  const SURVIVOR_UPGRADES = [
+    { id:"dmg_up",    name:"Sharper Recipe",  icon:"⚔️", desc:"+25% weapon damage.",        apply:(r)=>{ r.dmgMult *= 1.25; } },
+    { id:"rate_up",   name:"Quick Ticket",    icon:"⏱️", desc:"All weapons fire 20% faster.", apply:(r)=>{ r.weapons.forEach(w=> w.fireCooldownMs = Math.round(w.fireCooldownMs*0.8)); } },
+    { id:"speed_up",  name:"Light Feet",      icon:"👟", desc:"+15% move speed.",            apply:(r)=>{ r.moveSpeed *= 1.15; } },
+    { id:"hp_up",     name:"Extra Napkins",   icon:"❤️", desc:"+20 Max HP and heals that much.", apply:(r)=>{ r.maxHp += 20; r.hp += 20; } },
+    { id:"pierce_up", name:"Double Order",    icon:"🍔", desc:"Single-target weapons fire 1 extra shot.", apply:(r)=>{ r.projectilesPerShot += 1; } },
+    { id:"magnet_up", name:"Wide Reach",      icon:"🧲", desc:"+30% weapon range.",          apply:(r)=>{ r.range *= 1.3; } },
+    { id:"xp_up",     name:"Loyalty Points",  icon:"🎫", desc:"+25% XP from every kill.",    apply:(r)=>{ r.xpMult *= 1.25; } },
+    { id:"burn_up",   name:"Extra Spicy",     icon:"🌶️", desc:"Burn effects deal +50% more damage over time.", apply:(r)=>{ r.burnMult *= 1.5; } },
+    { id:"slow_up",   name:"Thick Sauce",     icon:"🍯", desc:"Slow effects last 50% longer.", apply:(r)=>{ r.slowDurationMult *= 1.5; } },
+    { id:"stun_up",   name:"Concussion Blast",icon:"💫", desc:"Stun effects last 40% longer.", apply:(r)=>{ r.stunDurationMult *= 1.4; } },
+    { id:"drain_up",  name:"Vampiric Feast",  icon:"🧛", desc:"Lifesteal from drain weapons +50%.", apply:(r)=>{ r.drainMult *= 1.5; } },
+    { id:"aura_up",   name:"Grease Fire",     icon:"🔥", desc:"A burning aura around you damages nearby enemies constantly.", apply:(r)=>{ r.auraDmg += 3; r.auraRadius = Math.max(r.auraRadius, 42); } },
+    { id:"revive_up", name:"Emergency Backup",icon:"🚨", desc:"Survive your next killing blow with 1 HP instead of dying. (once per run)", apply:(r)=>{ r.hasRevive = true; } },
+    { id:"invinc_up", name:"Thick Skin",      icon:"🛡️", desc:"+200ms of invincibility after taking a hit.", apply:(r)=>{ r.invincDurationMs += 200; } },
+    { id:"turret_up", name:"Turret Deployment", icon:"🗼", desc:"Places a stationary turret that fires at nearby enemies on its own. Stacks.", apply:(r)=>{ r.turrets.push({ x:r.x, y:r.y, fireTimer:0, fireCooldownMs:850, range:85 }); } },
+    { id:"orbit_up", name:"Extra Orbiter", icon:"🔄", desc:"+1 rotating projectile per shield weapon, evenly spaced around you.", apply:(r)=>{ r.orbitCount += 1; } },
+    // genuine risk/reward picks — real power, at a real cost to how tough
+    // the enemies you're fighting become for the rest of the run
+    { id:"reckless_up", name:"Reckless Aggression", icon:"💢", desc:"+40% weapon damage. Enemies gain +20% Max HP for the rest of this run.", apply:(r)=>{ r.dmgMult *= 1.4; r.enemyHpMult *= 1.2; } },
+    { id:"adrenaline_up", name:"Adrenaline Rush", icon:"🥤", desc:"+25% move speed, all weapons fire 20% faster. Enemies move 15% faster for the rest of this run.", apply:(r)=>{ r.moveSpeed *= 1.25; r.weapons.forEach(w=> w.fireCooldownMs = Math.round(w.fireCooldownMs*0.8)); r.enemySpeedMult *= 1.15; } },
+  ];
+  function rollSurvivorUpgradeChoices(run){
+    // weapon-unlock choices are built fresh each level-up from whichever of
+    // the hero's moves aren't equipped yet — not a static list, since it
+    // depends on how far into their kit this particular run has gotten
+    const hero = HERO_DEFS.find(h=>h.id===run.heroId);
+    const equippedNames = new Set(run.weapons.map(w=>w.move.name));
+    const lockedMoves = heroMoves(hero).filter(m=> !equippedNames.has(m.name));
+    const weaponChoices = lockedMoves.map(move=>({
+      id: "weapon_"+move.name, icon:"🆕", name: move.icon+" "+move.name,
+      desc: "New weapon! " + move.desc,
+      apply:(r)=>{ r.weapons.push(makeWeapon(move, r.weapons.length)); },
+    }));
+
+    const choices = [];
+    // guarantee at least one weapon-unlock option whenever one's available,
+    // so a run isn't stuck on a single starting weapon out of bad luck
+    if(weaponChoices.length){
+      const idx = Math.floor(Math.random()*weaponChoices.length);
+      choices.push(weaponChoices[idx]);
+      weaponChoices.splice(idx,1);
+    }
+    const mixedPool = SURVIVOR_UPGRADES.concat(weaponChoices);
+    while(choices.length < 3 && mixedPool.length){
+      const idx = Math.floor(Math.random()*mixedPool.length);
+      choices.push(mixedPool[idx]);
+      mixedPool.splice(idx,1);
+    }
+    return choices;
   }
 
   const HERO_DEFS = [
@@ -2946,26 +3846,26 @@
         {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
         {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
         {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
-        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+        {name:"Scorching Salvo", icon:"🔥", power:0.9, kind:"crit", desc:"An all-out volley that pushes past the limit for a wild critical hit."}
       ]},
     {id:"h74", name:"Juicy Scout", emoji:"🥟", role:"Support", rarity:"legend",
       moves:[
         {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
         {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
         {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
-        {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
+        {name:"Silent Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Slips in and saps the foe's vitality before they even notice."}
       ]},
     {id:"h116", name:"Golden Emperor", emoji:"🥇", role:"Tank", rarity:"legend",
       moves:[
         {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
-        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Imperial Verdict", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with the unyielding resolve of a ruler who has already decided your fate."},
         {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
         {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
       ]},
     {id:"h117", name:"Champagne Marshal", emoji:"🍾", role:"Support", rarity:"legend",
       moves:[
         {name:"Weaken", icon:"🎯", power:0.9, kind:"dmg_debuff", desc:"Strikes and lowers the foe's ATK."},
-        {name:"Team Boost", icon:"📯", power:0, kind:"buff", desc:"Boosts the whole team's ATK."},
+        {name:"Uncorked Fanfare", icon:"📯", power:0, kind:"buff", desc:"Pops the cork on a celebration the whole team gets to join, boosting ATK."},
         {name:"Sharp Jab", icon:"🗡️", power:1.1, kind:"dmg", desc:"A precise jab at the foe."},
         {name:"Vital Siphon", icon:"🩸", power:0.85, kind:"drain", desc:"Saps the foe's vitality to heal."}
       ]},
@@ -2974,11 +3874,11 @@
         {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
         {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
         {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
-        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+        {name:"Podium Strike", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit — silver is for those who almost made it."}
       ]},
     {id:"h119", name:"Trophy Sovereign", emoji:"🏆", role:"Heal", rarity:"legend",
       moves:[
-        {name:"Soothing Balm", icon:"🩹", power:0, kind:"heal", desc:"Applies a soothing balm, restoring HP."},
+        {name:"Victory Lap", icon:"🩹", power:0, kind:"heal", desc:"A triumphant restoring glow — every champion needs someone to keep them standing."},
         {name:"Frost Touch", icon:"❄️", power:0.85, kind:"dmg_stun", desc:"A chilling touch that may freeze the foe."},
         {name:"Quick Poke", icon:"🍢", power:1.0, kind:"dmg", desc:"A quick poke with a skewer."},
         {name:"Simmer Burn", icon:"🔥", power:0.7, kind:"burn", desc:"A slow simmer that burns over time."}
@@ -2986,7 +3886,7 @@
     {id:"h120", name:"Diamond Regent", emoji:"💎", role:"Tank", rarity:"legend",
       moves:[
         {name:"Shield Slam", icon:"🛡️", power:0.9, kind:"dmg", desc:"Slams the foe with a sturdy shield."},
-        {name:"Iron Guard", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with unyielding resolve."},
+        {name:"Diamond Edge", icon:"🛡️", power:1.15, kind:"dmg", desc:"Strikes with an edge nothing softer than diamond could ever hope to turn aside."},
         {name:"Rally Stand", icon:"📯", power:0, kind:"buff", desc:"Holds the line, boosting the team's ATK."},
         {name:"Bulwark", icon:"🧱", power:0, kind:"shield", desc:"Raises a bulwark, reducing incoming damage."}
       ]},
@@ -2995,15 +3895,15 @@
         {name:"Swift Strike", icon:"⚡", power:1.4, kind:"dmg", desc:"A fast, powerful strike."},
         {name:"Flurry Combo", icon:"💫", power:0.75, kind:"dmg2", desc:"A rapid two-hit combo."},
         {name:"Heavy Smash", icon:"💥", power:0.8, kind:"dmg_stun", desc:"A crushing blow that may stun the foe."},
-        {name:"Overdrive", icon:"🔥", power:0.9, kind:"crit", desc:"Pushes past the limit for a wild critical hit."}
+        {name:"Meteor Cascade", icon:"🔥", power:0.9, kind:"crit", desc:"Every star falls eventually — pushes past the limit for a wild critical hit."}
       ]},
 
     // --- Secret (Ultra) tier: premium fine-dining heroes ---
     {id:"h122", name:"Beef Wellington", emoji:"🥩", role:"Attack", rarity:"ultra",
       moves:[
         {name:"Pastry-Wrapped Fury", icon:"🥐", power:1.4,  kind:"dmg",   desc:"A perfectly wrapped strike, seared to perfection."},
-        {name:"Duxelles Barrage",    icon:"🍄", power:0.75, kind:"dmg2",  desc:"Two rapid strikes laced with mushroom duxelles."},
         {name:"Michelin Star Cut",   icon:"⭐", power:0.9,  kind:"crit",  desc:"A flawless cut worthy of the highest honors."},
+        {name:"Duxelles Barrage",    icon:"🍄", power:0.75, kind:"dmg2",  desc:"Two rapid strikes laced with mushroom duxelles."},
         {name:"Reduction Sear",      icon:"🔥", power:0.7,  kind:"burn",  desc:"A rich pan reduction that keeps searing the foe."}
       ]},
     {id:"h123", name:"Lobster Thermidor", emoji:"🦞", role:"Support", rarity:"ultra",
@@ -3023,16 +3923,32 @@
 
     {id:"h15",name:"Master Ice Cream",    emoji:"🍦", role:"Admin",   rarity:"admin",
       moves:[
-        {name:"Death",             icon:"💀", power:Infinity, kind:"dmg",      desc:"Ends the fight instantly with infinite force."},
+        {name:"Black Hole",        icon:"🎆", power:Infinity, kind:"dmg_stun", desc:"Freezes the foe in an infinitely crushing void."},
         {name:"Ice Cream Orbital Strike",icon:"🍦", power:Infinity, kind:"dmg2",     desc:"Calls down a truly infinite scoop barrage."},
-        {name:"Black Hole",        icon:"🎆", power:Infinity, kind:"dmg_stun", desc:"Freezes the foe in an infinitely crushing void."}
+        {name:"Death",             icon:"💀", power:Infinity, kind:"dmg",      desc:"Ends the fight instantly with infinite force."}
       ]},
   ];
   const STARTER_HERO_IDS = ["h1","h2","h3"];
 
-  function heroMoves(h){ return h.moves; }
+  function heroMoves(h){
+    const rec = state.heroes[h.id];
+    if(rec && rec.secretMoveUnlocked) return h.moves.concat([getDungeonDomainMove(h)]);
+    return h.moves;
+  }
   function heroAtk(h, rec){ return Math.round(8 + RARITY_WEIGHT[h.rarity]*(3 + rec.level*1.5)); }
   function heroMaxHp(h, rec){ return Math.round(40 + RARITY_WEIGHT[h.rarity]*(15 + rec.level*6)); }
+  // Battle-context wrappers that layer the Rogue Tower's run-only blessing
+  // multipliers on top of a hero's real base stats — used only inside actual
+  // battle calculations, never on the roster card, so a tower run never makes
+  // a hero LOOK permanently stronger outside of that run.
+  function battleAtk(h, rec){
+    const base = heroAtk(h, rec);
+    return state.battle.towerMode ? Math.round(base * state.tower.atkMult) : base;
+  }
+  function battleMaxHp(h, rec){
+    const base = heroMaxHp(h, rec);
+    return state.battle.towerMode ? Math.round(base * state.tower.hpMult) : base;
+  }
 
   // ---------- BOSSES (turn-based scale) ----------
   const BOSS_DEFS = [
@@ -3172,21 +4088,43 @@
     { name:"The First Recipe",icon:"🕯️", hp:12000, atk:180 },
   ];
   const SIDE_BOSS_STORY = [
-    "📖 Bound in leather older than the throne itself, the Recipe Keeper doesn't fight to win. It fights to make sure this story's ending is never written.",
-    "🖋️ Spilled sauce, forgotten signatures, and one very angry ghost — the Inkwell Wraith has been rewriting its own history for centuries.",
-    "📚 A hundred cookbooks fused into one furious binding — every page it's ever eaten still screams beneath the cover.",
-    "🔪 Erased from every guest list, every credit, every memory. It still shows up to work anyway.",
-    "🕯️ Before there were kingdoms or thrones, there was a single recipe everything else was copied from. You're not fighting a guardian anymore. You're fighting the original.",
+    "📖 Bound in leather scorched by a fire that's never once gone out, the Recipe Keeper doesn't fight to win. It fights because the Ember Guild taught it that giving ground is the only real defeat.",
+    "🖋️ Every recipe the Hearth Guild ever perfected, it copied down by hand — and it's still furious that anyone thinks a shortcut could replace that patience.",
+    "📚 A hundred cookbooks fused into one furious binding, measured and re-measured until not a single line was out of place — the Frost Guild never did trust anything it couldn't perfect.",
+    "🔪 It tried to cook for all three guilds at once. Ember called it disloyal. Hearth called it impatient. Frost called it imprecise. So it stopped answering to any of them — and started guarding the door instead.",
+    "🕯️ Before there were three guilds, there was one table, one fire, one purpose. This is what they built before they ever learned to compete. You're not fighting a guardian anymore. You're fighting what they used to be, together.",
   ];
   function sideBossStatsFor(idx){
     const b = SIDE_BOSS_DEFS[idx];
     return { hp: b.hp, atk: b.atk };
   }
-  function activeBossList(){ return state.battle.sideMode ? SIDE_BOSS_DEFS : BOSS_DEFS; }
-  function activeBossIdx(){ return state.battle.sideMode ? state.battle.sideBossIndex : state.battle.bossIndex; }
+  function activeBossList(){
+    if(state.battle.sideMode) return SIDE_BOSS_DEFS;
+    if(state.battle.dungeonMode) return DUNGEON_BOSSES;
+    return BOSS_DEFS;
+  }
+  function activeBossIdx(){
+    if(state.battle.sideMode) return state.battle.sideBossIndex;
+    if(state.battle.towerMode) return (state.tower.floor-1) % BOSS_DEFS.length;
+    if(state.battle.dungeonMode) return state.battle.dungeonBossIdx;
+    return state.battle.bossIndex;
+  }
   function currentBoss(){ return activeBossList()[activeBossIdx()]; }
   function activeBossStats(){
-    return state.battle.sideMode ? sideBossStatsFor(state.battle.sideBossIndex) : bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    if(state.battle.sideMode) return sideBossStatsFor(state.battle.sideBossIndex);
+    if(state.battle.towerMode) return towerBossStatsFor(state.tower.floor);
+    if(state.battle.dungeonMode) return dungeonBossStatsFor(state.battle.dungeonBossIdx);
+    return bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+  }
+  function towerBossStatsFor(floor){
+    const b = BOSS_DEFS[(floor-1) % BOSS_DEFS.length];
+    const hpMult = Math.pow(1.12, floor-1);
+    const atkMult = Math.pow(1.09, floor-1);
+    return { hp: Math.round(b.hp*hpMult), atk: Math.round(b.atk*atkMult) };
+  }
+  function dungeonBossStatsFor(idx){
+    const b = DUNGEON_BOSSES[idx];
+    return { hp: b.hp, atk: b.atk };
   }
   function sideStoryUnlocked(){ return state.stats.bossesDefeated >= 4; }
   function introduceSideBossIfNew(idx){
@@ -3258,7 +4196,7 @@
       text:"You've cleared the arena from end to end. The throne is finally in sight — but the moment you reach for it, the whole arena resets around you, guardians and all, only hungrier this time. Reclaiming a kingdom, it turns out, isn't a single fight. It's a habit." },
     { id:"ch9", title:"Whispers of a Lost Recipe",
       trigger:(s)=> s.stats.sideStoryComplete,
-      text:"The First Recipe is gone, but its steam lingers in your memory like a half-remembered dream. Back in the main arena, something's different now — the guardians seem to glance toward the horizon when they think you're not looking, like they know something's coming that even they can't stop." },
+      text:"The First Recipe is gone, but its steam lingers in your memory like a half-remembered dream — Ember's fire, Hearth's patience, Frost's precision, all working from the same table once. Back in the main arena, something's different now. Heroes from all three guilds seem to glance toward the horizon when they think you're not looking, like they know something's coming that even they can't stop." },
     { id:"ch10", title:"The Second Feast",
       trigger:(s)=> s.stats.bossesDefeated >= 232,
       text:"The arena has reset twice now, and each time it comes back hungrier, stranger, more elaborate than before. You start to wonder if 'winning' was ever really the point — or if the throne itself feeds on being fought for." },
@@ -3514,19 +4452,28 @@
 
   function defaultHeroes(){
     const h = {};
-    HERO_DEFS.forEach(d=>{ h[d.id] = {owned: STARTER_HERO_IDS.includes(d.id), level:0}; });
+    HERO_DEFS.forEach(d=>{ h[d.id] = {owned: STARTER_HERO_IDS.includes(d.id), level:0, secretMoveUnlocked:false}; });
     return h;
   }
   function freshBattle(){
     const stats = bossStatsFor(0,1);
-    return { bossIndex:0, cycle:1, bossHp:stats.hp, sideMode:false, sideBossIndex:0, activeHeroId:null, heroHp:{}, moveCooldowns:{}, log:["A challenger approaches the Grand Feast Arena!"] };
+    return { bossIndex:0, cycle:1, bossHp:stats.hp, sideMode:false, sideBossIndex:0, towerMode:false, dungeonMode:false, dungeonBossIdx:-1, activeHeroId:null, heroHp:{}, moveCooldowns:{}, log:["A challenger approaches the Grand Feast Arena!"] };
+  }
+  function freshTower(){
+    return { floor:1, blessings:[], highestFloorEver:0, atkMult:1, hpMult:1, rewardMult:1, fullHealEachFloor:false, shieldEachFloor:false };
+  }
+  function freshDungeon(){
+    return { active:false, exploringHeroId:null, x:DUNGEON_START.x, y:DUNGEON_START.y, defeatedThisRun:[], treasureClaimedThisRun:[] };
+  }
+  function freshSurvivor(){
+    return { bestSeconds:0, bestKills:0 };
   }
   function freshState(){
     const s = {
       coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(),
-      lastSesameTick:Date.now(), battle:freshBattle(), battleTeam: STARTER_HERO_IDS.slice(),
+      lastSesameTick:Date.now(), battle:freshBattle(), battleTeam: STARTER_HERO_IDS.slice(), tower:freshTower(), dungeon:freshDungeon(), survivor:freshSurvivor(),
       stats:{ bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0, bossIntrosSeen:[], storyChaptersUnlocked:[], storyChaptersRead:0,
-        sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0 }, questsClaimed:{},
+        sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0, moveUsageCounts:{} }, questsClaimed:{},
       settings:{ skipAnim:{ common:false, rare:false, epic:false, legend:false, ultra:false } }
     };
     GEN_DEFS.forEach(g=> s.gens[g.id]=0);
@@ -3589,13 +4536,20 @@
     }
   }
   function battleTeamHeroList(){
+    // A dungeon fight is a solo encounter with whichever hero you chose to
+    // explore with — not your full selected battle team — so every other
+    // system that already reads through this (HP tracking, bench rendering,
+    // active-hero validation) automatically treats it as one-on-one for free.
+    if(state.battle.dungeonMode && state.dungeon.exploringHeroId){
+      return HERO_DEFS.filter(h => h.id === state.dungeon.exploringHeroId && state.heroes[h.id] && state.heroes[h.id].owned);
+    }
     return HERO_DEFS.filter(h => state.battleTeam.includes(h.id) && state.heroes[h.id] && state.heroes[h.id].owned);
   }
   function ensureHeroHp(){
     ensureBattleTeam();
     battleTeamHeroList().forEach(h=>{
       const rec = state.heroes[h.id];
-      const max = heroMaxHp(h, rec);
+      const max = battleMaxHp(h, rec);
       if(!(h.id in state.battle.heroHp)){
         state.battle.heroHp[h.id] = max;
       } else {
@@ -3610,7 +4564,7 @@
   }
   function healTeamFully(){
     battleTeamHeroList().forEach(h=>{
-      state.battle.heroHp[h.id] = heroMaxHp(h, state.heroes[h.id]);
+      state.battle.heroHp[h.id] = battleMaxHp(h, state.heroes[h.id]);
     });
   }
 
@@ -3663,7 +4617,7 @@
     if(!state.battle.moveCooldowns) state.battle.moveCooldowns = {};
     if(typeof state.battle.sideMode !== "boolean") state.battle.sideMode = false;
     if(typeof state.battle.sideBossIndex !== "number") state.battle.sideBossIndex = 0;
-    if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0, bossIntrosSeen:[], storyChaptersUnlocked:[], storyChaptersRead:0, sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0 };
+    if(!state.stats) state.stats = { bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0, bossIntrosSeen:[], storyChaptersUnlocked:[], storyChaptersRead:0, sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0, moveUsageCounts:{} };
     if(state.stats.pityEpic === undefined) state.stats.pityEpic = 0;
     if(state.stats.pityLegend === undefined) state.stats.pityLegend = 0;
     if(!Array.isArray(state.stats.bossIntrosSeen)) state.stats.bossIntrosSeen = [];
@@ -3673,6 +4627,33 @@
     if(typeof state.stats.sideStoryComplete !== "boolean") state.stats.sideStoryComplete = false;
     if(!Array.isArray(state.stats.sideBossIntrosSeen)) state.stats.sideBossIntrosSeen = [];
     if(typeof state.stats.domainMovesUsed !== "number") state.stats.domainMovesUsed = 0;
+    if(!state.stats.moveUsageCounts || typeof state.stats.moveUsageCounts !== "object") state.stats.moveUsageCounts = {};
+    if(!state.tower || typeof state.tower !== "object") state.tower = freshTower();
+    if(typeof state.tower.floor !== "number") state.tower.floor = 1;
+    if(!Array.isArray(state.tower.blessings)) state.tower.blessings = [];
+    if(typeof state.tower.highestFloorEver !== "number") state.tower.highestFloorEver = 0;
+    if(typeof state.tower.atkMult !== "number") state.tower.atkMult = 1;
+    if(typeof state.tower.hpMult !== "number") state.tower.hpMult = 1;
+    if(typeof state.tower.rewardMult !== "number") state.tower.rewardMult = 1;
+    if(typeof state.tower.fullHealEachFloor !== "boolean") state.tower.fullHealEachFloor = false;
+    if(typeof state.tower.shieldEachFloor !== "boolean") state.tower.shieldEachFloor = false;
+    if(typeof state.battle.towerMode !== "boolean") state.battle.towerMode = false;
+    if(!state.dungeon || typeof state.dungeon !== "object") state.dungeon = freshDungeon();
+    if(typeof state.dungeon.active !== "boolean") state.dungeon.active = false;
+    if(typeof state.dungeon.x !== "number") state.dungeon.x = DUNGEON_START.x;
+    if(typeof state.dungeon.y !== "number") state.dungeon.y = DUNGEON_START.y;
+    if(!Array.isArray(state.dungeon.defeatedThisRun)) state.dungeon.defeatedThisRun = [];
+    if(!Array.isArray(state.dungeon.treasureClaimedThisRun)) state.dungeon.treasureClaimedThisRun = [];
+    if(typeof state.battle.dungeonMode !== "boolean") state.battle.dungeonMode = false;
+    if(typeof state.battle.dungeonBossIdx !== "number") state.battle.dungeonBossIdx = -1;
+    HERO_DEFS.forEach(d=>{
+      if(state.heroes[d.id] && typeof state.heroes[d.id].secretMoveUnlocked !== "boolean"){
+        state.heroes[d.id].secretMoveUnlocked = false;
+      }
+    });
+    if(!state.survivor || typeof state.survivor !== "object") state.survivor = freshSurvivor();
+    if(typeof state.survivor.bestSeconds !== "number") state.survivor.bestSeconds = 0;
+    if(typeof state.survivor.bestKills !== "number") state.survivor.bestKills = 0;
     if(!state.questsClaimed) state.questsClaimed = {};
     if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
     if(!state.settings) state.settings = { skipAnim:{} };
@@ -3739,6 +4720,9 @@
   const statFlavor = document.getElementById("statFlavor");
   const statThreat = document.getElementById("statThreat");
   const cutsceneRankStamp = document.getElementById("cutsceneRankStamp");
+  const cutsceneCriticalRing = document.getElementById("cutsceneCriticalRing");
+  const cutsceneCriticalFlash = document.getElementById("cutsceneCriticalFlash");
+  const cutsceneMilestone = document.getElementById("cutsceneMilestone");
   const saveBtn = document.getElementById("saveBtn");
   const saveStatus = document.getElementById("saveStatus");
   const resetBtn = document.getElementById("resetBtn");
@@ -3746,9 +4730,57 @@
   const stageTag = document.getElementById("stageTag");
   const combatRow = document.getElementById("combatRow");
   const battleAreaPulse = document.getElementById("battleAreaPulse");
+  const victoryBanner = document.getElementById("victoryBanner");
   const battleArea = document.getElementById("battleArea");
   const openTeamSelectBtn = document.getElementById("openTeamSelectBtn");
   const sideQuestBtn = document.getElementById("sideQuestBtn");
+  const towerQuestBtn = document.getElementById("towerQuestBtn");
+  const towerFloorHud = document.getElementById("towerFloorHud");
+  const towerFloorLabel = document.getElementById("towerFloorLabel");
+  const towerBlessingIcons = document.getElementById("towerBlessingIcons");
+  const towerBlessingOverlay = document.getElementById("towerBlessingOverlay");
+  const towerBlessingSub = document.getElementById("towerBlessingSub");
+  const towerBlessingOptions = document.getElementById("towerBlessingOptions");
+  const towerDefeatOverlay = document.getElementById("towerDefeatOverlay");
+  const towerDefeatTitle = document.getElementById("towerDefeatTitle");
+  const towerDefeatSub = document.getElementById("towerDefeatSub");
+  const towerDefeatOk = document.getElementById("towerDefeatOk");
+  const dungeonQuestBtn = document.getElementById("dungeonQuestBtn");
+  const dungeonSelectOverlay = document.getElementById("dungeonSelectOverlay");
+  const dungeonSelectGrid = document.getElementById("dungeonSelectGrid");
+  const dungeonSelectClose = document.getElementById("dungeonSelectClose");
+  const dungeonMapOverlay = document.getElementById("dungeonMapOverlay");
+  const dungeonMapSub = document.getElementById("dungeonMapSub");
+  const dungeonGrid = document.getElementById("dungeonGrid");
+  const dungeonExitBtn = document.getElementById("dungeonExitBtn");
+  const dungeonMoveUp = document.getElementById("dungeonMoveUp");
+  const dungeonMoveDown = document.getElementById("dungeonMoveDown");
+  const dungeonMoveLeft = document.getElementById("dungeonMoveLeft");
+  const dungeonMoveRight = document.getElementById("dungeonMoveRight");
+  const survivorQuestBtn = document.getElementById("survivorQuestBtn");
+  const survivorSelectOverlay = document.getElementById("survivorSelectOverlay");
+  const survivorSelectGrid = document.getElementById("survivorSelectGrid");
+  const survivorSelectClose = document.getElementById("survivorSelectClose");
+  const survivorArenaOverlay = document.getElementById("survivorArenaOverlay");
+  const survivorHpInner = document.getElementById("survivorHpInner");
+  const survivorTimer = document.getElementById("survivorTimer");
+  const survivorXpInner = document.getElementById("survivorXpInner");
+  const survivorField = document.getElementById("survivorField");
+  const survivorPlayerEl = document.getElementById("survivorPlayer");
+  const survivorStatsRow = document.getElementById("survivorStatsRow");
+  const survivorFleeBtn = document.getElementById("survivorFleeBtn");
+  const survivorMoveUp = document.getElementById("survivorMoveUp");
+  const survivorMoveDown = document.getElementById("survivorMoveDown");
+  const survivorMoveLeft = document.getElementById("survivorMoveLeft");
+  const survivorMoveRight = document.getElementById("survivorMoveRight");
+  const survivorLevelUpOverlay = document.getElementById("survivorLevelUpOverlay");
+  const survivorLevelUpSub = document.getElementById("survivorLevelUpSub");
+  const survivorLevelUpOptions = document.getElementById("survivorLevelUpOptions");
+  const survivorEndOverlay = document.getElementById("survivorEndOverlay");
+  const survivorEndEmoji = document.getElementById("survivorEndEmoji");
+  const survivorEndTitle = document.getElementById("survivorEndTitle");
+  const survivorEndSub = document.getElementById("survivorEndSub");
+  const survivorEndOk = document.getElementById("survivorEndOk");
   const teamCountLabel = document.getElementById("teamCountLabel");
   const heroVisual = document.getElementById("heroVisual");
   const heroEmojiSpan = document.getElementById("heroEmojiSpan");
@@ -3892,8 +4924,10 @@
         const levelLabel = preview.count > 1 ? `Level x${preview.count}` : "🍞";
         const costLabel = preview.count > 0 ? fmt(preview.totalCost) : fmt(costOf(rec.level));
         const moves = heroMoves(h).map(m=>m.icon+" "+m.name).join(" · ");
+        const faction = getHeroFaction(h);
         card.innerHTML = `
           <div class="hero-rarity-tag">${RARITY_LABEL[h.rarity]}</div>
+          <div class="hero-faction-tag ${faction}" title="${FACTION_DEFS[faction].name}">${FACTION_DEFS[faction].emoji}</div>
           <button class="hero-lore-btn" data-id="${h.id}" title="Lore">📖</button>
           <div class="hero-emoji">${h.emoji}</div>
           <div class="hero-name">${h.name}</div>
@@ -3927,7 +4961,7 @@
           state.crumbs -= preview.totalCost;
           rec.level += preview.count;
           if(state.battle.heroHp[id] !== undefined){
-            state.battle.heroHp[id] = Math.min(state.battle.heroHp[id]+0, heroMaxHp(h, rec));
+            state.battle.heroHp[id] = Math.min(state.battle.heroHp[id]+0, battleMaxHp(h, rec));
           }
           renderAll();
         }
@@ -4390,6 +5424,17 @@
     "h123|Brandy Flambé":          { sub:"🔥 A SIGNATURE MOVE 🔥",        quote:"\"They say I cook with fire. I cook WITH RAGE.\"",       power:8888 },
     "h124|Shaved Truffle Frost":   { sub:"❄️ A SIGNATURE MOVE ❄️",        quote:"\"Cold precision. Warm heart. Frozen enemies.\"",        power:7777 },
     "h15|Black Hole":              { sub:"🎆 AN IMPOSSIBLE POWER 🎆",     quote:"\"Even the void deserves a scoop.\"",                    power:99999 },
+    // Every remaining Legendary hero gets their own Signature Move too —
+    // previously only Kingsbun Regent and Wagyu Sovereign (both Domain-tier)
+    // had anything at all; the other eight had zero cutscene presence.
+    "h61|Scorching Salvo":         { sub:"🔥 A SIGNATURE MOVE 🔥",        quote:"\"Retreat isn't in my recipe.\"",                        power:6200 },
+    "h74|Silent Siphon":           { sub:"🩸 A SIGNATURE MOVE 🩸",        quote:"\"You won't even feel it leave.\"",                      power:5800 },
+    "h116|Imperial Verdict":       { sub:"🥇 A SIGNATURE MOVE 🥇",        quote:"\"The court has reached its decision.\"",                power:6500 },
+    "h117|Uncorked Fanfare":       { sub:"🍾 A SIGNATURE MOVE 🍾",        quote:"\"Let the celebration begin — for you, it's the last one.\"", power:5600 },
+    "h118|Podium Strike":          { sub:"🏅 A SIGNATURE MOVE 🏅",        quote:"\"Silver is for those who almost made it.\"",            power:6100 },
+    "h119|Victory Lap":            { sub:"🏆 A SIGNATURE MOVE 🏆",        quote:"\"Every champion needs someone to keep them standing.\"", power:5900 },
+    "h120|Diamond Edge":           { sub:"💎 A SIGNATURE MOVE 💎",        quote:"\"Nothing cuts deeper than inevitability.\"",            power:6700 },
+    "h121|Meteor Cascade":         { sub:"🌠 A SIGNATURE MOVE 🌠",        quote:"\"Every star falls eventually. Yours falls now.\"",      power:6300 },
   };
   function signatureMoveProfile(hero, move){
     return SIGNATURE_MOVES[hero.id + "|" + move.name] || null;
@@ -4412,13 +5457,24 @@
     "h15|Death":                   { domain:"The Eternal Freezer",  sub:"💀 A DOMAIN OPENS 💀",  quote:"\"Some things melt. I don't.\"",                             power:999999999, effect:"eternal_freeze" },
   };
   function domainMoveProfile(hero, move){
-    return DOMAIN_MOVES[hero.id + "|" + move.name] || null;
+    if(DOMAIN_MOVES[hero.id + "|" + move.name]) return DOMAIN_MOVES[hero.id + "|" + move.name];
+    // A dungeon-granted Domain Move isn't in the static table above — it's
+    // generated deterministically per hero, so check whether this move IS
+    // that hero's generated one before falling back to "no domain here".
+    const rec = state.heroes[hero.id];
+    if(rec && rec.secretMoveUnlocked){
+      const dm = getDungeonDomainMove(hero);
+      if(dm.name === move.name){
+        return { domain:dm.domain, sub:dm.sub, quote:dm.quote, power:dm.cutscenePower, effect:dm.effect };
+      }
+    }
+    return null;
   }
   // Applies each Domain Move's own themed payoff — tanks get shields/team support,
   // attackers get burns, support/heal roles get cleansing or restoration, and
   // Master Ice Cream's domain genuinely freezes the boss in place.
   function applyDomainEffect(profile, h, rec){
-    const max = heroMaxHp(h, rec);
+    const max = battleMaxHp(h, rec);
     const heal = (amt)=>{ state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0) + amt); };
     switch(profile.effect){
       case "feast":
@@ -4429,7 +5485,7 @@
         break;
       case "sear_burn":
         heroBuff = {mult:1.8, turns:5};
-        bossBurn = {dmgPerTurn: Math.max(1, Math.round(heroAtk(h,rec)*0.4)), turns:5};
+        bossBurn = {dmgPerTurn: Math.max(1, Math.round(battleAtk(h,rec)*0.4)), turns:5};
         addLog("🥩 The Eternal Sear leaves the boss smoldering — ATK up, and burning for 5 turns!");
         break;
       case "wither":
@@ -4439,7 +5495,7 @@
         break;
       case "inferno":
         heroBuff = {mult:2.2, turns:5};
-        bossBurn = {dmgPerTurn: Math.max(1, Math.round(heroAtk(h,rec)*0.5)), turns:5};
+        bossBurn = {dmgPerTurn: Math.max(1, Math.round(battleAtk(h,rec)*0.5)), turns:5};
         addLog("🌶️ The Scoville Singularity sets the whole arena ablaze — ATK way up, boss set on fire!");
         break;
       case "purge":
@@ -4501,6 +5557,14 @@
     "Butter Poach Siphon": "siphon",
     "Reduction Strike": "wine",
     "Death": "reaper",
+    "Scorching Salvo": "impact",
+    "Silent Siphon": "shadow",
+    "Imperial Verdict": "decree",
+    "Uncorked Fanfare": "champagne",
+    "Podium Strike": "podium",
+    "Victory Lap": "trophy",
+    "Diamond Edge": "crystal",
+    "Meteor Cascade": "meteor",
   };
   function cutsceneOverlayType(move){
     if(CUTSCENE_OVERLAY_OVERRIDE[move.name]) return CUTSCENE_OVERLAY_OVERRIDE[move.name];
@@ -4631,6 +5695,24 @@
     }, angles.length*90 + 260);
   }
   function spawnCutsceneFire(container){
+    // a real pan with a big blue-tinted flame whoosh — the classic
+    // "chef ignites the brandy" shot — holds behind the hero
+    const pan = document.createElement("div");
+    pan.className = "cutscene-flambe-pan";
+    const flame = document.createElement("div");
+    flame.className = "cutscene-flambe-flame";
+    container.appendChild(pan); container.appendChild(flame);
+    requestAnimationFrame(()=>{
+      pan.classList.add("showing");
+      flame.classList.add("whooshing");
+    });
+    setTimeout(()=>{
+      flame.classList.remove("whooshing");
+      flame.classList.add("fading");
+      pan.classList.remove("showing");
+      setTimeout(()=>{ pan.remove(); flame.remove(); }, 480);
+    }, 1300);
+
     // a match-strike glint before the whoosh, then a real impact-frame heat-flash
     const glint = document.createElement("div");
     glint.className = "cs-glint firing";
@@ -4762,6 +5844,28 @@
     shakeScreen();
   }
   function spawnCutsceneDrip(container, color){
+    // a real mustard bottle tilts and squeezes a visible stream into the
+    // splash — makes the concept unambiguous instead of a generic yellow burst
+    const bottle = document.createElement("div");
+    bottle.className = "mustard-bottle squeezing";
+    const body = document.createElement("div"); body.className = "mustard-bottle-body";
+    const cap = document.createElement("div"); cap.className = "mustard-bottle-cap";
+    bottle.appendChild(body); bottle.appendChild(cap);
+    const stream = document.createElement("div");
+    stream.className = "mustard-stream streaming";
+    container.appendChild(bottle); container.appendChild(stream);
+    setTimeout(()=>{ bottle.remove(); stream.remove(); }, 1050);
+
+    const splash = document.createElement("div");
+    splash.className = "cutscene-citrus-splash splashing";
+    setTimeout(()=>{ container.appendChild(splash); }, 350);
+    setTimeout(()=>{
+      splash.classList.remove("splashing");
+      splash.classList.add("fading");
+      setTimeout(()=>splash.remove(), 470);
+    }, 1250);
+    setTimeout(()=> spawnImpactFrame(container, 90), 350);
+
     for(let i=0;i<12;i++){
       setTimeout(()=>{
         const el = document.createElement("div");
@@ -4960,6 +6064,9 @@
   function playRankStamp(grade){
     return new Promise(resolve=>{
       cutsceneRankStamp.textContent = grade;
+      // longer grade strings (like the critical-cutscene "SSS+") need a
+      // smaller font so they don't overflow past the edges at this scale
+      cutsceneRankStamp.style.fontSize = grade.length > 3 ? "min(34vw,165px)" : "min(46vw,220px)";
       cutsceneRankStamp.classList.remove("firing");
       void cutsceneRankStamp.offsetWidth;
       cutsceneRankStamp.classList.add("firing");
@@ -5039,9 +6146,26 @@
     shakeScreen();
   }
   function spawnCutsceneSear(container){
+    // a real glowing grate backdrop, with three actual sear marks branding
+    // across it in sequence — not just crack-line streaks
+    const grate = document.createElement("div");
+    grate.className = "cutscene-sear-grate showing";
+    container.appendChild(grate);
+    setTimeout(()=>{
+      grate.classList.remove("showing");
+      grate.classList.add("fading");
+      setTimeout(()=>grate.remove(), 470);
+    }, 1300);
+
     // three quick searing streaks land in sequence, each hissing with steam
     for(let i=0;i<3;i++){
       setTimeout(()=>{
+        const mark = document.createElement("div");
+        mark.className = "cutscene-sear-mark searing";
+        mark.style.setProperty("--mark-angle", (-20+i*20) + "deg");
+        mark.style.top = (44+i*6) + "%";
+        container.appendChild(mark);
+        setTimeout(()=>mark.remove(), 1350);
         const crack = document.createElement("div");
         crack.className = "cs-crack firing";
         crack.style.setProperty("--crack-angle", (-20+i*20) + "deg");
@@ -5059,6 +6183,23 @@
         container.appendChild(steam);
         setTimeout(()=>steam.remove(), 1000);
         spawnImpactFrame(container, 70);
+        // a gold seal-of-approval flourish on the third and final mark —
+        // "Wagyu SOVEREIGN" earns the same premium gold language as
+        // Sovereign Slam's crown, not just three brand marks and nothing else
+        if(i === 2){
+          setTimeout(()=>{
+            const ring = document.createElement("div");
+            ring.className = "cs-ring firing";
+            ring.style.setProperty("--cs-color", "#f6c445");
+            container.appendChild(ring);
+            setTimeout(()=>ring.remove(), 750);
+            const glint = document.createElement("div");
+            glint.className = "cs-glint firing";
+            glint.style.top = (44+i*6) + "%";
+            container.appendChild(glint);
+            setTimeout(()=>glint.remove(), 260);
+          }, 150);
+        }
       }, i*160);
     }
     setTimeout(()=>shakeScreen(), 320);
@@ -5136,7 +6277,17 @@
     setTimeout(()=>shakeScreen(), 100);
   }
   function spawnCutsceneBarrage(container){
-    // a rapid scatter of small impacts, not one big hit
+    // a real target-ring backdrop that the rapid scatter of hits lands
+    // across — selling "many quick strikes converging" as its own held shot
+    const target = document.createElement("div");
+    target.className = "cutscene-barrage-target showing";
+    container.appendChild(target);
+    setTimeout(()=>{
+      target.classList.remove("showing");
+      target.classList.add("fading");
+      setTimeout(()=>target.remove(), 470);
+    }, 1250);
+
     for(let i=0;i<9;i++){
       setTimeout(()=>{
         const ring = document.createElement("div");
@@ -5146,13 +6297,16 @@
         ring.style.width = "10px"; ring.style.height = "10px";
         container.appendChild(ring);
         setTimeout(()=>ring.remove(), 500);
-        const dot = document.createElement("div");
-        dot.className = "cs-ink firing";
-        dot.style.background = "radial-gradient(ellipse at center, rgba(60,40,20,0.9), transparent 75%)";
-        dot.style.width = "18px"; dot.style.height = "14px";
-        dot.style.left = ring.style.left; dot.style.top = ring.style.top;
-        container.appendChild(dot);
-        setTimeout(()=>dot.remove(), 450);
+        // an actual mushroom cap pops at each hit — "Duxelles" is a mushroom
+        // mince, so the concept should read as mushroom, not a generic dot
+        const cap = document.createElement("div");
+        cap.className = "duxelles-cap popping";
+        cap.style.left = ring.style.left; cap.style.top = ring.style.top;
+        const capTop = document.createElement("div"); capTop.className = "duxelles-cap-top";
+        const capStem = document.createElement("div"); capStem.className = "duxelles-cap-stem";
+        cap.appendChild(capTop); cap.appendChild(capStem);
+        container.appendChild(cap);
+        setTimeout(()=>cap.remove(), 480);
       }, i*55);
     }
     setTimeout(()=>{ spawnImpactFrame(container, 90); shakeScreen(); }, 500);
@@ -5195,7 +6349,17 @@
     shakeScreen();
   }
   function spawnCutsceneWine(container){
-    // dark burgundy ink cascading down instead of a neutral splash
+    // a real dramatic wine wave holds behind the hero, cascading drips still
+    // fall in front of it for texture
+    const wave = document.createElement("div");
+    wave.className = "cutscene-wine-wave rising";
+    container.appendChild(wave);
+    setTimeout(()=>{
+      wave.classList.remove("rising");
+      wave.classList.add("fading");
+      setTimeout(()=>wave.remove(), 470);
+    }, 1250);
+
     for(let i=0;i<8;i++){
       setTimeout(()=>{
         const el = document.createElement("div");
@@ -5215,6 +6379,185 @@
       }, i*90);
     }
     setTimeout(()=> spawnImpactFrame(container, 90), 200);
+  }
+  function spawnCutsceneCrystal(container){
+    // a real faceted diamond gem, distinct from Frost's snowflake-crystal
+    const gem = document.createElement("div");
+    gem.className = "cutscene-diamond growing";
+    const top = document.createElement("div"); top.className = "diamond-top";
+    const bottom = document.createElement("div"); bottom.className = "diamond-bottom";
+    const line = document.createElement("div"); line.className = "diamond-facet-line";
+    gem.appendChild(top); gem.appendChild(bottom); gem.appendChild(line);
+    container.appendChild(gem);
+    setTimeout(()=>{
+      gem.classList.remove("growing");
+      gem.classList.add("fading");
+      setTimeout(()=>gem.remove(), 450);
+    }, 1250);
+    spawnImpactFrame(container, 100);
+    // shard fragments catching light, radiating outward at the peak
+    setTimeout(()=>{
+      for(let i=0;i<8;i++){
+        const el = document.createElement("div");
+        el.className = "cs-shard firing";
+        el.style.background = "linear-gradient(160deg, #fff, #7ec8e3)";
+        const angle = (i/8)*Math.PI*2;
+        const dist = 80 + Math.random()*70;
+        el.style.setProperty("--shx", Math.cos(angle)*dist + "px");
+        el.style.setProperty("--shy", Math.sin(angle)*dist + "px");
+        el.style.setProperty("--shrot", (Math.random()*360) + "deg");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 600);
+      }
+      shakeScreen();
+    }, 350);
+  }
+  function spawnCutsceneDecree(container){
+    // a wax seal slams down — distinct from Sovereign Slam's crown-drop
+    spawnImpactFrame(container, 100);
+    const seal = document.createElement("div");
+    seal.className = "cutscene-seal stamping";
+    const wax = document.createElement("div"); wax.className = "seal-wax";
+    const emblem = document.createElement("div"); emblem.className = "seal-emblem";
+    seal.appendChild(wax); seal.appendChild(emblem);
+    container.appendChild(seal);
+    setTimeout(()=>{
+      seal.classList.remove("stamping");
+      seal.classList.add("fading");
+      setTimeout(()=>seal.remove(), 450);
+    }, 1250);
+    for(let i=0;i<6;i++){
+      setTimeout(()=>{
+        const crack = document.createElement("div");
+        crack.className = "cs-crack firing";
+        crack.style.setProperty("--crack-angle", (i*60) + "deg");
+        crack.style.background = "linear-gradient(90deg, transparent, #b8860b 40%, #fff 60%, transparent)";
+        crack.style.top = "50%"; crack.style.width = "42vmax";
+        container.appendChild(crack);
+        setTimeout(()=>crack.remove(), 450);
+      }, i*25);
+    }
+    shakeScreen();
+  }
+  function spawnCutsceneShadow(container){
+    // dark tendrils creep INWARD toward a shrinking point — the stealthy
+    // inverse of a normal outward void burst, matching "Silent"
+    const pool = document.createElement("div");
+    pool.className = "cutscene-shadow-pool pooling";
+    container.appendChild(pool);
+    setTimeout(()=>{
+      pool.classList.remove("pooling");
+      pool.classList.add("fading");
+      setTimeout(()=>pool.remove(), 420);
+    }, 1200);
+    for(let i=0;i<10;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-tendril firing";
+        el.style.background = "radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0.95), rgba(20,20,30,0.5) 55%, transparent 80%)";
+        el.style.filter = "none";
+        const angle = (i/10)*Math.PI*2;
+        const dist = 130 + Math.random()*40;
+        el.style.left = "calc(50% + " + Math.cos(angle)*dist + "px)";
+        el.style.top = "calc(50% + " + Math.sin(angle)*dist + "px)";
+        el.style.setProperty("--tr-rot0", (angle*180/Math.PI+180) + "deg");
+        el.style.setProperty("--tr-rot1", (angle*180/Math.PI+20) + "deg");
+        el.style.setProperty("--tx", -Math.cos(angle)*dist + "px");
+        el.style.setProperty("--ty", -Math.sin(angle)*dist + "px");
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 900);
+      }, i*40);
+    }
+    setTimeout(()=> spawnImpactFrame(container, 90), 500);
+  }
+  function spawnCutscenePodium(container){
+    // a real 3-tier medal podium — a literal podium for "Podium Strike"
+    const podium = document.createElement("div");
+    podium.className = "cutscene-podium rising";
+    ["left","center","right"].forEach(pos=>{
+      const step = document.createElement("div");
+      step.className = "podium-step " + pos;
+      podium.appendChild(step);
+    });
+    const medal = document.createElement("div"); medal.className = "podium-medal";
+    podium.appendChild(medal);
+    container.appendChild(podium);
+    setTimeout(()=>{
+      podium.classList.remove("rising");
+      podium.classList.add("fading");
+      setTimeout(()=>podium.remove(), 450);
+    }, 1250);
+    spawnImpactFrame(container, 90);
+    shakeScreen();
+  }
+  function spawnCutsceneChampagne(container){
+    // a real cork launches and bubbles rise — what "uncorked" actually depicts
+    const cork = document.createElement("div");
+    cork.className = "champagne-cork popping";
+    container.appendChild(cork);
+    setTimeout(()=>cork.remove(), 550);
+    const glint = document.createElement("div");
+    glint.className = "cs-glint firing";
+    glint.style.top = "72%";
+    container.appendChild(glint);
+    setTimeout(()=>glint.remove(), 220);
+    setTimeout(()=> spawnImpactFrame(container, 80), 60);
+    for(let i=0;i<16;i++){
+      setTimeout(()=>{
+        const b = document.createElement("div");
+        b.className = "champagne-bubble rising";
+        b.style.left = (30+Math.random()*40) + "%";
+        container.appendChild(b);
+        setTimeout(()=>b.remove(), 1150);
+      }, 150+i*55);
+    }
+    setTimeout(()=>shakeScreen(), 100);
+  }
+  function spawnCutsceneTrophy(container){
+    // a real trophy cup, not a generic sparkle burst
+    const trophy = document.createElement("div");
+    trophy.className = "cutscene-trophy rising";
+    const cup = document.createElement("div"); cup.className = "trophy-cup";
+    const hl = document.createElement("div"); hl.className = "trophy-handle left";
+    const hr = document.createElement("div"); hr.className = "trophy-handle right";
+    const stem = document.createElement("div"); stem.className = "trophy-stem";
+    const base = document.createElement("div"); base.className = "trophy-base";
+    trophy.appendChild(cup); trophy.appendChild(hl); trophy.appendChild(hr);
+    trophy.appendChild(stem); trophy.appendChild(base);
+    container.appendChild(trophy);
+    setTimeout(()=>{
+      trophy.classList.remove("rising");
+      trophy.classList.add("fading");
+      setTimeout(()=>trophy.remove(), 450);
+    }, 1300);
+    spawnImpactFrame(container, 80);
+    for(let i=0;i<10;i++){
+      setTimeout(()=>{
+        const el = document.createElement("div");
+        el.className = "cs-glint firing";
+        const angle = Math.random()*Math.PI*2;
+        const dist = 50 + Math.random()*80;
+        el.style.left = "calc(50% + " + Math.cos(angle)*dist + "px)";
+        el.style.top = "calc(50% + " + Math.sin(angle)*dist + "px)";
+        container.appendChild(el);
+        setTimeout(()=>el.remove(), 240);
+      }, i*50);
+    }
+  }
+  function spawnCutsceneMeteor(container){
+    // real falling comets with glowing heads and trails, not a static burst
+    spawnImpactFrame(container, 100);
+    for(let i=0;i<7;i++){
+      setTimeout(()=>{
+        const m = document.createElement("div");
+        m.className = "cutscene-meteor falling";
+        m.style.left = (10+Math.random()*80) + "%";
+        m.style.animationDelay = (Math.random()*150) + "ms";
+        container.appendChild(m);
+        setTimeout(()=>m.remove(), 900);
+      }, i*90);
+    }
+    setTimeout(()=>shakeScreen(), 300);
   }
   function spawnCutsceneReaper(container){
     // a real dark portal with a looming skull that actually holds on screen,
@@ -5279,10 +6622,29 @@
     else if(type === "siphon") spawnCutsceneSiphon(container);
     else if(type === "wine") spawnCutsceneWine(container);
     else if(type === "reaper") spawnCutsceneReaper(container);
+    else if(type === "crystal") spawnCutsceneCrystal(container);
+    else if(type === "decree") spawnCutsceneDecree(container);
+    else if(type === "shadow") spawnCutsceneShadow(container);
+    else if(type === "podium") spawnCutscenePodium(container);
+    else if(type === "champagne") spawnCutsceneChampagne(container);
+    else if(type === "trophy") spawnCutsceneTrophy(container);
+    else if(type === "meteor") spawnCutsceneMeteor(container);
   }
 
+  const MOVE_MILESTONES = [5, 10, 25, 50, 100, 250, 500, 1000];
   async function playSignatureCutscene(hero, move, profile){
     const isDomain = !!profile.domain;
+
+    // Track how many times THIS hero has used THIS exact move — a round-
+    // number milestone gets a small celebration banner in the reveal. A
+    // small (1 in 10) chance of a "Critical Cutscene" fires independently
+    // of that — a rarer, more decorated variant of the same sequence.
+    const moveKey = hero.id + "|" + move.name;
+    state.stats.moveUsageCounts[moveKey] = (state.stats.moveUsageCounts[moveKey] || 0) + 1;
+    const usageCount = state.stats.moveUsageCounts[moveKey];
+    const hitMilestone = MOVE_MILESTONES.includes(usageCount);
+    const isCritical = Math.random() < 0.1;
+
     battleCutscene.className = "rarity-cutscene rc-ultra" + (isDomain ? " rc-domain" : "");
     battleCutscene.style.display = "flex";
     battleCutsceneContent.style.display = "none";
@@ -5300,11 +6662,20 @@
     cutsceneRankStamp.style.opacity = "0";
     battleCutscene.classList.remove("building");
     battleCutsceneTint.classList.remove("tint-cool","tint-warm");
+    cutsceneCriticalRing.classList.remove("showing");
+    cutsceneCriticalFlash.classList.remove("firing");
+    cutsceneMilestone.classList.remove("showing","fading");
+    cutsceneMilestone.style.display = "none";
 
     // PHASE 1: cinematic bars slide in
     void battleCutscene.offsetWidth;
     cutsceneLetterboxTop.classList.add("bars-in");
     cutsceneLetterboxBottom.classList.add("bars-in");
+    if(isCritical){
+      cutsceneCriticalRing.classList.add("showing");
+      cutsceneCriticalFlash.classList.add("firing");
+      shakeScreen();
+    }
     await wait(350);
 
     // PHASE 1.5: an utterly unnecessary fake diagnostic terminal scan —
@@ -5408,6 +6779,14 @@
     battleCutsceneTitle.classList.remove("cutscene-glitch");
     void battleCutsceneTitle.offsetWidth;
     battleCutsceneTitle.classList.add("cutscene-glitch");
+    // the milestone banner, if this use hit a round number for this hero+move
+    if(hitMilestone){
+      cutsceneMilestone.textContent = "🎉 " + fmt(usageCount) + "TH USE!";
+      cutsceneMilestone.style.display = "block";
+      cutsceneMilestone.classList.remove("fading");
+      void cutsceneMilestone.offsetWidth;
+      cutsceneMilestone.classList.add("showing");
+    }
     spawnParticles(battleCutsceneEmoji, isDomain ? ["✨"] : ["✨"], 10, 100, 900);
     for(let i=0;i<10;i++){
       setTimeout(()=>{
@@ -5437,11 +6816,18 @@
     await wait(1000);
 
     // an entirely unnecessary rank-grade stamp slams onto the screen —
-    // S for a Signature Move, SSS for the rarer Domain Expansion
-    await playRankStamp(isDomain ? "SSS" : "S");
+    // S for a Signature Move, SSS for the rarer Domain Expansion, bumped up
+    // a tier when this happens to be a Critical Cutscene
+    const baseGrade = isDomain ? "SSS" : "S";
+    await playRankStamp(isCritical ? baseGrade + "+" : baseGrade);
+    if(hitMilestone){
+      cutsceneMilestone.classList.remove("showing");
+      cutsceneMilestone.classList.add("fading");
+    }
     await wait(400);
 
     // PHASE 5: bars slide back out
+    cutsceneCriticalRing.classList.remove("showing");
     cutsceneLetterboxTop.classList.remove("bars-in");
     cutsceneLetterboxBottom.classList.remove("bars-in");
     await wait(350);
@@ -5804,9 +7190,48 @@
     },
     castGlow(el, color){ spawnParticles(el, ["✨","⭐"], 4, 22, 350); flashFx(el, color); },
     victory(){
-      spawnParticles(bossVisual, ["🎉","✨","🏆","🌟"], 16, 58, 950);
-      flashFx(bossVisual, "rgba(246,196,69,0.5)");
+      // the boss itself actually dissolves — flashes white-hot, shrinks,
+      // spins away — instead of just sitting there while confetti happens
+      // around it. This fires on every single kill, not just special ones.
+      spawnImpactFrame(battleArea, 110);
+      const emojiEl = bossVisual.querySelector("span");
+      if(emojiEl){
+        emojiEl.classList.remove("boss-defeated");
+        void emojiEl.offsetWidth;
+        emojiEl.classList.add("boss-defeated");
+      }
+      for(let i=0;i<7;i++){
+        setTimeout(()=>{
+          const el = document.createElement("div");
+          el.className = "cs-shard firing";
+          el.style.left = "50%"; el.style.top = "50%";
+          el.style.background = "linear-gradient(160deg, rgba(255,255,255,0.95), rgba(230,150,50,0.6))";
+          const angle = Math.random()*Math.PI*2;
+          const dist = 40 + Math.random()*50;
+          el.style.setProperty("--shx", Math.cos(angle)*dist + "px");
+          el.style.setProperty("--shy", Math.sin(angle)*dist + "px");
+          el.style.setProperty("--shrot", (Math.random()*360) + "deg");
+          bossVisual.appendChild(el);
+          setTimeout(()=>el.remove(), 700);
+        }, i*30);
+      }
+      spawnParticles(bossVisual, ["🎉","✨","🏆","🌟","🪙"], 20, 68, 1000);
+      flashFx(bossVisual, "rgba(246,196,69,0.6)");
       pulseBattleArea("rgba(246,196,69,0.6)", "wash");
+      shakeScreen();
+
+      // "VICTORY!" slams onto the battle screen a beat later, once the
+      // dissolve has had a moment to read
+      setTimeout(()=>{
+        victoryBanner.classList.remove("gone");
+        victoryBanner.classList.remove("slamming");
+        void victoryBanner.offsetWidth;
+        victoryBanner.classList.add("slamming");
+        setTimeout(()=>{
+          victoryBanner.classList.remove("slamming");
+          victoryBanner.classList.add("gone");
+        }, 900);
+      }, 280);
     },
     defeat(){
       shakeScreen();
@@ -5821,8 +7246,16 @@
     const bStats = activeBossStats();
     stageTag.textContent = state.battle.sideMode
       ? "📜 Side Story: The Lost Recipe · " + (state.battle.sideBossIndex+1) + " of " + SIDE_BOSS_DEFS.length
-      : "Cycle " + state.battle.cycle + " · Stage " + (state.battle.bossIndex+1) + " of " + BOSS_DEFS.length;
+      : state.battle.towerMode
+        ? "🗼 Rogue Tower · Floor " + state.tower.floor
+        : "Cycle " + state.battle.cycle + " · Stage " + (state.battle.bossIndex+1) + " of " + BOSS_DEFS.length;
     bossEmojiSpan.textContent = boss.icon;
+    // defensively clear any leftover defeat-dissolve animation state from the
+    // previous boss — its animation holds opacity:0 via fill-mode:forwards,
+    // and this span is reused (not recreated) for every new boss, so without
+    // this the next boss can render invisible, especially with animations
+    // skipped (where the next render can beat the 850ms dissolve to the punch)
+    bossEmojiSpan.classList.remove("boss-defeated");
     bossName.textContent = boss.name;
     const bType = currentBossType();
     bossTypeTag.textContent = TYPE_LABEL[bType];
@@ -5858,7 +7291,13 @@
           ? (eff>1 ? `<span class="move-eff-chip super">Super!</span>` : (eff<1 ? `<span class="move-eff-chip weak">Weak</span>` : ""))
           : "";
         const cdChip = cdLeft>0 ? `<span class="move-cd-chip">⏳ ${cdLeft} turn${cdLeft===1?"":"s"}</span>` : "";
+        // Domain takes priority over Signature since it's the rarer, higher
+        // tier — flagged right above the move name so it reads before
+        // anything else on the button, not buried below the description.
+        const tierTag = domainMoveProfile(h, m) ? `<div class="move-tier-tag domain">👑 DOMAIN</div>`
+          : (signatureMoveProfile(h, m) ? `<div class="move-tier-tag signature">⭐ SIGNATURE</div>` : "");
         btn.innerHTML = `
+          ${tierTag}
           <div class="move-name">${m.icon} ${m.name}</div>
           <div class="move-desc">${m.desc}</div>
           <div class="move-type-row"><span class="move-type-chip">${TYPE_LABEL[mType]}</span>${effChip}${cdChip}</div>`;
@@ -5872,7 +7311,7 @@
     team.forEach((hero, idx)=>{
       const rec = state.heroes[hero.id];
       const hp = state.battle.heroHp[hero.id] || 0;
-      const max = heroMaxHp(hero, rec);
+      const max = battleMaxHp(hero, rec);
       const fainted = hp <= 0;
       const chip = document.createElement("button");
       chip.className = "bench-chip " + hero.rarity + (hero.id===state.battle.activeHeroId? " active-chip":"") + (fainted? " fainted":"");
@@ -5904,7 +7343,7 @@
     const h = activeHero();
     if(h){
       const rec = state.heroes[h.id];
-      const max = heroMaxHp(h, rec);
+      const max = battleMaxHp(h, rec);
       const hp = state.battle.heroHp[h.id] || 0;
       const pct = Math.max(0, Math.min(100, (hp/max)*100));
       heroHpInner.style.width = pct + "%";
@@ -5962,7 +7401,7 @@
     if(!h) return;
     if(moveCooldownRemaining(h.id, move) > 0) return;
     const rec = state.heroes[h.id];
-    const atkStat = heroAtk(h, rec) * (heroBuff.turns>0 ? heroBuff.mult : 1);
+    const atkStat = battleAtk(h, rec) * (heroBuff.turns>0 ? heroBuff.mult : 1);
     const bStats = activeBossStats();
     // A Signature or Domain Move ALWAYS lands with full power-fantasy weight —
     // impact frame, big damage number, screen shake — regardless of what its
@@ -6072,7 +7511,7 @@
       }
       addLog(h.name + " used " + move.name + "! ATK is boosted!");
     } else if(move.kind === "heal"){
-      const max = heroMaxHp(h, rec);
+      const max = battleMaxHp(h, rec);
       const healAmt = Math.round(max*0.3);
       state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
       if(!skipAnim){
@@ -6093,7 +7532,7 @@
       const big = isBigHit(dmg);
       state.battle.bossHp -= dmg;
       const healAmt = Math.round(dmg*0.5);
-      const max = heroMaxHp(h, rec);
+      const max = battleMaxHp(h, rec);
       state.battle.heroHp[h.id] = Math.min(max, (state.battle.heroHp[h.id]||0)+healAmt);
       if(!skipAnim){
         if(big){ spawnImpactFrame(battleArea, 80); await wait(75); }
@@ -6252,7 +7691,7 @@
         phase = "defeated";
         FX.defeat();
         renderBattleStatic(); renderBattleDynamic();
-        setTimeout(showDefeatOverlay, 550);
+        setTimeout(state.battle.towerMode ? showTowerDefeatOverlay : showDefeatOverlay, 550);
       }
       return;
     }
@@ -6264,7 +7703,7 @@
   }
 
   function showDefeatOverlay(){
-    const boss = BOSS_DEFS[state.battle.bossIndex];
+    const boss = currentBoss();
     defeatSub.textContent = boss.name + " proved too strong — regroup and try again!";
     defeatOverlay.style.display = "flex";
   }
@@ -6284,6 +7723,660 @@
     renderBattleStatic(); renderBattleDynamic();
   });
 
+  // A Rogue Tower run ends outright on defeat — no "try again on this floor"
+  // like the main arena gets, since a real run-ending stake is the whole
+  // point of a roguelike climb. The permanent best-floor record still saves.
+  function showTowerDefeatOverlay(){
+    if(state.tower.floor > state.tower.highestFloorEver) state.tower.highestFloorEver = state.tower.floor;
+    towerDefeatTitle.textContent = currentBoss().name + " ends the climb.";
+    towerDefeatSub.textContent = "You reached Floor " + state.tower.floor + " with "
+      + state.tower.blessings.length + " blessing" + (state.tower.blessings.length===1?"":"s") + " gathered."
+      + (state.tower.floor >= state.tower.highestFloorEver ? " New personal best!" : " Best so far: Floor " + state.tower.highestFloorEver + ".");
+    towerDefeatOverlay.style.display = "flex";
+  }
+  towerDefeatOk.addEventListener("click", ()=>{
+    towerDefeatOverlay.style.display = "none";
+    addLog("🗼 The Rogue Tower run ends at Floor " + state.tower.floor + ". Best: Floor " + state.tower.highestFloorEver + ".");
+    state.battle.towerMode = false;
+    state.tower.floor = 1;
+    state.tower.blessings = [];
+    state.tower.atkMult = 1; state.tower.hpMult = 1; state.tower.rewardMult = 1;
+    state.tower.fullHealEachFloor = false; state.tower.shieldEachFloor = false;
+    healTeamFully();
+    ensureHeroHp();
+    const mainStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    state.battle.bossHp = mainStats.hp;
+    heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
+    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    state.battle.moveCooldowns = {};
+    bossVisual.classList.remove("frozen");
+    phase = "player";
+    battleMsg.textContent = "Back in the main arena. Choose an attack!";
+    updateTowerFloorHud();
+    renderBattleStatic(); renderBattleDynamic();
+    save();
+  });
+
+  // ---------- DUNGEON ----------
+  function renderDungeonSelectGrid(){
+    dungeonSelectGrid.innerHTML = "";
+    ownedHeroList().forEach(h=>{
+      const item = document.createElement("div");
+      item.className = "team-select-item " + h.rarity;
+      const rec = state.heroes[h.id];
+      item.innerHTML = `
+        <div class="tsi-emoji">${h.emoji}</div>
+        <div class="tsi-name">${h.name}${rec.secretMoveUnlocked ? " 🔓" : ""}</div>`;
+      item.addEventListener("click", ()=>{
+        dungeonSelectOverlay.style.display = "none";
+        startDungeonRun(h.id);
+      });
+      dungeonSelectGrid.appendChild(item);
+    });
+  }
+  function startDungeonRun(heroId){
+    state.dungeon.active = true;
+    state.dungeon.exploringHeroId = heroId;
+    state.dungeon.x = DUNGEON_START.x;
+    state.dungeon.y = DUNGEON_START.y;
+    state.dungeon.defeatedThisRun = [];
+    state.dungeon.treasureClaimedThisRun = [];
+    renderDungeonGrid();
+    dungeonMapOverlay.style.display = "flex";
+  }
+  function renderDungeonGrid(){
+    const hero = HERO_DEFS.find(h=>h.id===state.dungeon.exploringHeroId);
+    dungeonMapSub.textContent = "Exploring as " + (hero?hero.name:"???") + ". Walk onto a guardian to fight it.";
+    dungeonGrid.innerHTML = "";
+    for(let y=0;y<DUNGEON_SIZE;y++){
+      for(let x=0;x<DUNGEON_SIZE;x++){
+        const tile = dungeonTileAt(x,y);
+        const el = document.createElement("div");
+        let cls = "dungeon-tile";
+        let icon = "";
+        if(tile.type==="start"){ icon = "🚩"; }
+        else if(tile.type==="boss"){
+          cls += " boss";
+          const defeated = state.dungeon.defeatedThisRun.includes(tile.bossIdx);
+          if(defeated) cls += " defeated";
+          icon = defeated ? "✅" : DUNGEON_BOSSES[tile.bossIdx].icon;
+        } else if(tile.type==="treasure"){
+          cls += " treasure";
+          const claimed = state.dungeon.treasureClaimedThisRun.some(t=>t.x===x&&t.y===y);
+          if(claimed) cls += " claimed";
+          icon = claimed ? "✨" : "🎁";
+        }
+        if(x===state.dungeon.x && y===state.dungeon.y){
+          cls += " current";
+          icon = hero ? hero.emoji : "🚩";
+        }
+        el.className = cls;
+        el.textContent = icon;
+        dungeonGrid.appendChild(el);
+      }
+    }
+  }
+  function moveDungeonPlayer(dx, dy){
+    if(!state.dungeon.active || phase !== "player") return;
+    const nx = state.dungeon.x + dx, ny = state.dungeon.y + dy;
+    if(nx < 0 || nx >= DUNGEON_SIZE || ny < 0 || ny >= DUNGEON_SIZE) return;
+    state.dungeon.x = nx; state.dungeon.y = ny;
+    const tile = dungeonTileAt(nx, ny);
+    if(tile.type==="treasure" && !state.dungeon.treasureClaimedThisRun.some(t=>t.x===nx&&t.y===ny)){
+      state.dungeon.treasureClaimedThisRun.push({x:nx,y:ny});
+      const bonusCoins = 250000, bonusCrumbs = 40000;
+      state.coins += bonusCoins; state.totalEarned += bonusCoins; state.crumbs += bonusCrumbs;
+      addLog("🎁 A dungeon chest yields +" + fmt(bonusCoins) + " 🍔 +" + fmt(bonusCrumbs) + " 🍞!");
+    }
+    renderDungeonGrid();
+    if(tile.type==="boss" && !state.dungeon.defeatedThisRun.includes(tile.bossIdx)){
+      enterDungeonBossFight(tile.bossIdx);
+      return;
+    }
+    save();
+  }
+  function enterDungeonBossFight(bossIdx){
+    dungeonMapOverlay.style.display = "none";
+    state.battle.dungeonMode = true;
+    state.battle.dungeonBossIdx = bossIdx;
+    state.battle.sideMode = false;
+    state.battle.towerMode = false;
+    const stats = dungeonBossStatsFor(bossIdx);
+    state.battle.bossHp = stats.hp;
+    const exploringHero = HERO_DEFS.find(h=>h.id===state.dungeon.exploringHeroId);
+    if(exploringHero && state.heroes[exploringHero.id] && state.heroes[exploringHero.id].owned){
+      state.battle.activeHeroId = exploringHero.id;
+    }
+    healTeamFully();
+    ensureHeroHp();
+    heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
+    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    state.battle.moveCooldowns = {};
+    bossVisual.classList.remove("frozen");
+    addLog("🏃 " + DUNGEON_BOSSES[bossIdx].name + " blocks the way!");
+    phase = "player";
+    battleMsg.textContent = "A dungeon guardian appears! Choose an attack!";
+    updateSideQuestBtn(); updateTowerFloorHud();
+    renderBattleStatic(); renderBattleDynamic();
+  }
+  function exitDungeonBossFight(){
+    state.battle.dungeonMode = false;
+    state.battle.dungeonBossIdx = -1;
+    const mainStats = bossStatsFor(state.battle.bossIndex, state.battle.cycle);
+    state.battle.bossHp = mainStats.hp;
+  }
+  dungeonQuestBtn.addEventListener("click", ()=>{
+    if(state.dungeon.active){
+      renderDungeonGrid();
+      dungeonMapOverlay.style.display = "flex";
+      return;
+    }
+    if(ownedHeroList().length === 0) return;
+    renderDungeonSelectGrid();
+    dungeonSelectOverlay.style.display = "flex";
+  });
+  dungeonSelectClose.addEventListener("click", ()=> dungeonSelectOverlay.style.display = "none");
+  dungeonExitBtn.addEventListener("click", ()=>{
+    dungeonMapOverlay.style.display = "none";
+    state.dungeon.active = false;
+    save();
+  });
+  dungeonMoveUp.addEventListener("click", ()=> moveDungeonPlayer(0,-1));
+  dungeonMoveDown.addEventListener("click", ()=> moveDungeonPlayer(0,1));
+  dungeonMoveLeft.addEventListener("click", ()=> moveDungeonPlayer(-1,0));
+  dungeonMoveRight.addEventListener("click", ()=> moveDungeonPlayer(1,0));
+
+  // ---------- SURVIVOR MODE ----------
+  let survivorRun = null;       // full run state while a run is active; null otherwise
+  let survivorTimerId = null;   // setInterval handle for the tick loop
+  // A Set (not a single x/y pair) so multiple directions held at once — two
+  // WASD keys together, or a key plus a D-pad tap — combine into diagonal
+  // movement correctly, and releasing just one of them doesn't stop movement
+  // in the other still-held direction.
+  let survivorHeldKeys = new Set(); // contains any of "up","down","left","right"
+  function computeSurvivorDir(){
+    let x = 0, y = 0;
+    if(survivorHeldKeys.has("up")) y -= 1;
+    if(survivorHeldKeys.has("down")) y += 1;
+    if(survivorHeldKeys.has("left")) x -= 1;
+    if(survivorHeldKeys.has("right")) x += 1;
+    return {x, y};
+  }
+  const SURVIVOR_KEY_MAP = {
+    "w":"up", "arrowup":"up", "s":"down", "arrowdown":"down",
+    "a":"left", "arrowleft":"left", "d":"right", "arrowright":"right",
+  };
+  document.addEventListener("keydown", (e)=>{
+    if(!survivorRun || survivorRun.paused) return;
+    const dir = SURVIVOR_KEY_MAP[e.key.toLowerCase()];
+    if(dir){ survivorHeldKeys.add(dir); e.preventDefault(); }
+  });
+  document.addEventListener("keyup", (e)=>{
+    const dir = SURVIVOR_KEY_MAP[e.key.toLowerCase()];
+    if(dir) survivorHeldKeys.delete(dir);
+  });
+  function renderSurvivorSelectGrid(){
+    survivorSelectGrid.innerHTML = "";
+    ownedHeroList().forEach(h=>{
+      const item = document.createElement("div");
+      item.className = "team-select-item " + h.rarity;
+      item.innerHTML = `<div class="tsi-emoji">${h.emoji}</div><div class="tsi-name">${h.name}</div>`;
+      item.addEventListener("click", ()=>{
+        survivorSelectOverlay.style.display = "none";
+        startSurvivorRun(h.id);
+      });
+      survivorSelectGrid.appendChild(item);
+    });
+  }
+  // A shared builder so a weapon behaves identically whether it's equipped
+  // at the start of a run or unlocked mid-run through a level-up. Speed and
+  // size are hashed off the move's own name+icon (not the hero), so the same
+  // weapon always feels the same wherever it shows up, but every distinct
+  // weapon has its own consistent identity beyond just its icon and kind.
+  function makeWeapon(move, index){
+    const rng = mulberry32(fnv1aHash(move.name + "|" + move.icon + "|weaponflavor"));
+    return {
+      move,
+      fireTimer: index*180,
+      fireCooldownMs: SURVIVOR_WEAPON_COOLDOWN[move.kind] || 700,
+      projSpeed: 3.8 + rng()*2.2,
+      projSize: 0.8 + rng()*0.55,
+    };
+  }
+  // Picks a hero's starting weapon for a run — specifically NOT just
+  // whichever move happens to sit first in their kit, since roughly a
+  // quarter of the roster leads with a heal-kind move (or a buff/shield).
+  // Starting with a move that can never deal damage would mean literally
+  // zero way to ever kill an enemy, gain XP, or level up to fix it — a real
+  // softlock, not just a weak opening. This finds the first move in the
+  // hero's kit that can actually damage something, falling back to index 0
+  // only in the never-expected case a hero has no offensive move at all.
+  function pickSurvivorStartingMove(hero){
+    const moves = heroMoves(hero);
+    const nonOffensiveKinds = new Set(["heal","buff","shield"]);
+    return moves.find(m => !nonOffensiveKinds.has(m.kind)) || moves[0];
+  }
+  function startSurvivorRun(heroId){
+    const hero = HERO_DEFS.find(h=>h.id===heroId);
+    const rec = state.heroes[heroId];
+    // start with just one weapon — the rest of their kit gets unlocked
+    // through level-up choices over the course of the run, instead of being
+    // handed the whole moveset on turn one
+    const firstMove = pickSurvivorStartingMove(hero);
+    survivorRun = {
+      heroId, heroEmoji: hero.emoji, weapons: [makeWeapon(firstMove, 0)],
+      atkStat: heroAtk(hero, rec),
+      x: SURVIVOR_ARENA_SIZE/2, y: SURVIVOR_ARENA_SIZE/2,
+      hp: 100, maxHp: 100,
+      dmgMult: 1, moveSpeed: 1.6, projectilesPerShot: 1, range: 110,
+      invincibleTimer: 0, invincDurationMs: 500,
+      xpMult: 1, burnMult: 1, slowDurationMult: 1, stunDurationMult: 1, drainMult: 1,
+      auraDmg: 0, auraRadius: 0, auraTickAccum: 0,
+      turrets: [], orbitCount: 1, enemyHpMult: 1, enemySpeedMult: 1,
+      hasRevive: false,
+      elapsedMs: 0, xp: 0, xpToNext: 5, level: 1, kills: 0,
+      enemies: [], projectiles: [],
+      nextEnemySpawnMs: 800, nextEntityId: 1,
+      paused: false,
+    };
+    survivorHeldKeys.clear();
+    renderSurvivorFrame();
+    survivorArenaOverlay.style.display = "flex";
+    if(survivorTimerId) clearInterval(survivorTimerId);
+    survivorTimerId = setInterval(survivorTick, SURVIVOR_TICK_MS);
+  }
+  // A quick scatter of particles at a point, self-removing on its own timer —
+  // deliberately NOT part of renderSurvivorFrame's per-tick cleanup sweep, so
+  // it actually gets to play out its fade instead of being wiped next tick.
+  function spawnSurvivorBurst(x, y, count, icons){
+    for(let i=0;i<count;i++){
+      const el = document.createElement("div");
+      el.className = "survivor-burst-particle";
+      el.textContent = icons[i % icons.length];
+      const angle = Math.random()*Math.PI*2;
+      const dist = 10 + Math.random()*12;
+      el.style.left = x+"px"; el.style.top = y+"px";
+      el.style.setProperty("--bx", Math.cos(angle)*dist+"px");
+      el.style.setProperty("--by", Math.sin(angle)*dist+"px");
+      survivorField.appendChild(el);
+      setTimeout(()=>el.remove(), 340);
+    }
+  }
+  function spawnSurvivorEnemy(){
+    const r = survivorRun;
+    const typeIdx = Math.floor(Math.random()*SURVIVOR_ENEMY_TYPES.length);
+    const type = SURVIVOR_ENEMY_TYPES[typeIdx];
+    const edge = Math.floor(Math.random()*4);
+    let x, y;
+    if(edge===0){ x = Math.random()*SURVIVOR_ARENA_SIZE; y = -10; }
+    else if(edge===1){ x = SURVIVOR_ARENA_SIZE+10; y = Math.random()*SURVIVOR_ARENA_SIZE; }
+    else if(edge===2){ x = Math.random()*SURVIVOR_ARENA_SIZE; y = SURVIVOR_ARENA_SIZE+10; }
+    else{ x = -10; y = Math.random()*SURVIVOR_ARENA_SIZE; }
+    // enemies toughen up on TWO independent axes that both compound together:
+    // elapsed time (a run just running long gets harder regardless of skill)
+    // and player LEVEL (a player snowballing upgrades fast gets kept in
+    // check too, since their own growing power is matched by the enemies').
+    // Speed now scales with level as well — previously it never scaled at
+    // all, so a level-20 run had exactly as fast enemies as level-1.
+    const elapsedSec = r.elapsedMs/1000;
+    const levelSteps = r.level - 1;
+    const hpScale = (1 + elapsedSec*0.025) * Math.pow(1.08, levelSteps) * r.enemyHpMult;
+    const dmgScale = (1 + elapsedSec*0.015) * Math.pow(1.05, levelSteps);
+    const speedScale = Math.pow(1.04, levelSteps);
+    const scaledHp = Math.round(type.hp * hpScale);
+    r.enemies.push({ id:r.nextEntityId++, typeIdx, x, y, hp:scaledHp, maxHp:scaledHp, dmgScale, speedScale });
+  }
+  // Every weapon's move.power already carries how strong it's meant to be
+  // relative to a hero's other moves — reused directly here as a per-shot
+  // multiplier, same as it drives damage in every other battle mode.
+  function findNearestEnemies(count){
+    const r = survivorRun;
+    return r.enemies
+      .map(e=>({ e, dist: Math.hypot(e.x-r.x, e.y-r.y) }))
+      .filter(o=> o.dist <= r.range)
+      .sort((a,b)=> a.dist-b.dist)
+      .slice(0, count)
+      .map(o=> o.e);
+  }
+  function spawnSurvivorProjectile(weapon, target, powerMult){
+    const r = survivorRun;
+    const dx = target.x - r.x, dy = target.y - r.y, dist = Math.hypot(dx,dy) || 1;
+    const speed = weapon.projSpeed;
+    const power = (weapon.move.power || 0.9) * powerMult;
+    r.projectiles.push({
+      id: r.nextEntityId++, x: r.x, y: r.y,
+      vx: (dx/dist)*speed, vy: (dy/dist)*speed,
+      dmg: Math.max(1, Math.round(r.atkStat * power * 0.35 * r.dmgMult)),
+      icon: weapon.move.icon,
+      effect: weapon.move.kind,
+      size: weapon.projSize,
+    });
+  }
+  function fireSurvivorWeapon(weapon){
+    const r = survivorRun;
+    const kind = weapon.move.kind;
+    // support kinds have no projectile at all — they're a passive pulse on
+    // the player, matching what that move kind actually does in real battle.
+    // (shield-kind weapons aren't handled here at all — they orbit the
+    // player continuously instead, handled separately in the tick loop.)
+    if(kind === "buff"){ r.dmgMult *= 1.06; return; }
+    if(kind === "heal"){ r.hp = Math.min(r.maxHp, r.hp + Math.round(r.maxHp*0.12)); return; }
+    if(kind === "multi3"){
+      findNearestEnemies(3).forEach(t => spawnSurvivorProjectile(weapon, t, 0.8));
+      return;
+    }
+    if(kind === "dmg2"){
+      const targets = findNearestEnemies(1);
+      if(!targets.length) return;
+      spawnSurvivorProjectile(weapon, targets[0], 0.75);
+      spawnSurvivorProjectile(weapon, targets[0], 0.75);
+      return;
+    }
+    // single-target damage kinds: dmg, crit, dmg_debuff, dmg_stun, drain, burn
+    const targets = findNearestEnemies(1);
+    if(!targets.length) return;
+    const critMult = kind === "crit" ? 1.35 : 1;
+    for(let i=0;i<r.projectilesPerShot;i++){
+      spawnSurvivorProjectile(weapon, targets[0], critMult);
+    }
+  }
+  function survivorTick(){
+    if(!survivorRun || survivorRun.paused) return;
+    const r = survivorRun;
+    const dt = SURVIVOR_TICK_MS;
+    r.elapsedMs += dt;
+
+    const dir = computeSurvivorDir();
+    if(dir.x || dir.y){
+      const len = Math.hypot(dir.x, dir.y) || 1;
+      r.x += (dir.x/len) * r.moveSpeed * (dt/16.67);
+      r.y += (dir.y/len) * r.moveSpeed * (dt/16.67);
+      r.x = Math.max(SURVIVOR_PLAYER_RADIUS, Math.min(SURVIVOR_ARENA_SIZE-SURVIVOR_PLAYER_RADIUS, r.x));
+      r.y = Math.max(SURVIVOR_PLAYER_RADIUS, Math.min(SURVIVOR_ARENA_SIZE-SURVIVOR_PLAYER_RADIUS, r.y));
+    }
+
+    r.nextEnemySpawnMs -= dt;
+    if(r.nextEnemySpawnMs <= 0){
+      spawnSurvivorEnemy();
+      r.nextEnemySpawnMs = Math.max(180, 900 - Math.floor(r.elapsedMs/1000)*18);
+    }
+
+    if(r.invincibleTimer > 0) r.invincibleTimer -= dt;
+    r.enemies.forEach(e=>{
+      // dmg_stun weapons briefly freeze an enemy in place; dmg_debuff weapons
+      // slow one — both read straight off the move kind that hit them
+      const stunned = e.stunUntilMs && r.elapsedMs < e.stunUntilMs;
+      const slowed = e.slowUntilMs && r.elapsedMs < e.slowUntilMs;
+      const type = SURVIVOR_ENEMY_TYPES[e.typeIdx];
+      if(!stunned){
+        const dx = r.x - e.x, dy = r.y - e.y;
+        const dist = Math.hypot(dx,dy) || 1;
+        const speedMult = (slowed ? 0.4 : 1) * r.enemySpeedMult * (e.speedScale||1);
+        e.x += (dx/dist) * type.speed * speedMult * (dt/16.67);
+        e.y += (dy/dist) * type.speed * speedMult * (dt/16.67);
+      }
+      // burn weapons leave a damage-over-time tick on whatever they hit
+      if(e.burnUntilMs && r.elapsedMs < e.burnUntilMs){
+        e.burnTickAccum = (e.burnTickAccum||0) + dt;
+        if(e.burnTickAccum >= 500){ e.hp -= e.burnDmgPerTick; e.burnTickAccum -= 500; }
+      }
+      const dist2 = Math.hypot(r.x-e.x, r.y-e.y);
+      if(dist2 < SURVIVOR_PLAYER_RADIUS + SURVIVOR_ENEMY_RADIUS && r.invincibleTimer <= 0){
+        r.hp -= Math.round(type.dmg * e.dmgScale);
+        r.invincibleTimer = r.invincDurationMs;
+        survivorPlayerEl.classList.remove("hit");
+        void survivorPlayerEl.offsetWidth;
+        survivorPlayerEl.classList.add("hit");
+      }
+    });
+
+    // shield-kind weapons don't fire projectiles — they orbit the player
+    // continuously, damaging any enemy they physically pass through, so they
+    // keep circling and ready even between fights rather than waiting on a
+    // fire-timer like every other weapon. "Extra Orbiter" upgrades add more
+    // evenly-spaced copies circling at once, all sharing the same weapon.
+    const ORBIT_RADIUS = 45, ORBIT_HIT_RADIUS = 9, ORBIT_HIT_COOLDOWN_MS = 400;
+    r.weapons.forEach(w=>{
+      if(w.move.kind !== "shield") return;
+      w.orbitAngle = (w.orbitAngle||0) + 0.07*(dt/16.67);
+      w.hitCooldowns = w.hitCooldowns || {};
+      w.orbitPositions = [];
+      for(let i=0;i<r.orbitCount;i++){
+        const angle = w.orbitAngle + i*(2*Math.PI/r.orbitCount);
+        const ox = r.x + Math.cos(angle)*ORBIT_RADIUS;
+        const oy = r.y + Math.sin(angle)*ORBIT_RADIUS;
+        w.orbitPositions.push({x:ox, y:oy});
+        r.enemies.forEach(e=>{
+          if(Math.hypot(e.x-ox, e.y-oy) > SURVIVOR_ENEMY_RADIUS + ORBIT_HIT_RADIUS) return;
+          const key = i+"_"+e.id;
+          if(w.hitCooldowns[key] && r.elapsedMs < w.hitCooldowns[key]) return;
+          e.hp -= Math.max(1, Math.round(r.atkStat * (w.move.power||1) * 0.22 * r.dmgMult));
+          w.hitCooldowns[key] = r.elapsedMs + ORBIT_HIT_COOLDOWN_MS;
+        });
+      }
+    });
+
+    // every OTHER equipped weapon fires independently, on its own cooldown
+    if(r.enemies.length){
+      r.weapons.forEach(w=>{
+        if(w.move.kind === "shield") return;
+        w.fireTimer -= dt;
+        if(w.fireTimer <= 0){
+          fireSurvivorWeapon(w);
+          w.fireTimer = w.fireCooldownMs;
+        }
+      });
+    }
+
+    // a "Grease Fire" aura, if drafted, ticks damage to every enemy in range
+    // on its own slower pulse — a constant passive threat, not a projectile
+    if(r.auraDmg > 0){
+      r.auraTickAccum += dt;
+      if(r.auraTickAccum >= 400){
+        r.auraTickAccum -= 400;
+        r.enemies.forEach(e=>{
+          if(Math.hypot(e.x-r.x, e.y-r.y) <= r.auraRadius) e.hp -= r.auraDmg;
+        });
+      }
+    }
+
+    // stationary turrets fire from their own fixed position, independent of
+    // wherever the player has since wandered off to
+    r.turrets.forEach(t=>{
+      t.fireTimer -= dt;
+      if(t.fireTimer > 0) return;
+      let nearest = null, nearestDist = Infinity;
+      r.enemies.forEach(e=>{
+        const dist = Math.hypot(e.x-t.x, e.y-t.y);
+        if(dist < nearestDist && dist <= t.range){ nearestDist = dist; nearest = e; }
+      });
+      if(nearest){
+        const dx = nearest.x-t.x, dy = nearest.y-t.y, dist = Math.hypot(dx,dy) || 1;
+        r.projectiles.push({
+          id: r.nextEntityId++, x: t.x, y: t.y,
+          vx: (dx/dist)*4, vy: (dy/dist)*4,
+          dmg: Math.max(1, Math.round(r.atkStat * 0.5 * r.dmgMult)),
+          icon: "🔫", effect: "dmg", size: 1,
+        });
+      }
+      t.fireTimer = t.fireCooldownMs;
+    });
+
+    r.projectiles = r.projectiles.filter(p=>{
+      p.x += p.vx * (dt/16.67);
+      p.y += p.vy * (dt/16.67);
+      if(p.x<0 || p.x>SURVIVOR_ARENA_SIZE || p.y<0 || p.y>SURVIVOR_ARENA_SIZE) return false;
+      for(const e of r.enemies){
+        const dist = Math.hypot(e.x-p.x, e.y-p.y);
+        if(dist < SURVIVOR_ENEMY_RADIUS + 5){
+          e.hp -= p.dmg;
+          spawnSurvivorBurst(p.x, p.y, 3, ["✨","💥"]);
+          // apply the on-hit effect that matches whichever weapon fired this
+          // shot — each scaled by whatever amplifier upgrades were drafted
+          if(p.effect === "dmg_debuff") e.slowUntilMs = r.elapsedMs + 2000*r.slowDurationMult;
+          else if(p.effect === "dmg_stun") e.stunUntilMs = r.elapsedMs + 900*r.stunDurationMult;
+          else if(p.effect === "drain") r.hp = Math.min(r.maxHp, r.hp + Math.round(p.dmg*0.4*r.drainMult));
+          else if(p.effect === "burn"){ e.burnUntilMs = r.elapsedMs + 3000; e.burnDmgPerTick = Math.max(1, Math.round(p.dmg*0.2*r.burnMult)); }
+          return false;
+        }
+      }
+      return true;
+    });
+
+    r.enemies = r.enemies.filter(e=>{
+      if(e.hp <= 0){
+        r.kills++;
+        r.xp += SURVIVOR_ENEMY_TYPES[e.typeIdx].xp * r.xpMult;
+        spawnSurvivorBurst(e.x, e.y, 5, ["💨","✨","⭐"]);
+        return false;
+      }
+      return true;
+    });
+
+    if(r.xp >= r.xpToNext){
+      r.xp -= r.xpToNext;
+      r.level++;
+      r.xpToNext = Math.round(r.xpToNext * 1.35);
+      pauseSurvivorForLevelUp();
+      return;
+    }
+    if(r.hp <= 0){
+      // "Emergency Backup" burns its one-time charge here instead of ending
+      // the run outright — a real second chance, not just extra padding
+      if(r.hasRevive){
+        r.hasRevive = false;
+        r.hp = 1;
+        r.invincibleTimer = 1500;
+        addLog("🚨 Emergency Backup kicks in — back from the brink with 1 HP!");
+      } else {
+        endSurvivorRun("lost");
+        return;
+      }
+    }
+
+    renderSurvivorFrame();
+  }
+  function renderSurvivorFrame(){
+    const r = survivorRun;
+    if(!r) return;
+    survivorPlayerEl.textContent = r.heroEmoji;
+    survivorPlayerEl.style.left = r.x + "px";
+    survivorPlayerEl.style.top = r.y + "px";
+    survivorHpInner.style.width = Math.max(0, r.hp/r.maxHp*100) + "%";
+    survivorXpInner.style.width = Math.max(0, Math.min(100, r.xp/r.xpToNext*100)) + "%";
+    const secs = Math.floor(r.elapsedMs/1000);
+    survivorTimer.textContent = "⏱️ " + Math.floor(secs/60)+":"+String(secs%60).padStart(2,"0");
+    survivorStatsRow.textContent = "Lv." + r.level + " · " + r.kills + " kills";
+    survivorField.querySelectorAll(".survivor-enemy, .survivor-projectile, .survivor-orbit-weapon, .survivor-turret, .survivor-aura-ring").forEach(el=>el.remove());
+
+    // "Grease Fire" now renders as an actual ringed circle centered on the
+    // player, not just a soft glow — its true reach is now unmistakable
+    if(r.auraDmg > 0){
+      const ring = document.createElement("div");
+      ring.className = "survivor-aura-ring";
+      const d = r.auraRadius*2;
+      ring.style.width = d+"px"; ring.style.height = d+"px";
+      ring.style.left = r.x+"px"; ring.style.top = r.y+"px";
+      ring.style.marginLeft = (-r.auraRadius)+"px"; ring.style.marginTop = (-r.auraRadius)+"px";
+      survivorField.appendChild(ring);
+    }
+
+    r.enemies.forEach(e=>{
+      const el = document.createElement("div");
+      el.className = "survivor-enemy";
+      el.textContent = SURVIVOR_ENEMY_TYPES[e.typeIdx].icon;
+      el.style.left = e.x+"px"; el.style.top = e.y+"px";
+      survivorField.appendChild(el);
+    });
+    // shield-kind weapons render one icon per active orbiter
+    r.weapons.forEach(w=>{
+      if(w.move.kind !== "shield" || !w.orbitPositions) return;
+      w.orbitPositions.forEach(pos=>{
+        const el = document.createElement("div");
+        el.className = "survivor-orbit-weapon";
+        el.textContent = w.move.icon;
+        el.style.left = pos.x+"px"; el.style.top = pos.y+"px";
+        survivorField.appendChild(el);
+      });
+    });
+    // turrets sit fixed on the field regardless of where the player is now
+    r.turrets.forEach(t=>{
+      const el = document.createElement("div");
+      el.className = "survivor-turret";
+      el.textContent = "🗼";
+      el.style.left = t.x+"px"; el.style.top = t.y+"px";
+      survivorField.appendChild(el);
+    });
+    r.projectiles.forEach(p=>{
+      const el = document.createElement("div");
+      el.className = "survivor-projectile";
+      el.textContent = p.icon;
+      el.style.left = p.x+"px"; el.style.top = p.y+"px";
+      el.style.transform = `scale(${p.size||1})`;
+      survivorField.appendChild(el);
+    });
+  }
+  function pauseSurvivorForLevelUp(){
+    survivorRun.paused = true;
+    renderSurvivorFrame();
+    const choices = rollSurvivorUpgradeChoices(survivorRun);
+    survivorLevelUpSub.textContent = "Reached Level " + survivorRun.level + "!";
+    survivorLevelUpOptions.innerHTML = "";
+    choices.forEach(u=>{
+      const opt = document.createElement("div");
+      opt.className = "tower-blessing-option";
+      opt.innerHTML = `<span class="opt-icon">${u.icon}</span><div><div class="opt-name">${u.name}</div><div class="opt-desc">${u.desc}</div></div>`;
+      opt.addEventListener("click", ()=>{
+        u.apply(survivorRun);
+        survivorLevelUpOverlay.style.display = "none";
+        survivorRun.paused = false;
+        renderSurvivorFrame();
+      });
+      survivorLevelUpOptions.appendChild(opt);
+    });
+    survivorLevelUpOverlay.style.display = "flex";
+  }
+  function endSurvivorRun(outcome){
+    if(survivorTimerId){ clearInterval(survivorTimerId); survivorTimerId = null; }
+    if(!survivorRun) return;
+    const r = survivorRun;
+    const secs = Math.floor(r.elapsedMs/1000);
+    const isNewBest = secs > state.survivor.bestSeconds || r.kills > state.survivor.bestKills;
+    if(secs > state.survivor.bestSeconds) state.survivor.bestSeconds = secs;
+    if(r.kills > state.survivor.bestKills) state.survivor.bestKills = r.kills;
+    const rewardCoins = r.kills * 8000 + secs * 3000;
+    const rewardCrumbs = r.kills * 1200;
+    state.coins += rewardCoins; state.totalEarned += rewardCoins; state.crumbs += rewardCrumbs;
+    // no more "won" outcome — this is a true endless mode now, so a run only
+    // ever ends by fleeing on your own terms or getting overwhelmed
+    const fled = outcome === "fled";
+    const verb = fled ? "🏃 Fled the swarm." : "💀 Overwhelmed by the swarm.";
+    addLog(verb + " " + secs + "s, " + r.kills + " kills. +" + fmt(rewardCoins) + " 🍔 +" + fmt(rewardCrumbs) + " 🍞");
+    survivorArenaOverlay.style.display = "none";
+    survivorEndEmoji.textContent = fled ? "🏃🧛" : "🧛💥";
+    survivorEndTitle.textContent = fled ? "You slipped away." : "The swarm overwhelms you.";
+    survivorEndSub.textContent = "Time: " + Math.floor(secs/60)+":"+String(secs%60).padStart(2,"0") + " · Kills: " + r.kills + (isNewBest ? " — new best!" : "");
+    survivorEndOverlay.style.display = "flex";
+    survivorRun = null;
+    renderTopStats();
+    save();
+  }
+  survivorQuestBtn.addEventListener("click", ()=>{
+    if(ownedHeroList().length === 0) return;
+    renderSurvivorSelectGrid();
+    survivorSelectOverlay.style.display = "flex";
+  });
+  survivorSelectClose.addEventListener("click", ()=> survivorSelectOverlay.style.display = "none");
+  survivorFleeBtn.addEventListener("click", ()=>{ if(survivorRun) endSurvivorRun("fled"); });
+  survivorEndOk.addEventListener("click", ()=> survivorEndOverlay.style.display = "none");
+  [[survivorMoveUp,"up"],[survivorMoveDown,"down"],[survivorMoveLeft,"left"],[survivorMoveRight,"right"]].forEach(([btn,dir])=>{
+    btn.addEventListener("mousedown", ()=> survivorHeldKeys.add(dir));
+    btn.addEventListener("touchstart", (e)=>{ e.preventDefault(); survivorHeldKeys.add(dir); });
+    btn.addEventListener("mouseup", ()=> survivorHeldKeys.delete(dir));
+    btn.addEventListener("mouseleave", ()=> survivorHeldKeys.delete(dir));
+    btn.addEventListener("touchend", ()=> survivorHeldKeys.delete(dir));
+  });
+
   // ---------- SIDE STORY TOGGLE ----------
   function updateSideQuestBtn(){
     if(!sideStoryUnlocked() || state.stats.sideStoryComplete){
@@ -6298,6 +8391,10 @@
   }
   sideQuestBtn.addEventListener("click", ()=>{
     if(phase !== "player") return;
+    if(state.battle.towerMode){
+      state.battle.towerMode = false;
+      addLog("🗼 You step out of the Rogue Tower.");
+    }
     state.battle.sideMode = !state.battle.sideMode;
     if(state.battle.sideMode){
       introduceSideBossIfNew(state.battle.sideBossIndex);
@@ -6313,17 +8410,74 @@
     state.battle.moveCooldowns = {};
     bossVisual.classList.remove("frozen");
     updateSideQuestBtn();
+    updateTowerFloorHud();
+    renderBattleStatic(); renderBattleDynamic();
+  });
+
+  // ---------- ROGUE TOWER TOGGLE ----------
+  function updateTowerFloorHud(){
+    towerQuestBtn.classList.toggle("active-tower", state.battle.towerMode);
+    towerQuestBtn.textContent = state.battle.towerMode
+      ? "🏰 Descend to the Main Arena"
+      : "🗼 Enter the Rogue Tower";
+    if(!state.battle.towerMode){
+      towerFloorHud.style.display = "none";
+      return;
+    }
+    towerFloorHud.style.display = "flex";
+    towerFloorLabel.textContent = "Floor " + state.tower.floor
+      + (state.tower.highestFloorEver > 0 ? " (best: " + state.tower.highestFloorEver + ")" : "");
+    towerBlessingIcons.innerHTML = state.tower.blessings.map(id=>{
+      const bl = TOWER_BLESSINGS.find(b=>b.id===id);
+      return bl ? `<span title="${bl.name}">${bl.icon}</span>` : "";
+    }).join("");
+  }
+  towerQuestBtn.addEventListener("click", ()=>{
+    if(phase !== "player") return;
+    if(state.battle.sideMode){
+      state.battle.sideMode = false;
+      addLog("📖 You leave the Lost Recipe trail for now.");
+    }
+    state.battle.towerMode = !state.battle.towerMode;
+    if(state.battle.towerMode){
+      // a fresh run — reset everything but the permanent best-floor record
+      state.tower.floor = 1;
+      state.tower.blessings = [];
+      state.tower.atkMult = 1; state.tower.hpMult = 1; state.tower.rewardMult = 1;
+      state.tower.fullHealEachFloor = false; state.tower.shieldEachFloor = false;
+      addLog("🗼 You step into the Rogue Tower. Floor 1 awaits...");
+    } else {
+      addLog("🏰 You climb back down to the main arena.");
+    }
+    const stats = activeBossStats();
+    state.battle.bossHp = stats.hp;
+    healTeamFully();
+    heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
+    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    state.battle.moveCooldowns = {};
+    bossVisual.classList.remove("frozen");
+    updateSideQuestBtn();
+    updateTowerFloorHud();
     renderBattleStatic(); renderBattleDynamic();
   });
 
   function handleVictory(){
     const boss = currentBoss();
     const bStats = activeBossStats();
-    const rewardCoins = Math.ceil(bStats.hp*15);
-    const rewardCrumbs = Math.ceil(bStats.hp*2);
-    const rewardSesame = state.battle.sideMode
+    let justWonDungeonFight = false;
+    let rewardCoins = Math.ceil(bStats.hp*15);
+    let rewardCrumbs = Math.ceil(bStats.hp*2);
+    let rewardSesame = state.battle.sideMode
       ? (state.battle.sideBossIndex+1) * 8
-      : Math.floor(state.battle.bossIndex/2) + state.battle.cycle;
+      : state.battle.towerMode
+        ? state.tower.floor * 3
+        : state.battle.dungeonMode
+          ? (state.battle.dungeonBossIdx+1) * 15
+          : Math.floor(state.battle.bossIndex/2) + state.battle.cycle;
+    if(state.battle.towerMode){
+      rewardCoins = Math.ceil(rewardCoins * state.tower.rewardMult);
+      rewardCrumbs = Math.ceil(rewardCrumbs * state.tower.rewardMult);
+    }
     state.coins += rewardCoins; state.totalEarned += rewardCoins;
     state.crumbs += rewardCrumbs; state.sesame += rewardSesame;
     FX.victory();
@@ -6336,10 +8490,11 @@
       if(state.battle.sideBossIndex >= SIDE_BOSS_DEFS.length){
         // The Lost Recipe side story is complete — bonus payout, then return to the main arena.
         state.stats.sideStoryComplete = true;
+        checkStoryProgression();
         const bonusCoins = 50000000, bonusCrumbs = 8000000, bonusSesame = 300;
         state.coins += bonusCoins; state.totalEarned += bonusCoins;
         state.crumbs += bonusCrumbs; state.sesame += bonusSesame;
-        addLog("📖 The First Recipe dissolves into steam — you've tasted something impossible. The Lost Recipe was never a weapon. It was a promise, and you've kept it.");
+        addLog("📖 The First Recipe dissolves into steam — you've tasted what Ember, Hearth, and Frost built together, before they ever learned to compete. The Lost Recipe was never a weapon. It was a promise, and you've kept it.");
         addLog("🎁 Side story complete! +" + fmt(bonusCoins) + " 🍔 +" + fmt(bonusCrumbs) + " 🍞 +" + bonusSesame + " ✨");
         state.battle.sideMode = false;
         state.battle.sideBossIndex = 0;
@@ -6352,6 +8507,27 @@
         state.battle.bossHp = nextSideStats.hp;
         battleMsg.textContent = "The next guardian of the Lost Recipe appears!";
       }
+    } else if(state.battle.towerMode){
+      if(state.tower.floor > state.tower.highestFloorEver) state.tower.highestFloorEver = state.tower.floor;
+      state.tower.floor++;
+      const nextTowerStats = towerBossStatsFor(state.tower.floor);
+      state.battle.bossHp = nextTowerStats.hp;
+      battleMsg.textContent = "The tower groans — floor " + state.tower.floor + " begins!";
+      if(state.tower.shieldEachFloor){
+        heroShield = {reduction:0.2, turns:1};
+      }
+    } else if(state.battle.dungeonMode){
+      justWonDungeonFight = true;
+      const bossIdx = state.battle.dungeonBossIdx;
+      if(!state.dungeon.defeatedThisRun.includes(bossIdx)) state.dungeon.defeatedThisRun.push(bossIdx);
+      const explorer = HERO_DEFS.find(h=>h.id===state.dungeon.exploringHeroId);
+      if(explorer && state.heroes[explorer.id] && !state.heroes[explorer.id].secretMoveUnlocked){
+        state.heroes[explorer.id].secretMoveUnlocked = true;
+        const domainMove = getDungeonDomainMove(explorer);
+        addLog("🔓 " + explorer.name + " has unlocked a Domain Move: " + domainMove.icon + " " + domainMove.name + "! \"DOMAIN EXPANSION: " + domainMove.domain + "\"");
+      }
+      exitDungeonBossFight();
+      battleMsg.textContent = "The guardian falls! Return to the dungeon map to keep exploring.";
     } else {
       state.stats.bossesDefeated++;
       state.battle.bossIndex++;
@@ -6366,14 +8542,46 @@
       battleMsg.textContent = "A new challenger appears! Choose an attack!";
     }
 
-    healTeamFully();
+    // Tower runs only auto-heal between floors if the "Baker's Reserve"
+    // blessing was drafted — HP is meant to be a real resource across floors,
+    // not reset for free like the main arena and side story already are.
+    if(!state.battle.towerMode || state.tower.fullHealEachFloor){
+      healTeamFully();
+    }
     heroBuff = {mult:1,turns:0}; bossDebuff = {mult:1,turns:0}; bossStunTurns = 0;
-    heroShield = {reduction:0,turns:0}; bossBurn = {dmgPerTurn:0,turns:0};
+    if(!state.battle.towerMode || !state.tower.shieldEachFloor){
+      heroShield = {reduction:0,turns:0};
+    }
+    bossBurn = {dmgPerTurn:0,turns:0};
     state.battle.moveCooldowns = {};
     phase = "player";
     ensureHeroHp();
     renderBattleStatic(); renderBattleDynamic(); renderTopStats(); renderQuests();
     updateSideQuestBtn();
+    updateTowerFloorHud();
+    if(state.battle.towerMode) showTowerBlessingDraft();
+    if(justWonDungeonFight){ renderDungeonGrid(); dungeonMapOverlay.style.display = "flex"; }
+  }
+
+  function showTowerBlessingDraft(){
+    const choices = rollTowerBlessingChoices();
+    towerBlessingSub.textContent = "Floor " + (state.tower.floor-1) + " cleared — pick one to carry for the rest of this run.";
+    towerBlessingOptions.innerHTML = "";
+    choices.forEach(bl=>{
+      const opt = document.createElement("div");
+      opt.className = "tower-blessing-option";
+      opt.innerHTML = `<span class="opt-icon">${bl.icon}</span><div><div class="opt-name">${bl.name}</div><div class="opt-desc">${bl.desc}</div></div>`;
+      opt.addEventListener("click", ()=>{
+        bl.apply();
+        state.tower.blessings.push(bl.id);
+        towerBlessingOverlay.style.display = "none";
+        addLog(bl.icon + " Blessing chosen: " + bl.name + "!");
+        updateTowerFloorHud();
+        save();
+      });
+      towerBlessingOptions.appendChild(opt);
+    });
+    towerBlessingOverlay.style.display = "flex";
   }
 
   // ---------- SUMMON ----------
@@ -6606,6 +8814,7 @@
     renderQuests();
     updatePityNote();
     updateSideQuestBtn();
+    updateTowerFloorHud();
   }
 
   // ---------- PRESTIGE ----------
@@ -6720,6 +8929,19 @@
           state.questsClaimed[q.id] = true;
         }
       });
+    },
+    unlockAllStory(){
+      // grants the unlocked state directly rather than faking every trigger's
+      // underlying stat (bossesDefeated, sideStoryComplete, domainMovesUsed...)
+      let added = 0;
+      STORY_CHAPTERS.forEach(ch=>{
+        if(!state.stats.storyChaptersUnlocked.includes(ch.id)){
+          state.stats.storyChaptersUnlocked.push(ch.id);
+          added++;
+        }
+      });
+      addLog("📜 [ADMIN] All " + STORY_CHAPTERS.length + " story chapters unlocked" + (added ? " (" + added + " newly)" : "") + "!");
+      if(typeof updateStoryBadge === "function") updateStoryBadge();
     },
     resetGame(){
       openResetConfirm(true);
