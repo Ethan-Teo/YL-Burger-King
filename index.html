@@ -1516,8 +1516,26 @@
   .survivor-player.hit{animation:survivorHitFlash 0.2s ease;}
   @keyframes survivorHitFlash{ 0%,100%{filter:drop-shadow(0 2px 2px rgba(0,0,0,0.4));} 50%{filter:brightness(2) drop-shadow(0 0 6px #fff);} }
   .survivor-enemy{
-    position:absolute; width:20px; height:20px; margin:-10px 0 0 -10px; font-size:16px;
-    display:flex; align-items:center; justify-content:center; z-index:2;
+    position:absolute; width:22px; margin:-10px 0 0 -11px; z-index:2;
+    display:flex; flex-direction:column; align-items:center;
+  }
+  .survivor-enemy-icon{ font-size:16px; line-height:1; }
+  .survivor-enemy-hpbar{
+    width:20px; height:4px; margin-top:2px; border-radius:2px; overflow:hidden;
+    background:rgba(0,0,0,0.4); border:1px solid rgba(0,0,0,0.3);
+  }
+  .survivor-enemy-hpbar-fill{
+    height:100%; background:linear-gradient(90deg,#e63946,#ff8c42); transition:width 0.15s ease;
+  }
+  .survivor-enemy.elite{ z-index:2; }
+  .survivor-enemy.elite .survivor-enemy-icon{
+    font-size:26px; filter:drop-shadow(0 0 7px rgba(180,40,220,0.85));
+    animation:survivorEliteThrob 0.8s ease-in-out infinite;
+  }
+  .survivor-enemy.elite .survivor-enemy-hpbar{ width:32px; height:5px; }
+  @keyframes survivorEliteThrob{ 0%,100%{transform:scale(1);} 50%{transform:scale(1.12);} }
+  .survivor-projectile.enemy-shot{
+    filter:drop-shadow(0 0 4px rgba(230,57,70,0.9));
   }
   .survivor-projectile{
     position:absolute; width:10px; height:10px; margin:-5px 0 0 -5px; font-size:11px;
@@ -2993,7 +3011,24 @@
     { icon:"🧟", hp:3,  speed:0.55, dmg:6,  xp:1 },
     { icon:"🦴", hp:6,  speed:0.45, dmg:9,  xp:2 },
     { icon:"👻", hp:2,  speed:0.85, dmg:5,  xp:1 },
+    // ranged: keeps its distance instead of closing in, and periodically
+    // fires a slow projectile at the player — the first enemy attack that
+    // isn't "touch the player", so standing still is no longer always safe
+    { icon:"🏹", hp:4, speed:0.5, dmg:4, xp:2,
+      ranged:true, keepDist:70, shotCooldownMs:1800, shotDmg:5, shotSpeed:2.2 },
+    // bomber: modest contact damage, but a real payoff for killing it up
+    // close — its death blast can still tag the player if they're near
+    { icon:"💣", hp:4, speed:0.4, dmg:3, xp:2,
+      explodesOnDeath:true, explodeRadius:35, explodeDmg:14 },
+    // splitter: killing it doesn't end the threat, it multiplies it — two
+    // weaker copies spawn where it died (the copies don't split further)
+    { icon:"🦠", hp:5, speed:0.5, dmg:5, xp:2,
+      splitsOnDeath:2, splitHpMult:0.4, splitSpeedMult:1.2 },
   ];
+  // A much tougher spawn on its own periodic timer, independent of the
+  // regular random spawn roll — a pacing beat distinct from swarm fodder.
+  const SURVIVOR_ELITE_TYPE = { icon:"👹", hp:60, speed:0.5, dmg:14, xp:8, isElite:true };
+  const SURVIVOR_ELITE_INTERVAL_MS = 25000;
   // Every equipped weapon fires on its own independent cooldown, tuned by
   // move kind so a hero's whole kit feels distinct in the arena, not just a
   // single generic auto-shot — multi-hit/stronger kinds fire slower, passive
@@ -3016,15 +3051,22 @@
     { id:"slow_up",   name:"Thick Sauce",     icon:"🍯", desc:"Slow effects last 50% longer.", apply:(r)=>{ r.slowDurationMult *= 1.5; } },
     { id:"stun_up",   name:"Concussion Blast",icon:"💫", desc:"Stun effects last 40% longer.", apply:(r)=>{ r.stunDurationMult *= 1.4; } },
     { id:"drain_up",  name:"Vampiric Feast",  icon:"🧛", desc:"Lifesteal from drain weapons +50%.", apply:(r)=>{ r.drainMult *= 1.5; } },
-    { id:"aura_up",   name:"Grease Fire",     icon:"🔥", desc:"A burning aura around you damages nearby enemies constantly.", apply:(r)=>{ r.auraDmg += 3; r.auraRadius = Math.max(r.auraRadius, 42); } },
+    { id:"aura_up",   name:"Grease Fire",     icon:"🔥", desc:"A burning aura around you damages nearby enemies constantly.", apply:(r)=>{ r.auraDmg += 0.02; r.auraRadius = Math.max(r.auraRadius, 42); } },
     { id:"revive_up", name:"Emergency Backup",icon:"🚨", desc:"Survive your next killing blow with 1 HP instead of dying. (once per run)", apply:(r)=>{ r.hasRevive = true; } },
     { id:"invinc_up", name:"Thick Skin",      icon:"🛡️", desc:"+200ms of invincibility after taking a hit.", apply:(r)=>{ r.invincDurationMs += 200; } },
-    { id:"turret_up", name:"Turret Deployment", icon:"🗼", desc:"Places a stationary turret that fires at nearby enemies on its own. Stacks.", apply:(r)=>{ r.turrets.push({ x:r.x, y:r.y, fireTimer:0, fireCooldownMs:850, range:85 }); } },
+    { id:"turret_up", name:"Turret Deployment", icon:"🗼", desc:"Places a stationary turret that fires at nearby enemies on its own. Stacks.", apply:(r)=>{ r.turrets.push({ x:r.x, y:r.y, fireTimer:0, fireCooldownMs:Math.round(850*r.turretRateMult), range:85 }); } },
     { id:"orbit_up", name:"Extra Orbiter", icon:"🔄", desc:"+1 rotating projectile per shield weapon, evenly spaced around you.", apply:(r)=>{ r.orbitCount += 1; } },
     // genuine risk/reward picks — real power, at a real cost to how tough
     // the enemies you're fighting become for the rest of the run
     { id:"reckless_up", name:"Reckless Aggression", icon:"💢", desc:"+40% weapon damage. Enemies gain +20% Max HP for the rest of this run.", apply:(r)=>{ r.dmgMult *= 1.4; r.enemyHpMult *= 1.2; } },
     { id:"adrenaline_up", name:"Adrenaline Rush", icon:"🥤", desc:"+25% move speed, all weapons fire 20% faster. Enemies move 15% faster for the rest of this run.", apply:(r)=>{ r.moveSpeed *= 1.25; r.weapons.forEach(w=> w.fireCooldownMs = Math.round(w.fireCooldownMs*0.8)); r.enemySpeedMult *= 1.15; } },
+    { id:"reward_up", name:"Golden Ticket", icon:"🎟️", desc:"+30% coins and crumbs earned from this run.", apply:(r)=>{ r.rewardMult *= 1.3; } },
+    { id:"luck_up", name:"Lucky Strike", icon:"🍀", desc:"All weapons have a 15% chance to deal double damage. Stacks.", apply:(r)=>{ r.critChance = Math.min(0.9, r.critChance + 0.15); } },
+    { id:"regen_up", name:"Second Wind", icon:"💚", desc:"Regenerate 1% Max HP every second. Stacks.", apply:(r)=>{ r.hpRegenPerSec += 0.01; } },
+    { id:"armor_up", name:"Bulwark Plating", icon:"🦴", desc:"-15% incoming contact damage. Stacks with diminishing returns.", apply:(r)=>{ r.dmgReductionMult *= 0.85; } },
+    { id:"explode_up", name:"Chain Reaction", icon:"💣", desc:"Defeated enemies have a 25% chance to explode, damaging nearby enemies. Stacks.", apply:(r)=>{ r.explodeChance = Math.min(0.9, r.explodeChance + 0.25); } },
+    { id:"pierce2_up", name:"Piercing Rounds", icon:"🎯", desc:"Projectiles pierce through and hit one extra enemy. Stacks.", apply:(r)=>{ r.pierceCount += 1; } },
+    { id:"turretrate_up", name:"Overclocked Turrets", icon:"⚙️", desc:"All turrets (existing and future) fire 30% faster.", apply:(r)=>{ r.turretRateMult *= 0.7; r.turrets.forEach(t=> t.fireCooldownMs = Math.round(t.fireCooldownMs*0.7)); } },
   ];
   function rollSurvivorUpgradeChoices(run){
     // weapon-unlock choices are built fresh each level-up from whichever of
@@ -7974,9 +8016,11 @@
       auraDmg: 0, auraRadius: 0, auraTickAccum: 0,
       turrets: [], orbitCount: 1, enemyHpMult: 1, enemySpeedMult: 1,
       hasRevive: false,
+      rewardMult: 1, critChance: 0, dmgReductionMult: 1, explodeChance: 0,
+      hpRegenPerSec: 0, hpRegenAccum: 0, pierceCount: 0, turretRateMult: 1,
       elapsedMs: 0, xp: 0, xpToNext: 5, level: 1, kills: 0,
-      enemies: [], projectiles: [],
-      nextEnemySpawnMs: 800, nextEntityId: 1,
+      enemies: [], projectiles: [], enemyProjectiles: [],
+      nextEnemySpawnMs: 800, nextEliteSpawnMs: SURVIVOR_ELITE_INTERVAL_MS, nextEntityId: 1,
       paused: false,
     };
     survivorHeldKeys.clear();
@@ -8002,16 +8046,28 @@
       setTimeout(()=>el.remove(), 340);
     }
   }
-  function spawnSurvivorEnemy(){
+  // typeIdx -1 is the sentinel for an elite spawn, which isn't part of the
+  // regular SURVIVOR_ENEMY_TYPES array — every other lookup site should go
+  // through this helper instead of indexing the array directly.
+  function survivorEnemyType(e){
+    return e.typeIdx === -1 ? SURVIVOR_ELITE_TYPE : SURVIVOR_ENEMY_TYPES[e.typeIdx];
+  }
+  function spawnSurvivorEnemy(opts){
+    opts = opts || {};
     const r = survivorRun;
-    const typeIdx = Math.floor(Math.random()*SURVIVOR_ENEMY_TYPES.length);
-    const type = SURVIVOR_ENEMY_TYPES[typeIdx];
-    const edge = Math.floor(Math.random()*4);
+    const isElite = !!opts.elite;
+    const typeIdx = isElite ? -1 : (opts.typeIdx !== undefined ? opts.typeIdx : Math.floor(Math.random()*SURVIVOR_ENEMY_TYPES.length));
+    const type = isElite ? SURVIVOR_ELITE_TYPE : SURVIVOR_ENEMY_TYPES[typeIdx];
     let x, y;
-    if(edge===0){ x = Math.random()*SURVIVOR_ARENA_SIZE; y = -10; }
-    else if(edge===1){ x = SURVIVOR_ARENA_SIZE+10; y = Math.random()*SURVIVOR_ARENA_SIZE; }
-    else if(edge===2){ x = Math.random()*SURVIVOR_ARENA_SIZE; y = SURVIVOR_ARENA_SIZE+10; }
-    else{ x = -10; y = Math.random()*SURVIVOR_ARENA_SIZE; }
+    if(opts.x !== undefined){
+      x = opts.x; y = opts.y;
+    } else {
+      const edge = Math.floor(Math.random()*4);
+      if(edge===0){ x = Math.random()*SURVIVOR_ARENA_SIZE; y = -10; }
+      else if(edge===1){ x = SURVIVOR_ARENA_SIZE+10; y = Math.random()*SURVIVOR_ARENA_SIZE; }
+      else if(edge===2){ x = Math.random()*SURVIVOR_ARENA_SIZE; y = SURVIVOR_ARENA_SIZE+10; }
+      else{ x = -10; y = Math.random()*SURVIVOR_ARENA_SIZE; }
+    }
     // enemies toughen up on TWO independent axes that both compound together:
     // elapsed time (a run just running long gets harder regardless of skill)
     // and player LEVEL (a player snowballing upgrades fast gets kept in
@@ -8020,11 +8076,15 @@
     // all, so a level-20 run had exactly as fast enemies as level-1.
     const elapsedSec = r.elapsedMs/1000;
     const levelSteps = r.level - 1;
-    const hpScale = (1 + elapsedSec*0.025) * Math.pow(1.08, levelSteps) * r.enemyHpMult;
+    const hpScale = (1 + elapsedSec*0.025) * Math.pow(1.08, levelSteps) * r.enemyHpMult * (opts.hpMult||1);
     const dmgScale = (1 + elapsedSec*0.015) * Math.pow(1.05, levelSteps);
-    const speedScale = Math.pow(1.04, levelSteps);
-    const scaledHp = Math.round(type.hp * hpScale);
-    r.enemies.push({ id:r.nextEntityId++, typeIdx, x, y, hp:scaledHp, maxHp:scaledHp, dmgScale, speedScale });
+    const speedScale = Math.pow(1.04, levelSteps) * (opts.speedMult||1);
+    const scaledHp = Math.max(1, Math.round(type.hp * hpScale));
+    r.enemies.push({
+      id:r.nextEntityId++, typeIdx, x, y, hp:scaledHp, maxHp:scaledHp, dmgScale, speedScale,
+      shotTimer: type.ranged ? Math.random()*type.shotCooldownMs : undefined,
+      noSplit: !!opts.noSplit,
+    });
   }
   // Every weapon's move.power already carries how strong it's meant to be
   // relative to a hero's other moves — reused directly here as a per-shot
@@ -8038,18 +8098,41 @@
       .slice(0, count)
       .map(o=> o.e);
   }
+  // Damage is a PERCENTAGE of the target's own max HP, not an absolute
+  // number derived from atkStat — a well-leveled hero's atkStat can run into
+  // the hundreds while a base enemy only has 2-6 HP, which meant almost
+  // every hit was an instant one-shot kill. That made health bars pointless
+  // and gave every on-hit effect (slow/stun/burn/drain/pierce/chain) almost
+  // no chance to matter, since there was rarely a second hit to apply them
+  // to. A stronger hero still hits harder (the hero-investment term below),
+  // but SURVIVOR_MAX_HIT_PERCENT hard-caps any single hit, so no combination
+  // of hero level, move power, crits, and stacked damage upgrades can ever
+  // one-shot an enemy — it always takes at least a couple of hits.
+  const SURVIVOR_BASE_HIT_PERCENT = 0.15;
+  const SURVIVOR_MAX_HIT_PERCENT = 0.45;
+  function survivorHitPercent(power, extraMult){
+    const r = survivorRun;
+    const heroBonus = Math.min(0.15, r.atkStat / 800);
+    const raw = (SURVIVOR_BASE_HIT_PERCENT + heroBonus) * power * r.dmgMult * (extraMult||1);
+    return Math.min(SURVIVOR_MAX_HIT_PERCENT, raw);
+  }
   function spawnSurvivorProjectile(weapon, target, powerMult){
     const r = survivorRun;
     const dx = target.x - r.x, dy = target.y - r.y, dist = Math.hypot(dx,dy) || 1;
     const speed = weapon.projSpeed;
     const power = (weapon.move.power || 0.9) * powerMult;
+    const isCrit = Math.random() < r.critChance;
+    const pct = survivorHitPercent(power, isCrit ? 2 : 1);
+    const dmg = Math.max(1, Math.round(target.maxHp * pct));
     r.projectiles.push({
       id: r.nextEntityId++, x: r.x, y: r.y,
       vx: (dx/dist)*speed, vy: (dy/dist)*speed,
-      dmg: Math.max(1, Math.round(r.atkStat * power * 0.35 * r.dmgMult)),
+      dmg, isCrit,
       icon: weapon.move.icon,
       effect: weapon.move.kind,
-      size: weapon.projSize,
+      size: isCrit ? weapon.projSize*1.3 : weapon.projSize,
+      pierceRemaining: r.pierceCount,
+      hitEnemyIds: [],
     });
   }
   function fireSurvivorWeapon(weapon){
@@ -8086,6 +8169,16 @@
     const dt = SURVIVOR_TICK_MS;
     r.elapsedMs += dt;
 
+    // "Second Wind" passive regen — a slow trickle back to full, distinct
+    // from the one-time flat HP upgrade and the on-demand heal-kind weapons
+    if(r.hpRegenPerSec > 0 && r.hp < r.maxHp){
+      r.hpRegenAccum += dt;
+      if(r.hpRegenAccum >= 1000){
+        r.hpRegenAccum -= 1000;
+        r.hp = Math.min(r.maxHp, r.hp + r.maxHp*r.hpRegenPerSec);
+      }
+    }
+
     const dir = computeSurvivorDir();
     if(dir.x || dir.y){
       const len = Math.hypot(dir.x, dir.y) || 1;
@@ -8100,6 +8193,14 @@
       spawnSurvivorEnemy();
       r.nextEnemySpawnMs = Math.max(180, 900 - Math.floor(r.elapsedMs/1000)*18);
     }
+    // an elite arrives on its own steady clock, independent of the regular
+    // random spawn roll — a periodic "real threat" beat among the swarm
+    r.nextEliteSpawnMs -= dt;
+    if(r.nextEliteSpawnMs <= 0){
+      spawnSurvivorEnemy({ elite:true });
+      r.nextEliteSpawnMs = SURVIVOR_ELITE_INTERVAL_MS;
+      addLog("👹 An elite threat emerges from the swarm!");
+    }
 
     if(r.invincibleTimer > 0) r.invincibleTimer -= dt;
     r.enemies.forEach(e=>{
@@ -8107,13 +8208,31 @@
       // slow one — both read straight off the move kind that hit them
       const stunned = e.stunUntilMs && r.elapsedMs < e.stunUntilMs;
       const slowed = e.slowUntilMs && r.elapsedMs < e.slowUntilMs;
-      const type = SURVIVOR_ENEMY_TYPES[e.typeIdx];
+      const type = survivorEnemyType(e);
+      const dx = r.x - e.x, dy = r.y - e.y;
+      const dist = Math.hypot(dx,dy) || 1;
       if(!stunned){
-        const dx = r.x - e.x, dy = r.y - e.y;
-        const dist = Math.hypot(dx,dy) || 1;
-        const speedMult = (slowed ? 0.4 : 1) * r.enemySpeedMult * (e.speedScale||1);
-        e.x += (dx/dist) * type.speed * speedMult * (dt/16.67);
-        e.y += (dy/dist) * type.speed * speedMult * (dt/16.67);
+        // ranged enemies hold their distance instead of closing to contact —
+        // once inside keepDist, they stop and rely on their shot instead
+        const shouldApproach = !type.ranged || dist > type.keepDist;
+        if(shouldApproach){
+          const speedMult = (slowed ? 0.4 : 1) * r.enemySpeedMult * (e.speedScale||1);
+          e.x += (dx/dist) * type.speed * speedMult * (dt/16.67);
+          e.y += (dy/dist) * type.speed * speedMult * (dt/16.67);
+        }
+      }
+      // ranged enemies fire a slow projectile at the player on their own
+      // cooldown once they're within (or closing to) shooting range
+      if(type.ranged && !stunned){
+        e.shotTimer -= dt;
+        if(e.shotTimer <= 0 && dist <= type.keepDist*1.4){
+          r.enemyProjectiles.push({
+            id: r.nextEntityId++, x: e.x, y: e.y,
+            vx: (dx/dist)*type.shotSpeed, vy: (dy/dist)*type.shotSpeed,
+            dmg: Math.round(type.shotDmg * e.dmgScale * r.dmgReductionMult),
+          });
+          e.shotTimer = type.shotCooldownMs;
+        }
       }
       // burn weapons leave a damage-over-time tick on whatever they hit
       if(e.burnUntilMs && r.elapsedMs < e.burnUntilMs){
@@ -8122,7 +8241,7 @@
       }
       const dist2 = Math.hypot(r.x-e.x, r.y-e.y);
       if(dist2 < SURVIVOR_PLAYER_RADIUS + SURVIVOR_ENEMY_RADIUS && r.invincibleTimer <= 0){
-        r.hp -= Math.round(type.dmg * e.dmgScale);
+        r.hp -= Math.round(type.dmg * e.dmgScale * r.dmgReductionMult);
         r.invincibleTimer = r.invincDurationMs;
         survivorPlayerEl.classList.remove("hit");
         void survivorPlayerEl.offsetWidth;
@@ -8150,7 +8269,9 @@
           if(Math.hypot(e.x-ox, e.y-oy) > SURVIVOR_ENEMY_RADIUS + ORBIT_HIT_RADIUS) return;
           const key = i+"_"+e.id;
           if(w.hitCooldowns[key] && r.elapsedMs < w.hitCooldowns[key]) return;
-          e.hp -= Math.max(1, Math.round(r.atkStat * (w.move.power||1) * 0.22 * r.dmgMult));
+          const pct = survivorHitPercent(w.move.power||1, 0.6);
+          e.hp -= Math.max(1, Math.round(e.maxHp * pct));
+          spawnSurvivorBurst(ox, oy, 2, ["💫"]);
           w.hitCooldowns[key] = r.elapsedMs + ORBIT_HIT_COOLDOWN_MS;
         });
       }
@@ -8169,13 +8290,19 @@
     }
 
     // a "Grease Fire" aura, if drafted, ticks damage to every enemy in range
-    // on its own slower pulse — a constant passive threat, not a projectile
+    // on its own slower pulse — a constant passive threat, not a projectile.
+    // Also percentage-based now, same as every other damage source, capped
+    // lower than a direct hit since it can tick several enemies at once.
     if(r.auraDmg > 0){
       r.auraTickAccum += dt;
       if(r.auraTickAccum >= 400){
         r.auraTickAccum -= 400;
+        const auraPct = Math.min(0.2, r.auraDmg);
         r.enemies.forEach(e=>{
-          if(Math.hypot(e.x-r.x, e.y-r.y) <= r.auraRadius) e.hp -= r.auraDmg;
+          if(Math.hypot(e.x-r.x, e.y-r.y) <= r.auraRadius){
+            e.hp -= Math.max(1, Math.round(e.maxHp * auraPct));
+            spawnSurvivorBurst(e.x, e.y, 1, ["🔥"]);
+          }
         });
       }
     }
@@ -8192,12 +8319,14 @@
       });
       if(nearest){
         const dx = nearest.x-t.x, dy = nearest.y-t.y, dist = Math.hypot(dx,dy) || 1;
+        const pct = survivorHitPercent(0.7, 1);
         r.projectiles.push({
           id: r.nextEntityId++, x: t.x, y: t.y,
           vx: (dx/dist)*4, vy: (dy/dist)*4,
-          dmg: Math.max(1, Math.round(r.atkStat * 0.5 * r.dmgMult)),
+          dmg: Math.max(1, Math.round(nearest.maxHp * pct)),
           icon: "🔫", effect: "dmg", size: 1,
         });
+        spawnSurvivorBurst(t.x, t.y, 1, ["💥"]);
       }
       t.fireTimer = t.fireCooldownMs;
     });
@@ -8207,27 +8336,86 @@
       p.y += p.vy * (dt/16.67);
       if(p.x<0 || p.x>SURVIVOR_ARENA_SIZE || p.y<0 || p.y>SURVIVOR_ARENA_SIZE) return false;
       for(const e of r.enemies){
+        if(p.hitEnemyIds.includes(e.id)) continue; // already pierced through this one
         const dist = Math.hypot(e.x-p.x, e.y-p.y);
         if(dist < SURVIVOR_ENEMY_RADIUS + 5){
           e.hp -= p.dmg;
-          spawnSurvivorBurst(p.x, p.y, 3, ["✨","💥"]);
+          spawnSurvivorBurst(p.x, p.y, p.isCrit ? 5 : 3, p.isCrit ? ["💥","⭐"] : ["✨","💥"]);
           // apply the on-hit effect that matches whichever weapon fired this
           // shot — each scaled by whatever amplifier upgrades were drafted
           if(p.effect === "dmg_debuff") e.slowUntilMs = r.elapsedMs + 2000*r.slowDurationMult;
           else if(p.effect === "dmg_stun") e.stunUntilMs = r.elapsedMs + 900*r.stunDurationMult;
           else if(p.effect === "drain") r.hp = Math.min(r.maxHp, r.hp + Math.round(p.dmg*0.4*r.drainMult));
           else if(p.effect === "burn"){ e.burnUntilMs = r.elapsedMs + 3000; e.burnDmgPerTick = Math.max(1, Math.round(p.dmg*0.2*r.burnMult)); }
+          p.hitEnemyIds.push(e.id);
+          // "Piercing Rounds" lets the shot keep flying instead of being
+          // consumed, so it can go on to hit one more enemy in its path
+          if(p.pierceRemaining > 0){ p.pierceRemaining--; return true; }
           return false;
         }
       }
       return true;
     });
 
+    // enemy-fired shots (from ranged enemies) — move toward wherever they
+    // were aimed and hurt the player on contact, same invincibility-window
+    // rule as regular contact damage so they can't stack with a melee hit
+    r.enemyProjectiles = r.enemyProjectiles.filter(p=>{
+      p.x += p.vx * (dt/16.67);
+      p.y += p.vy * (dt/16.67);
+      if(p.x<0 || p.x>SURVIVOR_ARENA_SIZE || p.y<0 || p.y>SURVIVOR_ARENA_SIZE) return false;
+      const dist = Math.hypot(r.x-p.x, r.y-p.y);
+      if(dist < SURVIVOR_PLAYER_RADIUS + 5){
+        if(r.invincibleTimer <= 0){
+          r.hp -= p.dmg;
+          r.invincibleTimer = r.invincDurationMs;
+          survivorPlayerEl.classList.remove("hit");
+          void survivorPlayerEl.offsetWidth;
+          survivorPlayerEl.classList.add("hit");
+        }
+        spawnSurvivorBurst(p.x, p.y, 2, ["💢"]);
+        return false;
+      }
+      return true;
+    });
+
     r.enemies = r.enemies.filter(e=>{
       if(e.hp <= 0){
+        const type = survivorEnemyType(e);
         r.kills++;
-        r.xp += SURVIVOR_ENEMY_TYPES[e.typeIdx].xp * r.xpMult;
+        r.xp += type.xp * r.xpMult;
         spawnSurvivorBurst(e.x, e.y, 5, ["💨","✨","⭐"]);
+        // bombers punish killing them up close — their death blast can
+        // still tag the player if they're in range when it goes off
+        if(type.explodesOnDeath){
+          if(Math.hypot(r.x-e.x, r.y-e.y) <= type.explodeRadius){
+            r.hp -= Math.round(type.explodeDmg * (e.dmgScale||1) * r.dmgReductionMult);
+            r.invincibleTimer = Math.max(r.invincibleTimer, 300);
+          }
+          spawnSurvivorBurst(e.x, e.y, 6, ["💥","🔥","💨"]);
+        }
+        // splitters multiply instead of just dying — two weaker copies
+        // spawn where it died, and those copies don't split again
+        if(type.splitsOnDeath && !e.noSplit){
+          for(let i=0;i<type.splitsOnDeath;i++){
+            const angle = Math.random()*Math.PI*2;
+            spawnSurvivorEnemy({
+              typeIdx: e.typeIdx, x: e.x+Math.cos(angle)*10, y: e.y+Math.sin(angle)*10,
+              hpMult: type.splitHpMult, speedMult: type.splitSpeedMult, noSplit: true,
+            });
+          }
+        }
+        // "Chain Reaction" gives defeated enemies a chance to explode,
+        // damaging whatever's nearby — including, potentially, chaining into
+        // further explosions within this same pass
+        if(r.explodeChance > 0 && Math.random() < r.explodeChance){
+          const explodePct = survivorHitPercent(0.5, 1);
+          r.enemies.forEach(other=>{
+            if(other === e) return;
+            if(Math.hypot(other.x-e.x, other.y-e.y) <= 30) other.hp -= Math.max(1, Math.round(other.maxHp * explodePct));
+          });
+          spawnSurvivorBurst(e.x, e.y, 4, ["💥","🔥"]);
+        }
         return false;
       }
       return true;
@@ -8283,9 +8471,22 @@
 
     r.enemies.forEach(e=>{
       const el = document.createElement("div");
-      el.className = "survivor-enemy";
-      el.textContent = SURVIVOR_ENEMY_TYPES[e.typeIdx].icon;
+      const type = survivorEnemyType(e);
+      el.className = "survivor-enemy" + (type.isElite ? " elite" : "");
       el.style.left = e.x+"px"; el.style.top = e.y+"px";
+      const hpPct = Math.max(0, Math.min(100, (e.hp/e.maxHp)*100));
+      el.innerHTML = `
+        <div class="survivor-enemy-icon">${type.icon}</div>
+        <div class="survivor-enemy-hpbar"><div class="survivor-enemy-hpbar-fill" style="width:${hpPct}%"></div></div>`;
+      survivorField.appendChild(el);
+    });
+    // enemy-fired projectiles (from ranged enemies) render in a visually
+    // distinct red tone from the player's own projectiles
+    r.enemyProjectiles.forEach(p=>{
+      const el = document.createElement("div");
+      el.className = "survivor-projectile enemy-shot";
+      el.textContent = "🔻";
+      el.style.left = p.x+"px"; el.style.top = p.y+"px";
       survivorField.appendChild(el);
     });
     // shield-kind weapons render one icon per active orbiter
@@ -8344,8 +8545,8 @@
     const isNewBest = secs > state.survivor.bestSeconds || r.kills > state.survivor.bestKills;
     if(secs > state.survivor.bestSeconds) state.survivor.bestSeconds = secs;
     if(r.kills > state.survivor.bestKills) state.survivor.bestKills = r.kills;
-    const rewardCoins = r.kills * 8000 + secs * 3000;
-    const rewardCrumbs = r.kills * 1200;
+    const rewardCoins = Math.round((r.kills * 8000 + secs * 3000) * r.rewardMult);
+    const rewardCrumbs = Math.round(r.kills * 1200 * r.rewardMult);
     state.coins += rewardCoins; state.totalEarned += rewardCoins; state.crumbs += rewardCrumbs;
     // no more "won" outcome — this is a true endless mode now, so a run only
     // ever ends by fleeing on your own terms or getting overwhelmed
