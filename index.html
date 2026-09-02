@@ -302,6 +302,13 @@
     display:flex; align-items:center; justify-content:center; padding:0; z-index:2;
   }
   .hero-lore-btn:active{transform:scale(0.9);}
+  .hero-skin-btn{
+    position:absolute; bottom:5px; right:5px; width:20px; height:20px; border-radius:50%;
+    border:1.5px solid var(--ink); background:var(--parchment-card); font-size:10px; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; padding:0; z-index:2;
+  }
+  .hero-skin-btn:active{transform:scale(0.9);}
+  .hero-skin-tag{font-size:9px; font-weight:800;}
   .hero-lore-emoji{font-size:44px; text-align:center; margin-bottom:8px;}
   .hero-emoji{font-size:40px; margin:6px 0 2px;}
   .hero-name{font-weight:800; font-size:12.5px; line-height:1.15; min-height:30px; display:flex; align-items:center; justify-content:center;}
@@ -2130,6 +2137,40 @@
   .odds-note{font-size:10.5px; color:var(--wood-dark); text-align:center; max-width:360px;}
   .pity-note{font-size:9.5px; color:var(--royal); font-weight:800; text-align:center; max-width:360px; margin-top:2px;}
 
+  /* ---------- SKIN SUMMON ---------- */
+  .skin-summon-section{
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    margin-top:10px; padding-top:10px; border-top:2px dashed var(--wood);
+  }
+  .skin-summon-title{font-family:'Baloo 2',cursive; font-size:14px; color:var(--royal);}
+  .skin-summon-sub{font-size:10px; color:var(--wood-dark); text-align:center; max-width:320px; margin-bottom:4px;}
+  .summon-btn.skin{background:linear-gradient(180deg, #b45fc9, #7a3a94); box-shadow:0 4px 0 #4e2461;}
+  .summon-btn.skin:disabled{background:#a29b8f; box-shadow:0 4px 0 #7c766b;}
+  .skin-reveal-overlay{
+    display:none; position:fixed; inset:0; background:rgba(20,12,8,0.82); z-index:210;
+    align-items:center; justify-content:center; padding:20px;
+  }
+  .skin-reveal-card{
+    background:var(--parchment-card); border:3px solid #b45fc9; border-radius:18px;
+    padding:24px 22px; max-width:320px; width:100%; text-align:center; box-shadow:0 10px 0 #7a3a94;
+  }
+  .skin-reveal-label{font-family:'Baloo 2',cursive; font-size:13px; font-weight:800; color:#b45fc9; letter-spacing:1px;}
+  .skin-reveal-emoji{font-size:44px; margin:6px 0;}
+  .skin-reveal-hero{font-family:'Baloo 2',cursive; font-size:17px; color:var(--ink);}
+  .skin-reveal-theme{font-size:12px; font-weight:800; color:var(--wood-dark); margin-bottom:8px;}
+  .skin-reveal-sub{font-size:11px; color:var(--wood-dark); margin-bottom:16px; line-height:1.4;}
+  .skin-picker-list{display:flex; flex-direction:column; gap:8px; margin:10px 0; overflow-y:auto; max-height:50vh;}
+  .skin-picker-item{
+    display:flex; align-items:center; gap:10px; text-align:left;
+    background:var(--parchment); border:2px solid var(--wood); border-radius:12px; padding:9px 12px;
+    cursor:pointer; transition:transform 0.12s ease;
+  }
+  .skin-picker-item:active{transform:scale(0.97);}
+  .skin-picker-item.equipped{background:#f0e8d8; box-shadow:inset 0 0 0 1px rgba(0,0,0,0.05);}
+  .skin-picker-item .opt-icon{font-size:20px;}
+  .skin-picker-item .opt-name{font-family:'Baloo 2',cursive; font-size:12.5px; color:var(--ink); font-weight:700;}
+  .skin-picker-item .opt-desc{font-size:10px; color:var(--wood-dark); font-weight:600;}
+
   /* ---------- COOKING SUMMON ANIMATION (full-screen) ---------- */
   .cook-stage{
     display:none; position:fixed; inset:0; z-index:150; flex-direction:column;
@@ -2550,6 +2591,13 @@
       </div>
       <div class="odds-note">Odds: Common 58.5% · Rare 30% · Epic 8% · Legendary 3% · Secret 0.5%. Duplicate heroes are refunded as bonus Crumbs.</div>
       <div class="pity-note" id="pityNote">Pity: Epic guaranteed in 15 pulls · Legendary guaranteed in 50 pulls</div>
+
+      <div class="skin-summon-section">
+        <div class="skin-summon-title">🎨 Skin Summon</div>
+        <div class="skin-summon-sub">Pull a random cosmetic edition for a random hero — even ones you haven't recruited yet. It'll be waiting once you do.</div>
+        <button class="summon-btn skin" id="skinSummonBtn">Pull a Skin — 500 🍞</button>
+      </div>
+
       <div class="cook-stage" id="cookStage">
         <div class="cook-stage-name" id="cookStageName">🍳 Pan-Frying</div>
         <div class="cook-scene" id="cookScene">
@@ -2802,6 +2850,28 @@
     </div>
   </div>
 
+  <!-- ===== SKIN SUMMON: REVEAL ===== -->
+  <div class="skin-reveal-overlay" id="skinRevealOverlay">
+    <div class="skin-reveal-card" id="skinRevealCard">
+      <div class="skin-reveal-label" id="skinRevealLabel">NEW SKIN!</div>
+      <div class="skin-reveal-emoji" id="skinRevealEmoji">🍔✨</div>
+      <div class="skin-reveal-hero" id="skinRevealHero">Sesame Scout</div>
+      <div class="skin-reveal-theme" id="skinRevealTheme">Golden Edition</div>
+      <div class="skin-reveal-sub" id="skinRevealSub">Waiting in your collection until you recruit them.</div>
+      <button class="reset-confirm-btn secondary" id="skinRevealOk">Nice!</button>
+    </div>
+  </div>
+
+  <!-- ===== SKIN EQUIP PICKER ===== -->
+  <div class="skin-reveal-overlay" id="skinPickerOverlay">
+    <div class="team-select-card">
+      <div class="admin-title" id="skinPickerTitle">🎨 Choose a Skin</div>
+      <div class="team-select-sub">Pick an edition to equip, or go back to their default look.</div>
+      <div class="skin-picker-list" id="skinPickerList"></div>
+      <button class="admin-close-btn" id="skinPickerClose">Close</button>
+    </div>
+  </div>
+
   <!-- ===== TEAM SELECTION SCREEN ===== -->
   <div class="team-select-overlay" id="teamSelectOverlay">
     <div class="team-select-card">
@@ -2886,6 +2956,47 @@
     const rng = mulberry32(fnv1aHash(hero.id + "|" + hero.name + "|faction"));
     const keys = Object.keys(FACTION_DEFS);
     return keys[Math.floor(rng() * keys.length)];
+  }
+
+  // ---------- HERO DISPLAY EMOJI ----------
+  // HERO_DEFS' own emoji field is very collision-heavy — a food/kitchen pool
+  // this size can't give 124 heroes fully distinct icons by hand-authoring
+  // alone, and it wasn't tried to (many heroes intentionally share a theme).
+  // This computes a genuinely-unique DISPLAY icon per hero instead, without
+  // touching the underlying data: a large emoji pool, and a deterministic
+  // greedy assignment where each hero gets its highest-preference emoji that
+  // no earlier hero (in stable HERO_DEFS order) already claimed. The pool
+  // comfortably exceeds the hero count, so every hero ends up unique.
+  const HERO_EMOJI_POOL = [
+    "🍇","🍈","🍉","🍊","🍋","🍌","🍍","🥭","🍎","🍏","🍐","🍑","🍒","🍓","🫐","🥝",
+    "🍅","🫒","🥥","🥑","🍆","🥔","🥕","🌽","🌶️","🫑","🥒","🥬","🥦","🧄","🧅","🍄",
+    "🥜","🫘","🌰","🍞","🥐","🥖","🫓","🥨","🥯","🥞","🧇","🧀","🍖","🍗","🥩","🥓",
+    "🍔","🍟","🍕","🌭","🥪","🌮","🌯","🫔","🥙","🧆","🥚","🍳","🥘","🍲","🫕","🥣",
+    "🥗","🍿","🧈","🧂","🥫","🍱","🍘","🍙","🍚","🍛","🍜","🍝","🍠","🍢","🍣","🍤",
+    "🍥","🥮","🍡","🥟","🥠","🥡","🦪","🍦","🍧","🍨","🍩","🍪","🎂","🍰","🧁","🥧",
+    "🍫","🍬","🍭","🍮","🍯","🍼","🥛","☕","🍵","🧃","🥤","🧋","🍶","🍺","🍻","🥂",
+    "🍷","🥃","🍸","🍹","🧉","🍾","🥄","🍴","🥢","🧊","🦞","🦐","🦀","🐟","🫖","🫙",
+  ];
+  let heroEmojiCache = null;
+  function buildHeroEmojiCache(){
+    const used = new Set();
+    const cache = {};
+    HERO_DEFS.forEach(hero=>{
+      const rng = mulberry32(fnv1aHash(hero.id + "|emoji2"));
+      const prefs = HERO_EMOJI_POOL
+        .map(e=>({ e, key: rng() }))
+        .sort((a,b)=> a.key - b.key)
+        .map(x=> x.e);
+      let chosen = prefs.find(e=> !used.has(e));
+      if(!chosen) chosen = hero.emoji; // pool exhausted safety net — shouldn't trigger, pool > hero count
+      used.add(chosen);
+      cache[hero.id] = chosen;
+    });
+    return cache;
+  }
+  function heroDisplayEmoji(hero){
+    if(!heroEmojiCache) heroEmojiCache = buildHeroEmojiCache();
+    return heroEmojiCache[hero.id] || hero.emoji;
   }
 
   // ---------- THE ROGUE TOWER ----------
@@ -3097,6 +3208,22 @@
     }
     return choices;
   }
+
+  // ---------- HERO SKINS ----------
+  // Purely cosmetic alternate presentations for any hero — a colored card
+  // treatment plus a flavor title suffix, unlocked via a dedicated Skin
+  // Summon (spends Crumbs) separate from the Recipe Summon that unlocks
+  // heroes themselves. A pulled skin for a hero you don't own yet still
+  // saves to your inventory, ready the moment you recruit them.
+  const SKIN_THEMES = [
+    { id:"golden",  name:"Golden Edition",  icon:"✨", color:"#e8b93b", glow:"rgba(232,185,59,0.65)" },
+    { id:"shadow",  name:"Shadow Edition",  icon:"🖤", color:"#6a4a8a", glow:"rgba(106,74,138,0.65)" },
+    { id:"festive", name:"Festive Edition", icon:"🎉", color:"#e0455c", glow:"rgba(224,69,92,0.65)" },
+    { id:"crystal", name:"Crystal Edition", icon:"💎", color:"#4fc3d9", glow:"rgba(79,195,217,0.65)" },
+    { id:"inferno", name:"Inferno Edition", icon:"🔥", color:"#e4572e", glow:"rgba(228,87,46,0.65)" },
+  ];
+  const SKIN_SUMMON_COST = 500; // crumbs per pull
+  function skinThemeById(id){ return SKIN_THEMES.find(t=>t.id===id); }
 
   const HERO_DEFS = [
     {id:"h1", name:"Sesame Scout",        emoji:"🥯", role:"Tank",    rarity:"common",
@@ -4487,6 +4614,7 @@
     {id:"q26",icon:"🥩", name:"Secret Collector",  desc:"Recruit a Secret rarity hero.",                target:1,  reward:{coins:10000000, sesame:150}, get:(s)=>HERO_DEFS.some(h=>h.rarity==="ultra" && s.heroes[h.id] && s.heroes[h.id].owned) ? 1 : 0},
     {id:"q27",icon:"🏆", name:"Legendary Dozen",  desc:"Recruit 10 Legendary or Secret heroes.",         target:10, reward:{sesame:120, crumbs:20000}, get:(s)=>HERO_DEFS.filter(h=>(h.rarity==="legend"||h.rarity==="ultra") && s.heroes[h.id] && s.heroes[h.id].owned).length},
     {id:"q28",icon:"📖", name:"Century Summoner", desc:"Use the Recipe Summon 100 times.",             target:100,reward:{sesame:150, crumbs:50000}, get:(s)=>s.stats.summonsDone},
+    {id:"q29",icon:"🎨", name:"Fashion Sense",    desc:"Use the Skin Summon 10 times.",                target:10, reward:{sesame:40, coins:5000000}, get:(s)=>s.stats.skinSummonsDone},
   ];
   function questProgress(q){ return Math.min(q.target, q.get(state)); }
   function questComplete(q){ return questProgress(q) >= q.target; }
@@ -4494,7 +4622,7 @@
 
   function defaultHeroes(){
     const h = {};
-    HERO_DEFS.forEach(d=>{ h[d.id] = {owned: STARTER_HERO_IDS.includes(d.id), level:0, secretMoveUnlocked:false}; });
+    HERO_DEFS.forEach(d=>{ h[d.id] = {owned: STARTER_HERO_IDS.includes(d.id), level:0, secretMoveUnlocked:false, equippedSkin:null}; });
     return h;
   }
   function freshBattle(){
@@ -4512,10 +4640,10 @@
   }
   function freshState(){
     const s = {
-      coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(),
+      coins:0, totalEarned:0, crowns:0, crumbs:0, sesame:0, gens:{}, heroes:defaultHeroes(), skins:{},
       lastSesameTick:Date.now(), battle:freshBattle(), battleTeam: STARTER_HERO_IDS.slice(), tower:freshTower(), dungeon:freshDungeon(), survivor:freshSurvivor(),
       stats:{ bossesDefeated:0, summonsDone:0, pityEpic:0, pityLegend:0, bossIntrosSeen:[], storyChaptersUnlocked:[], storyChaptersRead:0,
-        sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0, moveUsageCounts:{} }, questsClaimed:{},
+        sideBossesDefeated:0, sideStoryComplete:false, sideBossIntrosSeen:[], domainMovesUsed:0, moveUsageCounts:{}, skinSummonsDone:0 }, questsClaimed:{},
       settings:{ skipAnim:{ common:false, rare:false, epic:false, legend:false, ultra:false } }
     };
     GEN_DEFS.forEach(g=> s.gens[g.id]=0);
@@ -4696,6 +4824,14 @@
     if(!state.survivor || typeof state.survivor !== "object") state.survivor = freshSurvivor();
     if(typeof state.survivor.bestSeconds !== "number") state.survivor.bestSeconds = 0;
     if(typeof state.survivor.bestKills !== "number") state.survivor.bestKills = 0;
+    if(!state.skins || typeof state.skins !== "object") state.skins = {};
+    if(typeof state.stats.skinSummonsDone !== "number") state.stats.skinSummonsDone = 0;
+    HERO_DEFS.forEach(d=>{
+      if(state.heroes[d.id] && typeof state.heroes[d.id].equippedSkin === "undefined"){
+        state.heroes[d.id].equippedSkin = null;
+      }
+      if(!Array.isArray(state.skins[d.id])) state.skins[d.id] = [];
+    });
     if(!state.questsClaimed) state.questsClaimed = {};
     if(!Array.isArray(state.battleTeam)) state.battleTeam = [];
     if(!state.settings) state.settings = { skipAnim:{} };
@@ -4722,6 +4858,19 @@
   const genList = document.getElementById("genList");
   const prestigeBtn = document.getElementById("prestigeBtn");
   const heroGrid = document.getElementById("heroGrid");
+  const skinSummonBtn = document.getElementById("skinSummonBtn");
+  const skinRevealOverlay = document.getElementById("skinRevealOverlay");
+  const skinRevealCard = document.getElementById("skinRevealCard");
+  const skinRevealLabel = document.getElementById("skinRevealLabel");
+  const skinRevealEmoji = document.getElementById("skinRevealEmoji");
+  const skinRevealHero = document.getElementById("skinRevealHero");
+  const skinRevealTheme = document.getElementById("skinRevealTheme");
+  const skinRevealSub = document.getElementById("skinRevealSub");
+  const skinRevealOk = document.getElementById("skinRevealOk");
+  const skinPickerOverlay = document.getElementById("skinPickerOverlay");
+  const skinPickerTitle = document.getElementById("skinPickerTitle");
+  const skinPickerList = document.getElementById("skinPickerList");
+  const skinPickerClose = document.getElementById("skinPickerClose");
   const heroesOwnedCount = document.getElementById("heroesOwnedCount");
   const heroesTotalCount = document.getElementById("heroesTotalCount");
   const totalHeroPowerEl = document.getElementById("totalHeroPower");
@@ -4967,12 +5116,19 @@
         const costLabel = preview.count > 0 ? fmt(preview.totalCost) : fmt(costOf(rec.level));
         const moves = heroMoves(h).map(m=>m.icon+" "+m.name).join(" · ");
         const faction = getHeroFaction(h);
+        const equippedTheme = rec.equippedSkin ? skinThemeById(rec.equippedSkin) : null;
+        const ownedSkins = state.skins[h.id] || [];
+        if(equippedTheme){
+          card.style.borderColor = equippedTheme.color;
+          card.style.boxShadow = `0 0 10px ${equippedTheme.glow}`;
+        }
         card.innerHTML = `
           <div class="hero-rarity-tag">${RARITY_LABEL[h.rarity]}</div>
           <div class="hero-faction-tag ${faction}" title="${FACTION_DEFS[faction].name}">${FACTION_DEFS[faction].emoji}</div>
           <button class="hero-lore-btn" data-id="${h.id}" title="Lore">📖</button>
-          <div class="hero-emoji">${h.emoji}</div>
-          <div class="hero-name">${h.name}</div>
+          ${ownedSkins.length ? `<button class="hero-skin-btn" data-id="${h.id}" title="Skins">🎨</button>` : ""}
+          <div class="hero-emoji">${heroDisplayEmoji(h)}${equippedTheme ? " "+equippedTheme.icon : ""}</div>
+          <div class="hero-name">${h.name}${equippedTheme ? ` <span class="hero-skin-tag" style="color:${equippedTheme.color}">${equippedTheme.name}</span>` : ""}</div>
           <div class="hero-role">${h.role} · ATK ${heroAtk(h,rec)} · HP ${heroMaxHp(h,rec)}</div>
           <div class="hero-moves-note">${moves}</div>
           <div class="hero-level">Lv. ${rec.level}</div>
@@ -4990,6 +5146,13 @@
         e.stopPropagation();
         const h = HERO_DEFS.find(x=>x.id===btn.getAttribute("data-id"));
         openHeroLore(h);
+      });
+    });
+    heroGrid.querySelectorAll(".hero-skin-btn").forEach(btn=>{
+      btn.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const h = HERO_DEFS.find(x=>x.id===btn.getAttribute("data-id"));
+        openSkinPicker(h);
       });
     });
     heroGrid.querySelectorAll(".level-btn").forEach(btn=>{
@@ -6776,7 +6939,7 @@
       spawnDomainBarrier(battleCutscene);
       battleCutsceneSub.textContent = profile.sub;
       battleCutsceneTitle.textContent = "DOMAIN EXPANSION:";
-      battleCutsceneEmojiSpan.textContent = hero.emoji;
+      battleCutsceneEmojiSpan.textContent = heroDisplayEmoji(hero);
       battleCutsceneName.textContent = "";
       battleCutsceneContent.style.display = "flex";
       const preEls = [battleCutsceneEmoji, battleCutsceneTitle];
@@ -6798,7 +6961,7 @@
     battleCutsceneTitle.textContent = isDomain
       ? "DOMAIN EXPANSION: " + profile.domain.toUpperCase()
       : move.icon + " " + move.name.toUpperCase() + "!";
-    battleCutsceneEmojiSpan.textContent = hero.emoji;
+    battleCutsceneEmojiSpan.textContent = heroDisplayEmoji(hero);
     battleCutsceneName.textContent = hero.name + (isDomain ? " — " + move.icon + " " + move.name : "");
     battleCutsceneContent.style.display = "flex";
     const els = [battleCutsceneEmoji, battleCutsceneName, battleCutsceneTitle];
@@ -7316,7 +7479,7 @@
 
     const h = activeHero();
     if(h){
-      heroEmojiSpan.textContent = h.emoji;
+      heroEmojiSpan.textContent = heroDisplayEmoji(h);
       heroFighterName.textContent = h.name;
 
       // moves
@@ -7360,7 +7523,7 @@
       chip.disabled = (phase !== "player") || fainted || hero.id===state.battle.activeHeroId;
       chip.setAttribute("data-hero-id", hero.id);
       chip.innerHTML = `
-        <div class="chip-emoji" style="animation-delay:${(idx%5)*0.18}s;">${hero.emoji}</div>
+        <div class="chip-emoji" style="animation-delay:${(idx%5)*0.18}s;">${heroDisplayEmoji(hero)}</div>
         <div class="chip-hp-outer"><div class="chip-hp-inner" style="width:${Math.max(0,(hp/max)*100)}%;"></div></div>`;
       chip.title = hero.name + (fainted? " (fainted)":"");
       chip.addEventListener("click", ()=>{
@@ -7807,7 +7970,7 @@
       item.className = "team-select-item " + h.rarity;
       const rec = state.heroes[h.id];
       item.innerHTML = `
-        <div class="tsi-emoji">${h.emoji}</div>
+        <div class="tsi-emoji">${heroDisplayEmoji(h)}</div>
         <div class="tsi-name">${h.name}${rec.secretMoveUnlocked ? " 🔓" : ""}</div>`;
       item.addEventListener("click", ()=>{
         dungeonSelectOverlay.style.display = "none";
@@ -7850,7 +8013,7 @@
         }
         if(x===state.dungeon.x && y===state.dungeon.y){
           cls += " current";
-          icon = hero ? hero.emoji : "🚩";
+          icon = hero ? heroDisplayEmoji(hero) : "🚩";
         }
         el.className = cls;
         el.textContent = icon;
@@ -7962,7 +8125,7 @@
     ownedHeroList().forEach(h=>{
       const item = document.createElement("div");
       item.className = "team-select-item " + h.rarity;
-      item.innerHTML = `<div class="tsi-emoji">${h.emoji}</div><div class="tsi-name">${h.name}</div>`;
+      item.innerHTML = `<div class="tsi-emoji">${heroDisplayEmoji(h)}</div><div class="tsi-name">${h.name}</div>`;
       item.addEventListener("click", ()=>{
         survivorSelectOverlay.style.display = "none";
         startSurvivorRun(h.id);
@@ -8006,7 +8169,7 @@
     // handed the whole moveset on turn one
     const firstMove = pickSurvivorStartingMove(hero);
     survivorRun = {
-      heroId, heroEmoji: hero.emoji, weapons: [makeWeapon(firstMove, 0)],
+      heroId, heroEmoji: heroDisplayEmoji(hero), weapons: [makeWeapon(firstMove, 0)],
       atkStat: heroAtk(hero, rec),
       x: SURVIVOR_ARENA_SIZE/2, y: SURVIVOR_ARENA_SIZE/2,
       hp: 100, maxHp: 100,
@@ -8891,7 +9054,7 @@
       rarityCutscene.className = "rarity-cutscene" + (rarity === "epic" ? " rc-epic" : (rarity === "ultra" ? " rc-ultra" : ""));
       rarityCutsceneSub.textContent = profile.sub;
       rarityCutsceneTitle.textContent = profile.title;
-      rarityCutsceneEmojiSpan.textContent = hero.emoji;
+      rarityCutsceneEmojiSpan.textContent = heroDisplayEmoji(hero);
       rarityCutsceneName.textContent = hero.name;
       rarityCutsceneLore.textContent = loreSnippet(hero, 90);
       rarityCutscene.style.display = "flex";
@@ -8955,7 +9118,7 @@
       card.className = "reveal-card " + h.rarity;
       card.style.animationDelay = (i*0.08)+"s";
       card.innerHTML = `
-        <div class="reveal-emoji">${h.emoji}</div>
+        <div class="reveal-emoji">${heroDisplayEmoji(h)}</div>
         <div class="reveal-name">${h.name}</div>
         <div style="font-size:9px;font-weight:800;color:var(--wood-dark);">${RARITY_LABEL[h.rarity]}</div>
         <div class="reveal-lore">${loreSnippet(h, 42)}</div>
@@ -8989,6 +9152,7 @@
     prestigeBtn.disabled = crownsReady < 1;
     summon1Btn.disabled = state.sesame < 10 || summonBusy;
     summon10Btn.disabled = state.sesame < 90 || summonBusy;
+    skinSummonBtn.disabled = state.crumbs < SKIN_SUMMON_COST;
   }
   // ---------- MULTI-BUY / MULTI-LEVEL SELECTORS ----------
   function wireMultiSelectRow(rowId, onChange){
@@ -9210,7 +9374,7 @@
       item.className = "team-select-item " + h.rarity + (selected? " selected":"") + (atCap? " disabled":"");
       item.innerHTML = `
         <div class="tsi-check">✅</div>
-        <div class="tsi-emoji">${h.emoji}</div>
+        <div class="tsi-emoji">${heroDisplayEmoji(h)}</div>
         <div class="tsi-name">${h.name}</div>`;
       item.addEventListener("click", ()=>{
         if(selected){
@@ -9294,11 +9458,80 @@
   const heroLoreClose = document.getElementById("heroLoreClose");
   function openHeroLore(hero){
     heroLoreTitle.textContent = "📖 " + hero.name;
-    heroLoreEmoji.textContent = hero.emoji;
+    heroLoreEmoji.textContent = heroDisplayEmoji(hero);
     heroLoreText.textContent = getHeroLore(hero);
     heroLoreOverlay.style.display = "flex";
   }
   heroLoreClose.addEventListener("click", ()=>{ heroLoreOverlay.style.display = "none"; });
+
+  // ---------- SKIN SUMMON ----------
+  function openSkinPicker(hero){
+    const rec = state.heroes[hero.id];
+    const owned = state.skins[hero.id] || [];
+    skinPickerTitle.textContent = "🎨 " + hero.name + "'s Skins";
+    skinPickerList.innerHTML = "";
+    const noneItem = document.createElement("div");
+    noneItem.className = "skin-picker-item" + (!rec.equippedSkin ? " equipped" : "");
+    noneItem.innerHTML = `<span class="opt-icon">${heroDisplayEmoji(hero)}</span><div><div class="opt-name">Default Look</div><div class="opt-desc">${!rec.equippedSkin ? "Currently equipped" : "Tap to equip"}</div></div>`;
+    noneItem.addEventListener("click", ()=>{
+      rec.equippedSkin = null;
+      skinPickerOverlay.style.display = "none";
+      renderHeroes();
+      save();
+    });
+    skinPickerList.appendChild(noneItem);
+    owned.forEach(themeId=>{
+      const theme = skinThemeById(themeId);
+      if(!theme) return;
+      const item = document.createElement("div");
+      item.className = "skin-picker-item" + (rec.equippedSkin===themeId ? " equipped" : "");
+      item.style.borderColor = theme.color;
+      item.innerHTML = `<span class="opt-icon">${theme.icon}</span><div><div class="opt-name">${theme.name}</div><div class="opt-desc">${rec.equippedSkin===themeId ? "Currently equipped" : "Tap to equip"}</div></div>`;
+      item.addEventListener("click", ()=>{
+        rec.equippedSkin = themeId;
+        skinPickerOverlay.style.display = "none";
+        renderHeroes();
+        save();
+      });
+      skinPickerList.appendChild(item);
+    });
+    skinPickerOverlay.style.display = "flex";
+  }
+  skinPickerClose.addEventListener("click", ()=>{ skinPickerOverlay.style.display = "none"; });
+
+  skinSummonBtn.addEventListener("click", ()=>{
+    if(state.crumbs < SKIN_SUMMON_COST) return;
+    state.crumbs -= SKIN_SUMMON_COST;
+    const hero = HERO_DEFS[Math.floor(Math.random()*HERO_DEFS.length)];
+    const theme = SKIN_THEMES[Math.floor(Math.random()*SKIN_THEMES.length)];
+    state.stats.skinSummonsDone++;
+    if(!state.skins[hero.id]) state.skins[hero.id] = [];
+    const alreadyOwned = state.skins[hero.id].includes(theme.id);
+    let bonusCoins = 0;
+    if(alreadyOwned){
+      // a duplicate skin pull still pays out, same courtesy as a duplicate hero pull
+      bonusCoins = 40000;
+      state.coins += bonusCoins; state.totalEarned += bonusCoins;
+    } else {
+      state.skins[hero.id].push(theme.id);
+    }
+    const owned = state.heroes[hero.id] && state.heroes[hero.id].owned;
+    skinRevealLabel.textContent = alreadyOwned ? "DUPLICATE SKIN" : "NEW SKIN!";
+    skinRevealCard.style.borderColor = theme.color;
+    skinRevealCard.style.boxShadow = `0 10px 0 ${theme.color}`;
+    skinRevealEmoji.textContent = heroDisplayEmoji(hero) + theme.icon;
+    skinRevealHero.textContent = hero.name;
+    skinRevealTheme.textContent = theme.name;
+    skinRevealSub.textContent = alreadyOwned
+      ? "Already unlocked — refunded as +" + fmt(bonusCoins) + " 🍔 instead."
+      : (owned ? "Equip it any time from their hero card." : "Waiting in your collection until you recruit them.");
+    skinRevealOverlay.style.display = "flex";
+    renderTopStats();
+    renderHeroes();
+    addLog("🎨 Skin pull: " + theme.icon + " " + theme.name + " for " + hero.name + (alreadyOwned ? " (duplicate)" : "!"));
+    save();
+  });
+  skinRevealOk.addEventListener("click", ()=>{ skinRevealOverlay.style.display = "none"; });
 
   // ---------- SETTINGS MODAL ----------
   const settingsOpenBtn = document.getElementById("settingsOpenBtn");
